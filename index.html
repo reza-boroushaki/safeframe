@@ -1,0 +1,118 @@
+<html lang="en-US">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, minimal-ui">
+        <style type="text/css">
+          body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+          }
+            #header {
+                height: 50px;
+                width: 100%;
+                background-color: grey;
+                position: fixed;
+                top: 0px;
+                left: 0px;
+            }
+
+            ​ .pagewrapper {
+                height: 250px;
+                width: 300px;
+                /*-webkit-transform: translate3d(0,0,0);
+      transform: translate3d(0,0,0);*/
+            }
+        </style>
+        <script src="./src/base.js"></script>
+        <script src="./src/host.js"></script>
+        <script src="./src/boot.js"></script>
+        <script>
+            (function() {
+                var conf = new $sf.host.Config({
+                    renderFile: "https://mobkoi-tagservice-static2-dev.s3-eu-west-1.amazonaws.com/safeframe/1-1-0/html/r.html",
+                    debug: true,
+                    onPosMsg: function(id, msgName, data){ console.log("onPosMsg:", id, msgName, data); },
+                    onBeforePosMsg: function(id, msgName, data){ console.log("onBeforePosMsg:", id, msgName, data); },
+                    onSuccess: function(id){ console.log("onSuccess:", id); },
+                });
+            }
+            )();
+        </script>
+    </head>
+    <body>
+        ​<div id="header"></div>
+        ​<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum ante ut felis hendrerit, nec consectetur augue fringilla. Mauris maximus, nisl quis aliquet porta, arcu tortor commodo mi, sit amet mollis libero justo ut metus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam elit risus, aliquet eget sodales quis, commodo eu justo. Etiam vestibulum eu turpis iaculis vehicula. Maecenas bibendum, sem vel pretium molestie, ligula mauris interdum lacus, a varius nulla felis eu orci. Proin nec neque ipsum. Suspendisse eget velit in nulla laoreet malesuada. Phasellus sit amet euismod orci. Morbi egestas mauris ante, ac tristique metus pretium sit amet.</p>
+        <p>Fusce vel faucibus quam. Curabitur viverra quam vitae velit ornare sodales. Proin luctus sed dui at fermentum. Mauris sed diam ex. Donec finibus diam eu orci efficitur placerat. Vivamus vitae tortor auctor, tempor lacus vel, vulputate nibh. Nulla vulputate scelerisque auctor. Duis dapibus tellus lectus, eget hendrerit ante venenatis in. Nulla vehicula tellus ac porta sagittis. Nam condimentum orci et ipsum convallis volutpat. Morbi eu volutpat leo. Nam sit amet sapien tellus. Suspendisse egestas dolor vel risus posuere sollicitudin.</p>
+        <p>Fusce pharetra, neque vel placerat eleifend, ex justo condimentum turpis, id hendrerit magna mauris ullamcorper purus. Nullam vel nisi varius, auctor nunc in, dignissim lectus. Aliquam justo urna, porttitor non ipsum nec, mollis mattis lacus. Nunc facilisis lorem sed elit ornare tempus. Suspendisse tincidunt suscipit erat, eget malesuada risus pulvinar ut. Nunc ut quam sit amet lacus vulputate dapibus nec id ex. In hac habitasse platea dictumst. Sed cursus dui erat, id ultricies odio imperdiet quis. Nam rutrum quam id ultrices accumsan. Vivamus nunc metus, porta eu felis at, gravida facilisis sem. Duis sodales gravida blandit. Quisque lobortis turpis velit, quis sagittis sem interdum ac. Mauris lobortis, lacus nec malesuada mollis, lacus justo ullamcorper nisi, non fringilla quam neque in nisi.</p>
+        <p>Nullam ligula felis, sagittis a lacus eu, dictum cursus quam. Proin nec orci tempus, tincidunt diam ac, semper nulla. Ut imperdiet lectus in sem cursus, et aliquet urna dignissim. Donec sit amet massa ipsum. Pellentesque vestibulum dui a nunc rutrum, id semper nisi laoreet. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut scelerisque, ligula nec ultricies accumsan, ex lacus lacinia purus, elementum blandit turpis tortor porta augue. Vestibulum suscipit libero vel nulla commodo viverra. Sed ac orci et urna blandit iaculis. Suspendisse dignissim feugiat tellus eu tincidunt. Vestibulum convallis nisi id leo convallis, eleifend rhoncus turpis dapibus. Praesent ultricies ex turpis, eu imperdiet nulla euismod sed. Etiam tempor elementum nisl, a auctor ipsum tincidunt sit amet. Pellentesque dictum viverra magna, nec dictum neque facilisis nec. Aenean vulputate egestas lorem vel pellentesque. Vivamus non metus laoreet, pulvinar quam id, feugiat nibh.</p>
+        ​<p>You should be able to see this and similar paragraph after the advert</p>
+        <div class="pagewrapper">
+            ​<div id='adTargetElement'></div>
+            <!-- START TAG -->
+            <script>
+                const params = document.location.search.substring(1).split('&').reduce( (a, c) => {
+                    let x = c.split('=');
+                    a[x[0]] = decodeURIComponent(x[1]);
+                    return a;
+                }
+                , {});
+                console.log("params", params);
+                const payload = `
+        (function (cs) {
+          /* Publisher options */
+          const options = Object.assign({endpoint: 'tagservice.maximus.mobkoi.com', test: 1}, ${params.options || {}});
+
+          /* DO NOT TOUCH ANYTHING BELOW */
+          cs.parentNode.insertBefore(Object.assign(document.createElement('script'), {
+            type: 'application/javascript', async: 1,
+            src: 'https://' + options.endpoint + '/boot/${params.tagid}/?po=' + encodeURIComponent(JSON.stringify(options)) + '&cb=' + Math.random() + '&st=' + Date.now()
+          }), cs);
+        })(document.currentScript);
+      `;
+            </script>
+            <!-- END TAG -->
+            <script>
+                (function() {
+                    // Ad contents or bootstrap
+                    const html = '<scr' + 'ipt>' + payload + '</scr' + 'ipt>';
+
+                    // Register the ad position config information
+                    var posConf = new $sf.host.PosConfig({
+                        id: 'myAdPlacement1',
+                        w: params.width || 300,
+                        h: params.height || 250,
+                        dest: 'adTargetElement',
+                        supports: {
+                            'exp-push': true
+                        },
+                        css: "#sf_body { overflow: hidden; }",
+                        geom: {
+                          exp: { b: 2000, xs: 1, yx: 1, ys: 1 },
+                        }
+                      });
+                      
+                      // Create the ad position.
+                      var pos = new $sf.host.Position({
+                        id: posConf.id,
+                        html: html,
+                        config: posConf
+                    });
+
+                    console.log("posConf", posConf);
+                    console.log("pos", pos);
+
+                    // Render the ad in a SafeFrame.
+                    $sf.host.render(pos);
+                }
+                )();
+            </script>
+        </div>
+        ​<p>You should be able to see this and similar paragraph before the advert</p>
+        <p>Fusce leo felis, pharetra id elit quis, elementum feugiat odio. Ut leo mauris, posuere sit amet pretium quis, maximus nec enim. Vivamus mattis lorem vel ultricies vehicula. Proin eleifend sapien nec tristique viverra. Morbi condimentum et diam feugiat feugiat. Fusce quis lacinia massa. Aliquam lacinia metus nec tempor aliquam. Quisque accumsan quis velit vitae faucibus. Suspendisse semper mollis volutpat. In ac nisi in quam aliquet congue. Donec ac lacus arcu. Maecenas eget ultrices nibh. Aliquam non lobortis tortor. Praesent ac purus vitae nisi suscipit faucibus et eu sem. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae;</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec interdum ante ut felis hendrerit, nec consectetur augue fringilla. Mauris maximus, nisl quis aliquet porta, arcu tortor commodo mi, sit amet mollis libero justo ut metus. Interdum et malesuada fames ac ante ipsum primis in faucibus. Nam elit risus, aliquet eget sodales quis, commodo eu justo. Etiam vestibulum eu turpis iaculis vehicula. Maecenas bibendum, sem vel pretium molestie, ligula mauris interdum lacus, a varius nulla felis eu orci. Proin nec neque ipsum. Suspendisse eget velit in nulla laoreet malesuada. Phasellus sit amet euismod orci. Morbi egestas mauris ante, ac tristique metus pretium sit amet.</p>
+        <p>Fusce vel faucibus quam. Curabitur viverra quam vitae velit ornare sodales. Proin luctus sed dui at fermentum. Mauris sed diam ex. Donec finibus diam eu orci efficitur placerat. Vivamus vitae tortor auctor, tempor lacus vel, vulputate nibh. Nulla vulputate scelerisque auctor. Duis dapibus tellus lectus, eget hendrerit ante venenatis in. Nulla vehicula tellus ac porta sagittis. Nam condimentum orci et ipsum convallis volutpat. Morbi eu volutpat leo. Nam sit amet sapien tellus. Suspendisse egestas dolor vel risus posuere sollicitudin.</p>
+        <p>Fusce pharetra, neque vel placerat eleifend, ex justo condimentum turpis, id hendrerit magna mauris ullamcorper purus. Nullam vel nisi varius, auctor nunc in, dignissim lectus. Aliquam justo urna, porttitor non ipsum nec, mollis mattis lacus. Nunc facilisis lorem sed elit ornare tempus. Suspendisse tincidunt suscipit erat, eget malesuada risus pulvinar ut. Nunc ut quam sit amet lacus vulputate dapibus nec id ex. In hac habitasse platea dictumst. Sed cursus dui erat, id ultricies odio imperdiet quis. Nam rutrum quam id ultrices accumsan. Vivamus nunc metus, porta eu felis at, gravida facilisis sem. Duis sodales gravida blandit. Quisque lobortis turpis velit, quis sagittis sem interdum ac. Mauris lobortis, lacus nec malesuada mollis, lacus justo ullamcorper nisi, non fringilla quam neque in nisi.</p>
+        <p>Nullam ligula felis, sagittis a lacus eu, dictum cursus quam. Proin nec orci tempus, tincidunt diam ac, semper nulla. Ut imperdiet lectus in sem cursus, et aliquet urna dignissim. Donec sit amet massa ipsum. Pellentesque vestibulum dui a nunc rutrum, id semper nisi laoreet. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Ut scelerisque, ligula nec ultricies accumsan, ex lacus lacinia purus, elementum blandit turpis tortor porta augue. Vestibulum suscipit libero vel nulla commodo viverra. Sed ac orci et urna blandit iaculis. Suspendisse dignissim feugiat tellus eu tincidunt. Vestibulum convallis nisi id leo convallis, eleifend rhoncus turpis dapibus. Praesent ultricies ex turpis, eu imperdiet nulla euismod sed. Etiam tempor elementum nisl, a auctor ipsum tincidunt sit amet. Pellentesque dictum viverra magna, nec dictum neque facilisis nec. Aenean vulputate egestas lorem vel pellentesque. Vivamus non metus laoreet, pulvinar quam id, feugiat nibh.</p>
+    </body>
+</style></html>
