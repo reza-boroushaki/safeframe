@@ -24,17 +24,17 @@
       transform: translate3d(0,0,0);*/
             }
         </style>
-        <script src="./base.js"></script>
-        <script src="./host.js"></script>
-        <script src="./boot.js"></script>
+        <script src="./src/base.js"></script>
+        <script src="./src/host.js"></script>
+        <script src="./src/boot.js"></script>
         <script>
             (function() {
                 var conf = new $sf.host.Config({
                     renderFile: "https://mobkoi-tagservice-static2-dev.s3-eu-west-1.amazonaws.com/safeframe/1-1-0/html/r.html",
                     debug: true,
-                    onPosMsg: function(id, msgName, data){ console.log("onPosMsg:", id, msgName, data); },
-                    onBeforePosMsg: function(id, msgName, data){ console.log("onBeforePosMsg:", id, msgName, data); },
-                    onSuccess: function(id){ console.log("onSuccess:", id); },
+                    // onPosMsg: function(id, msgName, data){ console.log("onPosMsg:", id, msgName, data); },
+                    // onBeforePosMsg: function(id, msgName, data){ console.log("onBeforePosMsg:", id, msgName, data); },
+                    // onSuccess: function(id){ console.log("onSuccess:", id); },
                 });
             }
             )();
@@ -86,10 +86,7 @@
                         supports: {
                             'exp-push': true
                         },
-                        css: "#sf_body { overflow: hidden; }",
-                        geom: {
-                          exp: { b: 2000, xs: 1, yx: 1, ys: 1 },
-                        }
+                        css: "",
                       });
                       
                       // Create the ad position.
