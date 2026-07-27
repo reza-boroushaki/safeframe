@@ -421,7 +421,7 @@ class K {
     }), e.addEventListener("waiting", () => {
       i.pauseCountdown && i.pauseCountdown();
     }), setTimeout(() => {
-      console.log("flags.timeupdate*****", n.timeupdate);
+      console.log("flags.timeupdate*****", n.timeupdate), n.timeupdate || (this.elementManager.hasPlayButton() && this.elementManager.playButton.showAction(this.actionCtx, {}, noop), i.pauseCountdown && i.pauseCountdown());
     }, 1500);
   }
   /**
