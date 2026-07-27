@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-class L {
+class D {
   constructor(t) {
     this.log = t.enter("SafeFrameUtil");
   }
@@ -299,7 +299,7 @@ class R {
 }
 class q {
   constructor(t) {
-    this.log = t.enter("VideoSafeFrameHandler"), this.safeframeUtil = new L(this.log);
+    this.log = t.enter("VideoSafeFrameHandler"), this.safeframeUtil = new D(this.log);
   }
   /**
    * Attempts to setup SafeFrame monitoring for video playback
@@ -352,12 +352,12 @@ class K {
       try {
         const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video);
         e.muted || e.muteAction(this.actionCtx, {}, noop), e._player.on("autoplayrejected", () => {
-          this.log.debug("autoplayrejected"), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
-        }), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
-          e.playAction(this.actionCtx, {}, t);
+          this.log.debug("autoplayrejected"), console.log("autoplayrejected*****", this.options.scriptedPlay), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
+        }), console.log("video.hasAppearedAtLeastOnce*****", e.hasAppearedAtLeastOnce), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
+          console.log("appeared*****"), e.playAction(this.actionCtx, {}, t);
         }), this.safeframeHandler.setupSafeFrameMonitoring(e, this.actionCtx, t);
       } catch (e) {
-        this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
+        console.log("play attempt failed inside catch*****", e), this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
       }
       return !0;
     }
@@ -707,7 +707,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     this.scope = t, this.actionCtx = n, this.unitRef = o, this.status = "unstarted", this.state = {
       hasVideoPlayed: !1,
       hasVideoCompleted: !1
-    }, this.lastClickAt = 0, console.log("Hello World its me again******"), b.instanceCount++, this.log = i.enter("VideoController#" + b.instanceCount), this.log.debug("constructor starting...", { hasActionCtx: !!n }), this.options = $(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new H(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new q(this.log), this.viewportObserver = new R(
+    }, this.lastClickAt = 0, console.log("Hello World its me again yo******"), b.instanceCount++, this.log = i.enter("VideoController#" + b.instanceCount), this.log.debug("constructor starting...", { hasActionCtx: !!n }), this.options = $(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new H(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new q(this.log), this.viewportObserver = new R(
       this.elementManager,
       this.options,
       (r) => this.handleViewportChange(r),
@@ -1155,7 +1155,7 @@ function W(s = {}) {
         return;
       const A = m();
       if (C(A)) {
-        const D = {
+        const L = {
           creative: A.creative,
           screen: A.screen,
           unit: A.unit,
@@ -1165,7 +1165,7 @@ function W(s = {}) {
             windowPath: "current"
           }
         };
-        x(!0, D);
+        x(!0, L);
       }
     }
     B("immediate"), !w && (v = S(() => B("intercept")), B("post-intercept"), !w && (f = setInterval(() => B("poll"), e), p = setTimeout(() => {
