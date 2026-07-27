@@ -105,7 +105,7 @@ function V(s, t) {
   }
   return null;
 }
-class M extends Error {
+class E extends Error {
   constructor(t, e) {
     super(t), this.cause = e;
   }
@@ -147,7 +147,7 @@ class H {
     if (!this._celtraVideo) {
       const t = this.options.video, e = this.getScreenObject(t);
       if (!e)
-        throw new M(`FAILED to find Celtra video component "${t}"; Check your Celtra component names.`);
+        throw new E(`FAILED to find Celtra video component "${t}"; Check your Celtra component names.`);
       this._celtraVideo = e;
     }
     return this._celtraVideo;
@@ -350,14 +350,16 @@ class K {
         this.playSuccessFlag || (this.controller && typeof this.controller.playCheck == "function" ? this.controller.playCheck() : this.playCheck(), this.playSuccessFlag = !0);
       };
       try {
-        const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video);
-        e.muted || e.muteAction(this.actionCtx, {}, noop), e._player.on("autoplayrejected", () => {
-          this.log.debug("autoplayrejected"), console.log("autoplayrejected*****", this.options.scriptedPlay), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
-        }), console.log("video.hasAppearedAtLeastOnce*****", e.hasAppearedAtLeastOnce), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
-          console.log("appeared*****"), e.playAction(this.actionCtx, {}, t);
-        }), this.safeframeHandler.setupSafeFrameMonitoring(e, this.actionCtx, t);
+        const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video), n = () => {
+          this.log.debug("autoplayrejected"), this.elementManager.showPlayButton(), this.options.autoplayrejected = !0;
+        };
+        typeof e._player.once == "function" ? e._player.once("autoplayrejected", n) : e._player.on("autoplayrejected", n), e.muted || e.muteAction(this.actionCtx, {}, noop);
+        const i = () => {
+          e.playAction(this.actionCtx, {}, t);
+        };
+        e.hasAppearedAtLeastOnce ? i() : e.once("appeared", i), this.safeframeHandler.setupSafeFrameMonitoring(e, this.actionCtx, t);
       } catch (e) {
-        console.log("play attempt failed inside catch*****", e), this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
+        this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
       }
       return !0;
     }
@@ -420,6 +422,8 @@ class K {
       this.log.debug("canplay"), this.options.autoplayrejected || this.elementManager.hidePlayButton(), i.unpauseCountdown && i.unpauseCountdown();
     }), e.addEventListener("waiting", () => {
       i.pauseCountdown && i.pauseCountdown();
+    }), e.addEventListener("pause", () => {
+      !e.ended && typeof document < "u" && !document.hidden && e.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA && (this.log.debug("External interruption pause (possibly Low Power Mode)"), this.elementManager.showPlayButton());
     }), setTimeout(() => {
       n.timeupdate || (this.elementManager.hasPlayButton() && this.elementManager.playButton.hideAction(this.actionCtx, {}, noop), i.pauseCountdown && i.pauseCountdown());
     }, 1500);
@@ -561,15 +565,15 @@ class X {
     this.log.debug("Setting up instruction scene playback:", e), this.controller && typeof this.controller.setupInstructionScenePlayback == "function" ? this.controller.setupInstructionScenePlayback(e) : this.setupInstructionScenePlayback(e);
   }
 }
-const E = P.enter("VideoCountdown");
+const M = P.enter("VideoCountdown");
 class Y {
   constructor(t, e, n) {
-    this.parentElement = t, this.options = n, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, E.debug("Constructor called", {
+    this.parentElement = t, this.options = n, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, M.debug("Constructor called", {
       parentElement: t,
       duration: e,
       options: n,
       parentTag: t?.tagName
-    }), this.duration = e, this.mode = n.mode, this.size = this.getSizeInPixels(n.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), E.debug("Container created", this.container), this.svg = this.createSVG(), E.debug("SVG created", this.svg), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && (this.svg.appendChild(this.textElement), E.debug("Text element added")), this.container.appendChild(this.svg), E.debug("SVG appended to container"), this.parentElement.appendChild(this.container), E.debug("Container appended to parent. Parent children:", this.parentElement.children.length), this.updateProgress(), E.debug("Progress updated. Container in DOM:", document.contains(this.container));
+    }), this.duration = e, this.mode = n.mode, this.size = this.getSizeInPixels(n.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), M.debug("Container created", this.container), this.svg = this.createSVG(), M.debug("SVG created", this.svg), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && (this.svg.appendChild(this.textElement), M.debug("Text element added")), this.container.appendChild(this.svg), M.debug("SVG appended to container"), this.parentElement.appendChild(this.container), M.debug("Container appended to parent. Parent children:", this.parentElement.children.length), this.updateProgress(), M.debug("Progress updated. Container in DOM:", document.contains(this.container));
   }
   getSizeInPixels(t) {
     switch (t) {
@@ -782,7 +786,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     } catch (i) {
       P.enter("VideoController").enter("setup").debug("Unable to access global 'unit' variable", i);
     }
-    throw new M("unit not found in global scope");
+    throw new E("unit not found in global scope");
   }
   /**
    * Automatically sets up the Video Controller by scanning the environment for Celtra globals.
@@ -794,10 +798,10 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     P.enter("VideoController").enter("setup").debug("setup() called", t);
     const n = globalThis.window;
     if (!n)
-      throw new M("window not found");
+      throw new E("window not found");
     const i = t.creative || n.creative, o = b.resolveScreen(i, t.screen || n.screen);
     if (!b.isValidScreen(o))
-      throw new M(`Invalid screen ref: ${o}`);
+      throw new E(`Invalid screen ref: ${o}`);
     const r = b.resolveUnit(i, t.unit || n.unit, o), a = new ActionContext(o, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
@@ -863,7 +867,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   }
   get videoElement() {
     if (!this._videoElement)
-      throw new M("Expected <video> element");
+      throw new E("Expected <video> element");
     return this._videoElement;
   }
   onPlaying() {
@@ -883,7 +887,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   onPause() {
     this.log.debug("onPause()");
     const e = Date.now() - this.lastClickAt < b.USER_CLICK_WINDOW_MS && !this.suppressNextPausePlayButton;
-    this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(e), !this.videoElement.ended && !document.hidden && this.videoElement.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA && console.log("External interruption (possibly Low Power Mode)+++++++++++++++"), this.videoCountdown && this.scope.pauseCountdown?.();
+    this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(e), this.videoCountdown && this.scope.pauseCountdown?.();
   }
   onTimeUpdate(t) {
     this.log.debug("onTimeUpdate()"), this.videoCountdown && this.options.videoCountdown?.autoSync && this.videoCountdown?.syncWithVideo(t);
@@ -976,7 +980,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   }
   playWhenAppearing() {
     if (typeof IntersectionObserver > "u")
-      throw new M("IntersectionObserver not available, cannot wait for video viewport appearance");
+      throw new E("IntersectionObserver not available, cannot wait for video viewport appearance");
     this.log.debug("Waiting for video to appear in viewport...");
     const t = new IntersectionObserver((e) => {
       e.some((i) => i.isIntersecting) && (t.disconnect(), this.log.debug("Video appeared in viewport, playing..."), this.playIfAllowed());
@@ -1029,7 +1033,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     this.log.debug("Countdown config:", { duration: e, countdownOptions: n });
     let i = document.getElementById("countdown-placeholder");
     if (i ? this.log.debug("Found countdown-placeholder, using it") : (this.log.debug("countdown-placeholder not found, using video parent"), i = t.getNode()?.parentElement || this.scope.getNode()), this.log.debug("Parent container:", i, i?.tagName, i?.id), !i)
-      throw new M("Countdown parent container not found");
+      throw new E("Countdown parent container not found");
     this.videoCountdown = new Y(i, e, n), this.log.debug("VideoCountdown instance created", this.videoCountdown), this.videoCountdown.show(), this.log.debug("VideoCountdown.show() called"), this.attachCountdownMethods(), this.options.debug && this.log.debug("Video countdown initialized successfully", {
       duration: e,
       options: n,
