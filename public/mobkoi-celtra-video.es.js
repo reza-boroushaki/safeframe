@@ -38,7 +38,7 @@ class D {
     }
   }
 }
-class U {
+class T {
   constructor(t) {
     this.name = t;
   }
@@ -59,13 +59,13 @@ class U {
     console.error(this.prefix, ...t);
   }
   enter(t) {
-    return this.add(new U(t));
+    return this.add(new T(t));
   }
   add(t) {
     return t.parent = this, t;
   }
 }
-const F = new U("MOBKOI"), P = F.enter("Celtra"), j = P.enter("VideoControllerOptions"), z = {
+const z = new T("MOBKOI"), P = z.enter("Celtra"), j = P.enter("VideoControllerOptions"), F = {
   video: "vidPlayer",
   btnSound: "btnSound",
   icoIsMuted: "icoIsMuted",
@@ -88,7 +88,7 @@ const F = new U("MOBKOI"), P = F.enter("Celtra"), j = P.enter("VideoControllerOp
 function $(s) {
   j.debug("initializeOptions()", s), j.debug("options.videoCountdown:", s.videoCountdown);
   const t = s.debug ?? (typeof creative < "u" && creative.userParams?.thisDebug === "true"), e = {
-    ...z,
+    ...F,
     debug: t,
     ...s,
     mbkCustomEvents: s.mbkCustomEvents ? [...s.mbkCustomEvents] : []
@@ -350,16 +350,14 @@ class K {
         this.playSuccessFlag || (this.controller && typeof this.controller.playCheck == "function" ? this.controller.playCheck() : this.playCheck(), this.playSuccessFlag = !0);
       };
       try {
-        const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video), n = () => {
-          this.log.debug("autoplayrejected"), this.elementManager.showPlayButton(), this.options.autoplayrejected = !0;
-        };
-        typeof e._player.once == "function" ? e._player.once("autoplayrejected", n) : e._player.on("autoplayrejected", n), e.muted || e.muteAction(this.actionCtx, {}, noop);
-        const i = () => {
-          e.playAction(this.actionCtx, {}, t);
-        };
-        e.hasAppearedAtLeastOnce ? i() : e.once("appeared", i), this.safeframeHandler.setupSafeFrameMonitoring(e, this.actionCtx, t);
+        const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video);
+        e.muted || e.muteAction(this.actionCtx, {}, noop), e._player.on("autoplayrejected", () => {
+          this.log.debug("autoplayrejected"), console.log("autoplayrejected*****", this.options.scriptedPlay), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
+        }), console.log("video.hasAppearedAtLeastOnce*****", e.hasAppearedAtLeastOnce), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
+          console.log("appeared*****"), e.playAction(this.actionCtx, {}, t);
+        }), this.safeframeHandler.setupSafeFrameMonitoring(e, this.actionCtx, t);
       } catch (e) {
-        this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
+        console.log("play attempt failed inside catch*****", e), this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
       }
       return !0;
     }
@@ -412,20 +410,14 @@ class K {
     this.videoElementWait && (this.videoElementWait.cancel(), this.videoElementWait = void 0);
   }
   setupPlaybackChecks(t, e) {
-    this.clearVideoElementWait();
-    const n = { timeupdate: 0 };
-    t.on("timeupdate", () => {
-      n.timeupdate++;
+    this.clearVideoElementWait(), t.on("timeupdate", () => {
     });
-    const i = typeof screen < "u" ? screen : this.scope;
+    const n = typeof screen < "u" ? screen : this.scope;
     e.addEventListener("canplay", () => {
-      this.log.debug("canplay"), this.options.autoplayrejected || this.elementManager.hidePlayButton(), i.unpauseCountdown && i.unpauseCountdown();
+      this.log.debug("canplay"), this.elementManager.hidePlayButton(), n.unpauseCountdown && n.unpauseCountdown();
     }), e.addEventListener("waiting", () => {
-      i.pauseCountdown && i.pauseCountdown();
-    }), e.addEventListener("pause", () => {
-      !e.ended && typeof document < "u" && !document.hidden && e.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA && (this.log.debug("External interruption pause (possibly Low Power Mode)"), this.elementManager.showPlayButton());
+      n.pauseCountdown && n.pauseCountdown();
     }), setTimeout(() => {
-      n.timeupdate || (this.elementManager.hasPlayButton() && this.elementManager.playButton.hideAction(this.actionCtx, {}, noop), i.pauseCountdown && i.pauseCountdown());
     }, 1500);
   }
   /**
@@ -1083,8 +1075,8 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   }
 };
 b.instanceCount = 0, b.USER_CLICK_WINDOW_MS = 700;
-let T = b;
-function L(s = {}) {
+let U = b;
+function W(s = {}) {
   const {
     win: t = typeof window < "u" ? window : globalThis,
     pollInterval: e = 25,
@@ -1159,7 +1151,7 @@ function L(s = {}) {
         return;
       const A = m();
       if (C(A)) {
-        const W = {
+        const L = {
           creative: A.creative,
           screen: A.screen,
           unit: A.unit,
@@ -1169,7 +1161,7 @@ function L(s = {}) {
             windowPath: "current"
           }
         };
-        x(!0, W);
+        x(!0, L);
       }
     }
     B("immediate"), !w && (v = S(() => B("intercept")), B("post-intercept"), !w && (f = setInterval(() => B("poll"), e), p = setTimeout(() => {
@@ -1214,7 +1206,7 @@ function st(s = {}) {
   const a = [];
   e && a.push(t), r(t, n, a), o("Candidate windows:", a.length);
   const l = a.map(
-    (c) => L({ ...s, win: c }).then((u) => ({
+    (c) => W({ ...s, win: c }).then((u) => ({
       ...u,
       meta: {
         ...u.meta,
@@ -1253,7 +1245,7 @@ function at(s, t, e = {}, n) {
       h.warn("ActionContext creation failed. Video play actions may fail.", o);
     }
   try {
-    const o = new T(t, e, i, rt, s);
+    const o = new U(t, e, i, rt, s);
     t.mbkVidController = o, h.debug("VideoController instance created");
     const r = () => {
       h.debug("Starting VideoController initialization..."), o.init(), o.playAfterScene();
@@ -1313,9 +1305,9 @@ function dt(s = {}) {
   return at(l || a, a, s, o);
 }
 typeof addCssRule == "function" && addCssRule(".video-player-engine video", "background: none;");
-typeof window < "u" && (window.waitForCeltraGlobals = L, window.waitForCeltraGlobalsAnyWindow = st);
+typeof window < "u" && (window.waitForCeltraGlobals = W, window.waitForCeltraGlobalsAnyWindow = st);
 export {
-  T as VideoController,
+  U as VideoController,
   Y as VideoCountdown,
   H as VideoElementManager,
   Q as VideoEventHandlers,
@@ -1324,7 +1316,7 @@ export {
   J as VideoQuartileTracker,
   q as VideoSafeFrameHandler,
   R as VideoViewportObserver,
-  z as defaultVideoControllerOptions,
+  F as defaultVideoControllerOptions,
   Z as defaultVideoCountdownOptions,
   V as hasBoolOption,
   N as hasOption,
@@ -1332,6 +1324,6 @@ export {
   tt as initializeCountdownOptions,
   $ as initializeOptions,
   dt as setup,
-  L as waitForCeltraGlobals,
+  W as waitForCeltraGlobals,
   st as waitForCeltraGlobalsAnyWindow
 };
