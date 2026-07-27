@@ -410,14 +410,18 @@ class K {
     this.videoElementWait && (this.videoElementWait.cancel(), this.videoElementWait = void 0);
   }
   setupPlaybackChecks(t, e) {
-    this.clearVideoElementWait(), t.on("timeupdate", () => {
+    this.clearVideoElementWait();
+    const n = { timeupdate: 0 };
+    t.on("timeupdate", () => {
+      n.timeupdate++;
     });
-    const n = typeof screen < "u" ? screen : this.scope;
+    const i = typeof screen < "u" ? screen : this.scope;
     e.addEventListener("canplay", () => {
-      this.log.debug("canplay"), this.elementManager.hidePlayButton(), n.unpauseCountdown && n.unpauseCountdown();
+      this.log.debug("canplay"), this.elementManager.hidePlayButton(), i.unpauseCountdown && i.unpauseCountdown();
     }), e.addEventListener("waiting", () => {
-      n.pauseCountdown && n.pauseCountdown();
+      i.pauseCountdown && i.pauseCountdown();
     }), setTimeout(() => {
+      console.log("flags.timeupdate*****", n.timeupdate);
     }, 1500);
   }
   /**
