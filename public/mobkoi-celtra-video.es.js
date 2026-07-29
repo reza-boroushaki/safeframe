@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-class F {
+class L {
   constructor(t) {
     this.log = t.enter("SafeFrameUtil");
   }
@@ -65,7 +65,7 @@ class T {
     return t.parent = this, t;
   }
 }
-const D = new T("MOBKOI"), P = D.enter("Celtra"), j = P.enter("VideoControllerOptions"), z = {
+const z = new T("MOBKOI"), P = z.enter("Celtra"), j = P.enter("VideoControllerOptions"), F = {
   video: "vidPlayer",
   btnSound: "btnSound",
   icoIsMuted: "icoIsMuted",
@@ -88,7 +88,7 @@ const D = new T("MOBKOI"), P = D.enter("Celtra"), j = P.enter("VideoControllerOp
 function $(s) {
   j.debug("initializeOptions()", s), j.debug("options.videoCountdown:", s.videoCountdown);
   const t = s.debug ?? (typeof creative < "u" && creative.userParams?.thisDebug === "true"), e = {
-    ...z,
+    ...F,
     debug: t,
     ...s,
     mbkCustomEvents: s.mbkCustomEvents ? [...s.mbkCustomEvents] : []
@@ -98,14 +98,14 @@ function $(s) {
 function N(s, t) {
   return Object.prototype.hasOwnProperty.call(s, t);
 }
-function V(s, t) {
+function y(s, t) {
   if (N(s, t)) {
     const e = s[t];
     return typeof e == "string" ? e === "true" : e;
   }
   return null;
 }
-class k extends Error {
+class E extends Error {
   constructor(t, e) {
     super(t), this.cause = e;
   }
@@ -147,7 +147,7 @@ class H {
     if (!this._celtraVideo) {
       const t = this.options.video, e = this.getScreenObject(t);
       if (!e)
-        throw new k(`FAILED to find Celtra video component "${t}"; Check your Celtra component names.`);
+        throw new E(`FAILED to find Celtra video component "${t}"; Check your Celtra component names.`);
       this._celtraVideo = e;
     }
     return this._celtraVideo;
@@ -193,7 +193,7 @@ class _ extends Error {
     super(t), this.name = "VideoElementWaitTimeoutError";
   }
 }
-class y {
+class C {
   /**
    * Look for a <video> inside a container.
    */
@@ -205,8 +205,8 @@ class y {
    */
   static expectInto(t, e = {}) {
     if (!t)
-      return y.cancellableRejectedPromise(new Error("Cannot wait for video element without a container"));
-    const n = y.findInto(t);
+      return C.cancellableRejectedPromise(new Error("Cannot wait for video element without a container"));
+    const n = C.findInto(t);
     if (n)
       return Object.assign(Promise.resolve(n), { cancel: noop });
     e.onWaiting?.();
@@ -220,14 +220,14 @@ class y {
       const g = () => {
         if (!r)
           return;
-        const S = y.findInto(t);
-        S && (l(), u(S));
+        const V = C.findInto(t);
+        V && (l(), u(V));
       };
       typeof MutationObserver < "u" && (i = new MutationObserver(g), i.observe(t, { childList: !0, subtree: !0 }));
-      const C = e.timeoutMs ?? G;
+      const S = e.timeoutMs ?? G;
       o = setTimeout(() => {
-        r && (l(), m(new _(`Timed out waiting ${C}ms for <video> element inside #${t.id}`)));
-      }, C);
+        r && (l(), m(new _(`Timed out waiting ${S}ms for <video> element inside #${t.id}`)));
+      }, S);
     });
     return Object.assign(c, { cancel: a });
   }
@@ -237,16 +237,16 @@ class y {
    */
   static expectIntoWhenAppeared(t, e, n = {}) {
     if (!t || t.hasAppearedAtLeastOnce)
-      return y.expectInto(e, n);
+      return C.expectInto(e, n);
     const i = typeof t.on == "function" ? t.on.bind(t) : typeof t.once == "function" ? t.once.bind(t) : void 0;
     if (!i)
-      return y.expectInto(e, n);
+      return C.expectInto(e, n);
     let o = !0, r, a = noop;
     const l = new Promise((c, u) => {
       a = () => {
         o && (o = !1, r?.cancel(), u(new Error("Video element wait cancelled")));
       }, i("appeared", () => {
-        o && (r = y.expectInto(e, n), r.then(c).catch(u));
+        o && (r = C.expectInto(e, n), r.then(c).catch(u));
       });
     });
     return Object.assign(l, { cancel: a });
@@ -270,7 +270,7 @@ class R {
     if (!e)
       return;
     const n = e.getNode();
-    y.expectIntoWhenAppeared(this.activationView, n, {
+    C.expectIntoWhenAppeared(this.activationView, n, {
       onWaiting: () => {
         this.log.warn("Video element not found for viewport observer, waiting for it to be inserted");
       }
@@ -299,7 +299,7 @@ class R {
 }
 class q {
   constructor(t) {
-    this.log = t.enter("VideoSafeFrameHandler"), this.safeframeUtil = new F(this.log);
+    this.log = t.enter("VideoSafeFrameHandler"), this.safeframeUtil = new L(this.log);
   }
   /**
    * Attempts to setup SafeFrame monitoring for video playback
@@ -335,29 +335,29 @@ class K {
    * Attempts to play the video if autoplay is allowed
    */
   playIfAllowed() {
-    if (this.setStatus("checking autoplay status"), V(
+    if (this.setStatus("checking autoplay status"), y(
       this.options,
       "clicktoplay"
     ) || creative.userParams?.disableautoplay === "true" || creative.userParams?.disableautoplay === !0) {
       this.setStatus("autoplay disabled");
       const t = this.scope.find(this.options.video);
       t.autoplay && t.pauseAction(this.actionCtx, {}, noop);
-      const e = V(this.options, "showPlayBtnOnCtp");
+      const e = y(this.options, "showPlayBtnOnCtp");
       return this.log.debug("showPlayBtnOnCtp=", e), e && this.elementManager.showPlayButton(), !1;
     } else {
       this.setStatus("attempting autoplay");
       const t = () => {
-        console.log("playSuccessCheck playSuccessFlag*****", this.playSuccessFlag), console.log("playSuccessCheck controller*****", this.controller, typeof this.controller?.playCheck == "function"), this.playSuccessFlag || (this.controller && typeof this.controller.playCheck == "function" ? this.controller.playCheck() : this.playCheck(), this.playSuccessFlag = !0);
+        this.playSuccessFlag || (this.controller && typeof this.controller.playCheck == "function" ? this.controller.playCheck() : this.playCheck(), this.playSuccessFlag = !0);
       };
       try {
         const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video);
         e.muted || e.muteAction(this.actionCtx, {}, noop), e._player.on("autoplayrejected", () => {
-          this.log.debug("autoplayrejected"), console.log("autoplayrejected*****", this.options.scriptedPlay), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
-        }), console.log("video.hasAppearedAtLeastOnce*****", e.hasAppearedAtLeastOnce), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
-          console.log("appeared*****"), e.playAction(this.actionCtx, {}, t);
+          this.log.debug("autoplayrejected"), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
+        }), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
+          e.playAction(this.actionCtx, {}, t);
         }), this.safeframeHandler.setupSafeFrameMonitoring(e, this.actionCtx, t);
       } catch (e) {
-        console.log("play attempt failed inside catch*****", e), this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
+        this.log.error("play attempt failed", e), this.setStatus("play attempt failed - status : " + (this.controller?.status || "unknown"), "warning"), this.elementManager.showPlayButton();
       }
       return !0;
     }
@@ -375,7 +375,7 @@ class K {
     }
     if (!n.hasAppearedAtLeastOnce && typeof n.on == "function") {
       n.on("appeared", () => {
-        y.findInto(e) ? i() : this.waitForVideoElement(e, () => i());
+        C.findInto(e) ? i() : this.waitForVideoElement(e, () => i());
       });
       return;
     }
@@ -395,7 +395,7 @@ class K {
   waitForVideoElement(t, e, n) {
     if (this.videoElementWait)
       return;
-    const i = y.expectIntoWhenAppeared(n, t, {
+    const i = C.expectIntoWhenAppeared(n, t, {
       onWaiting: () => {
         this.log.debug("Video element not found for playback checks, waiting for it to be inserted");
       }
@@ -451,27 +451,27 @@ class Q {
     this.scope = t, this.elementManager = e, this.options = n, this.actionCtx = i, this.setStatus = o, this.state = r, this.log = a.enter("VideoEventHandlers");
   }
   onPlaying() {
-    this.state.hasVideoPlayed = !0, this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), V(this.options, "soundControl") && this.elementManager.hasScreenObject("btnSound") && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), V(this.options, "countdownActive") && this.elementManager.hasScreenObject("countdown") && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
+    this.state.hasVideoPlayed = !0, this.state.hasVideoCompleted = !1, this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), y(this.options, "soundControl") && this.elementManager.hasScreenObject("btnSound") && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), y(this.options, "countdownActive") && this.elementManager.hasScreenObject("countdown") && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
   }
   onPause(t) {
     t && this.elementManager.showPlayButton(), this.setStatus("paused");
   }
   onMute() {
-    if (V(this.options, "soundControl")) {
+    if (y(this.options, "soundControl")) {
       const t = this.elementManager.unmutedButton, e = this.elementManager.mutedButton;
       t && typeof t.hideAction == "function" && t.hideAction(this.actionCtx, {}, noop), e && typeof e.showAction == "function" && e.showAction(this.actionCtx, {}, noop);
     }
     this.setStatus("muted");
   }
   onUnmute() {
-    if (V(this.options, "soundControl")) {
+    if (y(this.options, "soundControl")) {
       const t = this.elementManager.unmutedButton, e = this.elementManager.mutedButton;
       t && typeof t.showAction == "function" && t.showAction(this.actionCtx, {}, noop), e && typeof e.hideAction == "function" && e.hideAction(this.actionCtx, {}, noop);
     }
     this.setStatus("unmuted");
   }
   onEnded() {
-    this.state.hasVideoCompleted = !0, this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.showAction(this.actionCtx, {}, noop), this.elementManager.hasScreenObject("btnSound") && (V(this.options, "showSoundBtnOnEnd") ? this.elementManager.soundButton.showAction(this.actionCtx, {}, noop) : this.elementManager.soundButton.hideAction(this.actionCtx, {}, noop)), this.elementManager.hasScreenObject("countdown") && (V(this.options, "showCountdownOnEnd") ? this.elementManager.countdown.showAction(this.actionCtx, {}, noop) : this.elementManager.countdown.hideAction(this.actionCtx, {}, noop)), this.setStatus("ended");
+    this.state.hasVideoCompleted = !0, this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.showAction(this.actionCtx, {}, noop), y(this.options, "showPlayBtnOnEnd") ? this.elementManager.showPlayButton() : this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject("btnSound") && (y(this.options, "showSoundBtnOnEnd") ? this.elementManager.soundButton.showAction(this.actionCtx, {}, noop) : this.elementManager.soundButton.hideAction(this.actionCtx, {}, noop)), this.elementManager.hasScreenObject("countdown") && (y(this.options, "showCountdownOnEnd") ? this.elementManager.countdown.showAction(this.actionCtx, {}, noop) : this.elementManager.countdown.hideAction(this.actionCtx, {}, noop)), this.setStatus("ended");
   }
   toggleSound() {
     const t = this.scope.find(String(this.options.video));
@@ -561,15 +561,15 @@ class X {
     this.log.debug("Setting up instruction scene playback:", e), this.controller && typeof this.controller.setupInstructionScenePlayback == "function" ? this.controller.setupInstructionScenePlayback(e) : this.setupInstructionScenePlayback(e);
   }
 }
-const M = P.enter("VideoCountdown");
+const A = P.enter("VideoCountdown");
 class Y {
   constructor(t, e, n) {
-    this.parentElement = t, this.options = n, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, M.debug("Constructor called", {
+    this.parentElement = t, this.options = n, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, A.debug("Constructor called", {
       parentElement: t,
       duration: e,
       options: n,
       parentTag: t?.tagName
-    }), this.duration = e, this.mode = n.mode, this.size = this.getSizeInPixels(n.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), M.debug("Container created", this.container), this.svg = this.createSVG(), M.debug("SVG created", this.svg), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && (this.svg.appendChild(this.textElement), M.debug("Text element added")), this.container.appendChild(this.svg), M.debug("SVG appended to container"), this.parentElement.appendChild(this.container), M.debug("Container appended to parent. Parent children:", this.parentElement.children.length), this.updateProgress(), M.debug("Progress updated. Container in DOM:", document.contains(this.container));
+    }), this.duration = e, this.mode = n.mode, this.size = this.getSizeInPixels(n.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), A.debug("Container created", this.container), this.svg = this.createSVG(), A.debug("SVG created", this.svg), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && (this.svg.appendChild(this.textElement), A.debug("Text element added")), this.container.appendChild(this.svg), A.debug("SVG appended to container"), this.parentElement.appendChild(this.container), A.debug("Container appended to parent. Parent children:", this.parentElement.children.length), this.updateProgress(), A.debug("Progress updated. Container in DOM:", document.contains(this.container));
   }
   getSizeInPixels(t) {
     switch (t) {
@@ -706,7 +706,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     this.scope = t, this.actionCtx = n, this.unitRef = o, this.status = "unstarted", this.state = {
       hasVideoPlayed: !1,
       hasVideoCompleted: !1
-    }, this.lastClickAt = 0, this.suppressNextPausePlayButton = !1, console.log("Hello World its me again yo******"), b.instanceCount++, this.log = i.enter("VideoController#" + b.instanceCount), this.log.debug("constructor starting...", { hasActionCtx: !!n }), this.options = $(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new H(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new q(this.log), this.viewportObserver = new R(
+    }, this.lastClickAt = 0, this.suppressNextPausePlayButton = !1, b.instanceCount++, this.log = i.enter("VideoController#" + b.instanceCount), this.log.debug("constructor starting...", { hasActionCtx: !!n }), this.options = $(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new H(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new q(this.log), this.viewportObserver = new R(
       this.elementManager,
       this.options,
       (r) => this.handleViewportChange(r),
@@ -782,7 +782,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     } catch (i) {
       P.enter("VideoController").enter("setup").debug("Unable to access global 'unit' variable", i);
     }
-    throw new k("unit not found in global scope");
+    throw new E("unit not found in global scope");
   }
   /**
    * Automatically sets up the Video Controller by scanning the environment for Celtra globals.
@@ -794,10 +794,10 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     P.enter("VideoController").enter("setup").debug("setup() called", t);
     const n = globalThis.window;
     if (!n)
-      throw new k("window not found");
+      throw new E("window not found");
     const i = t.creative || n.creative, o = b.resolveScreen(i, t.screen || n.screen);
     if (!b.isValidScreen(o))
-      throw new k(`Invalid screen ref: ${o}`);
+      throw new E(`Invalid screen ref: ${o}`);
     const r = b.resolveUnit(i, t.unit || n.unit, o), a = new ActionContext(o, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
@@ -850,7 +850,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   }
   // Expose modular methods for backward compatibility and testing
   hasBoolOption(t) {
-    return V(this.options, t);
+    return y(this.options, t);
   }
   getScreenObject(t) {
     return this.elementManager.getScreenObject(t);
@@ -863,7 +863,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   }
   get videoElement() {
     if (!this._videoElement)
-      throw new k("Expected <video> element");
+      throw new E("Expected <video> element");
     return this._videoElement;
   }
   onPlaying() {
@@ -976,7 +976,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
   }
   playWhenAppearing() {
     if (typeof IntersectionObserver > "u")
-      throw new k("IntersectionObserver not available, cannot wait for video viewport appearance");
+      throw new E("IntersectionObserver not available, cannot wait for video viewport appearance");
     this.log.debug("Waiting for video to appear in viewport...");
     const t = new IntersectionObserver((e) => {
       e.some((i) => i.isIntersecting) && (t.disconnect(), this.log.debug("Video appeared in viewport, playing..."), this.playIfAllowed());
@@ -1004,7 +1004,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
    * Keeps legacy Celtra ScreenObject UI as fallback when #btn-sound is missing.
    */
   mountSoundDomUI(t) {
-    if (!V(this.options, "soundControl"))
+    if (!y(this.options, "soundControl"))
       return;
     const e = document.getElementById("btn-sound");
     e && (this.soundDomHost = e, e.style.cursor = "pointer", e.style.display = "flex", e.style.alignItems = "center", e.style.justifyContent = "center", e.style.userSelect = "none", e.style.setProperty("-webkit-user-select", "none"), e.style.color = et, e.style.filter = nt, this.soundDomClickHandler && e.removeEventListener("click", this.soundDomClickHandler), this.soundDomClickHandler = () => {
@@ -1029,7 +1029,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     this.log.debug("Countdown config:", { duration: e, countdownOptions: n });
     let i = document.getElementById("countdown-placeholder");
     if (i ? this.log.debug("Found countdown-placeholder, using it") : (this.log.debug("countdown-placeholder not found, using video parent"), i = t.getNode()?.parentElement || this.scope.getNode()), this.log.debug("Parent container:", i, i?.tagName, i?.id), !i)
-      throw new k("Countdown parent container not found");
+      throw new E("Countdown parent container not found");
     this.videoCountdown = new Y(i, e, n), this.log.debug("VideoCountdown instance created", this.videoCountdown), this.videoCountdown.show(), this.log.debug("VideoCountdown.show() called"), this.attachCountdownMethods(), this.options.debug && this.log.debug("Video countdown initialized successfully", {
       duration: e,
       options: n,
@@ -1057,8 +1057,9 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
     const e = this.celtraVideo;
     e.on("playing", () => {
       this.onPlaying();
-    }), e.on("pause", () => {
-      if (this.hasVideoCompleted) {
+    }), e.on("pause", (i) => {
+      const o = e.getDuration();
+      if ((typeof i == "number" ? i >= o : (this._videoElement?.ended ?? !1) || e.getCurrentTime() >= o) || this.hasVideoCompleted) {
         this.onEnded();
         return;
       }
@@ -1067,7 +1068,7 @@ const et = "#fff", nt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", it = `
       this.onTimeUpdate(i);
     }), this.mountSoundDomUI(e);
     const n = e.getNode();
-    y.expectIntoWhenAppeared(this.scope, n, {
+    C.expectIntoWhenAppeared(this.scope, n, {
       onWaiting: () => {
         this.log.debug("Video element not found for event listeners, waiting for it to be inserted");
       }
@@ -1105,13 +1106,13 @@ function W(s = {}) {
       return;
     }
   }
-  function C(d) {
+  function S(d) {
     return o.every((O) => {
       const w = d[O];
       return (r[O] || ((p) => p != null))(w);
     });
   }
-  function S(d) {
+  function V(d) {
     const O = {}, w = {};
     return o.forEach((f) => {
       const p = Object.getOwnPropertyDescriptor(t, f);
@@ -1147,34 +1148,34 @@ function W(s = {}) {
   }
   return new Promise((d, O) => {
     let w = !1, f = null, p = null, v = null;
-    function x(E, A) {
-      w || (w = !0, f && clearInterval(f), p && clearTimeout(p), v && v(), E ? d(A) : O(A));
+    function x(I, M) {
+      w || (w = !0, f && clearInterval(f), p && clearTimeout(p), v && v(), I ? d(M) : O(M));
     }
-    function B(E) {
+    function B(I) {
       if (w)
         return;
-      const A = m();
-      if (C(A)) {
-        const L = {
-          creative: A.creative,
-          screen: A.screen,
-          unit: A.unit,
+      const M = m();
+      if (S(M)) {
+        const D = {
+          creative: M.creative,
+          screen: M.screen,
+          unit: M.unit,
           meta: {
-            trigger: E,
+            trigger: I,
             elapsedMs: u(),
             windowPath: "current"
           }
         };
-        x(!0, L);
+        x(!0, D);
       }
     }
-    B("immediate"), !w && (v = S(() => B("intercept")), B("post-intercept"), !w && (f = setInterval(() => B("poll"), e), p = setTimeout(() => {
-      const E = m();
+    B("immediate"), !w && (v = V(() => B("intercept")), B("post-intercept"), !w && (f = setInterval(() => B("poll"), e), p = setTimeout(() => {
+      const I = m();
       x(!1, {
         error: new Error(
           `Timed out after ${n}ms waiting for Celtra globals: ${o.join(", ")}`
         ),
-        found: E,
+        found: I,
         meta: {
           elapsedMs: u(),
           windowPath: "current"
@@ -1199,10 +1200,10 @@ function st(s = {}) {
     } catch {
       return;
     }
-    for (let C = 0; C < g.length; C++) {
-      const S = g[C];
+    for (let S = 0; S < g.length; S++) {
+      const V = g[S];
       try {
-        S.location.href, m.push(S), r(S, u - 1, m);
+        V.location.href, m.push(V), r(V, u - 1, m);
       } catch {
       }
     }
@@ -1221,11 +1222,11 @@ function st(s = {}) {
   return typeof Promise.any == "function" ? Promise.any(l) : new Promise((c, u) => {
     const m = [];
     let g = !1;
-    l.forEach((C, S) => {
-      C.then((d) => {
+    l.forEach((S, V) => {
+      S.then((d) => {
         g || (g = !0, c(d));
       }).catch((d) => {
-        m[S] = d, m.length === l.length && !g && (g = !0, u(
+        m[V] = d, m.length === l.length && !g && (g = !0, u(
           new AggregateError(
             m,
             `All ${l.length} windows failed to provide Celtra globals`
@@ -1259,16 +1260,16 @@ function at(s, t, e = {}, n) {
     h.error("Critical error during init():", o);
   }
 }
-const I = (s) => s && typeof s.find == "function";
+const k = (s) => s && typeof s.find == "function";
 function lt(s, t) {
-  if (I(t))
+  if (k(t))
     return t;
   h.debug("Global screen is native or invalid, searching via creative...");
   let e = t;
-  if (typeof s?.getScreen == "function" && (e = s.getScreen(), I(e)))
+  if (typeof s?.getScreen == "function" && (e = s.getScreen(), k(e)))
     return e;
   try {
-    if (typeof screen < "u" && I(screen))
+    if (typeof screen < "u" && k(screen))
       return screen;
   } catch (n) {
     h.debug("Unable to access global 'screen' variable", n);
@@ -1299,10 +1300,10 @@ function dt(s = {}) {
   if (h.debug("Environment check (Window):", {
     creative: !!e,
     unit: !!l,
-    screen: I(a),
+    screen: k(a),
     ctx: !!o,
     explicitArgs: r
-  }), !I(a)) {
+  }), !k(a)) {
     h.error("Video Controller: Could not find a valid Celtra Screen object. Passing globals explicitly in .setup() is recommended.");
     return;
   }
@@ -1320,9 +1321,9 @@ export {
   J as VideoQuartileTracker,
   q as VideoSafeFrameHandler,
   R as VideoViewportObserver,
-  z as defaultVideoControllerOptions,
+  F as defaultVideoControllerOptions,
   Z as defaultVideoCountdownOptions,
-  V as hasBoolOption,
+  y as hasBoolOption,
   N as hasOption,
   at as init,
   tt as initializeCountdownOptions,
