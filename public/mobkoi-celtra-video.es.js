@@ -1451,7 +1451,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
    * Initializes the video controller and sets up all necessary event listeners
    */
   init() {
-    this.log.debug("init() called"), this.setStatus("init"), this.elementManager.hidePlayButton(), typeof document < "u" && document.addEventListener("click", (t) => {
+    console.log("unit appeared******"), this.log.debug("init() called"), this.setStatus("init"), this.elementManager.hidePlayButton(), typeof document < "u" && document.addEventListener("click", (t) => {
       let e = null;
       try {
         e = this.celtraVideo?.getNode?.();
