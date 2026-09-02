@@ -1451,7 +1451,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
    * Initializes the video controller and sets up all necessary event listeners
    */
   init() {
-    console.log("unit appeared******"), this.log.debug("init() called"), this.setStatus("init"), this.elementManager.hidePlayButton(), typeof document < "u" && document.addEventListener("click", (t) => {
+    this.log.debug("init() called"), this.setStatus("init"), this.elementManager.hidePlayButton(), typeof document < "u" && document.addEventListener("click", (t) => {
       let e = null;
       try {
         e = this.celtraVideo?.getNode?.();
@@ -1772,7 +1772,7 @@ function Vt(s, t, e = {}, n) {
     const r = () => {
       h.debug("Starting VideoController initialization..."), o.init(), o.playAfterScene();
     };
-    return s?.hasAppearedAtLeastOnce ? (h.debug("Unit/Screen already appeared, starting immediately"), r()) : typeof s?.once == "function" ? (h.debug("Waiting for 'appeared' event..."), s.once("appeared", r)) : (h.debug("No unit or 'appeared' event, starting immediately"), r()), o;
+    return s?.hasAppearedAtLeastOnce ? (console.log("unit?.hasAppearedAtLeastOnce******"), h.debug("Unit/Screen already appeared, starting immediately"), r()) : typeof s?.once == "function" ? (console.log("unit once******"), h.debug("Waiting for 'appeared' event..."), s.once("appeared", r)) : (console.log("no unit or 'appeared' event, starting immediately******"), h.debug("No unit or 'appeared' event, starting immediately"), r()), o;
   } catch (o) {
     h.error("Critical error during init():", o);
   }
