@@ -1479,8 +1479,8 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
       }
       const i = t.target, n = e?.getBoundingClientRect?.(), { clientX: o, clientY: r } = t, a = !!n && o >= n.left && o <= n.right && r >= n.top && r <= n.bottom, c = !!(e && i && e.contains(i));
       (a || c) && (this.lastClickAt = Date.now());
-    }, !0), this.options.loopVideo && this.setIndefinitePlay(), this.log.debug("Celtra video is ", this.celtraVideo), this.options.debug && this.log.debug(this.options), this.options.loadSpinner || this.removeSpinner(), this.setupEventListeners(), typeof this.scope.on == "function" && this.scope.on("appeared", () => {
-      this.rebindDom();
+    }, !0), this.options.loopVideo && this.setIndefinitePlay(), this.log.debug("Celtra video is ", this.celtraVideo), this.options.debug && this.log.debug(this.options), this.options.loadSpinner || this.removeSpinner(), this.setupEventListeners(), typeof this.scope.on == "function" && this.scope.on("appeared", () => this.rebindDom()), this.scope.hasAppearedAtLeastOnce && this.rebindDom({
+      scriptedPause: !this.hasInstructionScene() || !!this.options.scriptedPlay
     }), this.hideNativeControls();
   }
   /**
@@ -1613,9 +1613,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
       this.onPause();
     }), e.on("timeupdate", (i) => {
       this.onTimeUpdate(i);
-    }), this.mountSoundDomUI(e), this.rebindDom({
-      scriptedPause: !this.hasInstructionScene() || !!this.options.scriptedPlay
-    });
+    }), this.mountSoundDomUI(e);
   }
 };
 w.instanceCount = 0, w.USER_CLICK_WINDOW_MS = 700;
