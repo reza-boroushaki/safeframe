@@ -511,7 +511,7 @@ class lt {
     return e.mbkCtx ?? e.ctx;
   }
 }
-class g {
+class f {
   /** Dictionary key of a kind, by value: `"view:panel"`. */
   static of(t) {
     return `${t.verb}:${t.role}`;
@@ -529,9 +529,9 @@ class g {
    */
   static signature(t) {
     return [
-      g.of(t),
-      g.instance(t),
-      g.path(t.scope),
+      f.of(t),
+      f.instance(t),
+      f.path(t.scope),
       t.percent,
       t.from,
       t.to,
@@ -548,7 +548,7 @@ class g {
    * by a `pause` is one subject changing rather than two things happening.
    */
   static subject(t) {
-    return [t.role, g.instance(t), g.path(t.scope)].join("|");
+    return [t.role, f.instance(t), f.path(t.scope)].join("|");
   }
   /** `"2"`, `"vidPlayer1"`, or `""` for a singleton such as the unit. */
   static instance(t) {
@@ -558,17 +558,17 @@ class g {
   static path(t) {
     const e = [];
     for (let i = t; i; i = i.scope) {
-      const n = g.instance(i);
+      const n = f.instance(i);
       e.unshift(n ? `${i.role}:${n}` : i.role);
     }
     return e.join(">");
   }
 }
-class f {
+class g {
   /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
   static of(t, e) {
     const i = { k: t.verb, vs1: t.role };
-    return f.set(i, "vs2", t.legacyEvent), f.set(i, "vs3", t.name), f.set(i, "vs4", g.path(t.scope) || void 0), f.set(i, "vs5", t.mode), f.set(i, "vi1", t.index), f.set(i, "vi2", t.ms), f.set(i, "vi3", t.from), f.set(i, "vi4", t.to), f.set(i, "vi5", t.completed === void 0 ? void 0 : Number(t.completed)), f.set(i, "vf1", t.percent), f.set(i, "vf2", t.modeMs), f.set(i, "iid", e), i;
+    return g.set(i, "vs2", t.legacyEvent), g.set(i, "vs3", t.name), g.set(i, "vs4", f.path(t.scope) || void 0), g.set(i, "vs5", t.mode), g.set(i, "vi1", t.index), g.set(i, "vi2", t.ms), g.set(i, "vi3", t.from), g.set(i, "vi4", t.to), g.set(i, "vi5", t.completed === void 0 ? void 0 : Number(t.completed)), g.set(i, "vf1", t.percent), g.set(i, "vf2", t.modeMs), g.set(i, "iid", e), i;
   }
   static toQueryString(t) {
     return Object.keys(t).map((e) => `${encodeURIComponent(e)}=${encodeURIComponent(String(t[e]))}`).join("&");
@@ -581,7 +581,7 @@ class f {
    */
   static url(t, e, i) {
     const n = t.includes("{{event}}") ? t.replace("{{event}}", encodeURIComponent(e.legacyEvent ?? e.verb)) : t, o = n.includes("?") ? "&" : "?";
-    return `${n}${o}${f.toQueryString(f.of(e, i))}`;
+    return `${n}${o}${g.toQueryString(g.of(e, i))}`;
   }
   static set(t, e, i) {
     i != null && i !== "" && (t[e] = i);
@@ -635,7 +635,7 @@ class dt {
     const i = globalThis.navigator?.sendBeacon;
     if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
-    const n = f.url(e, t, this.config.impressionId), o = i.call(globalThis.navigator, n);
+    const n = g.url(e, t, this.config.impressionId), o = i.call(globalThis.navigator, n);
     return this.log.debug(o ? "queued" : "refused", n), o;
   }
 }
@@ -657,29 +657,29 @@ class Y {
         this.log.warn("Ignoring malformed legacy mapping", e);
         continue;
       }
-      this.resolvers.set(g.of(e.kind), e.legacyEvent);
+      this.resolvers.set(f.of(e.kind), e.legacyEvent);
     }
     return this;
   }
   has(t) {
-    return this.resolvers.has(g.of(t));
+    return this.resolvers.has(f.of(t));
   }
   /**
    * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
    *   for its kind or when the registered one threw.
    */
   resolve(t) {
-    const e = this.resolvers.get(g.of(t));
+    const e = this.resolvers.get(f.of(t));
     if (e)
       try {
         const { legacyEvent: i, ...n } = t, o = e(n);
         if (typeof o != "string" || !o) {
-          this.log.warn(`Resolver for ${g.of(t)} produced no name`, o);
+          this.log.warn(`Resolver for ${f.of(t)} produced no name`, o);
           return;
         }
         return o;
       } catch (i) {
-        this.log.warn(`Resolver for ${g.of(t)} failed, no Celtra event emitted`, i);
+        this.log.warn(`Resolver for ${f.of(t)} failed, no Celtra event emitted`, i);
         return;
       }
   }
@@ -694,7 +694,7 @@ class ut {
       return !1;
     if (typeof Image != "function")
       return this.log.debug("Image unavailable"), !1;
-    const i = f.url(e, t, this.config.impressionId), n = new Image();
+    const i = g.url(e, t, this.config.impressionId), n = new Image();
     this.pending.add(n);
     const o = () => this.pending.delete(n);
     return n.onload = o, n.onerror = o, n.src = i, this.log.debug("sent", i), !0;
@@ -705,7 +705,7 @@ class ht {
     this.config = t, this.log = e.enter("MbkTrackErrorReporter");
   }
   report(t, e, i) {
-    this.log.warn(`Channel "${t}" failed for ${g.of(e)}`, i);
+    this.log.warn(`Channel "${t}" failed for ${f.of(e)}`, i);
     const n = this.config.errorEndpoint;
     if (n)
       try {
@@ -807,14 +807,14 @@ const m = class m {
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
   admits(t, e) {
-    const i = g.signature(t);
+    const i = f.signature(t);
     switch (e) {
       case "repeated":
         return !0;
       case "once":
         return this.emitted.has(i) ? (this.log.debug("Already emitted, skipping", i), !1) : (this.emitted.add(i), !0);
       case "state": {
-        const n = g.subject(t);
+        const n = f.subject(t);
         return this.states.get(n) === i ? (this.log.debug("Unchanged, skipping", i), !1) : (this.states.set(n, i), !0);
       }
     }
@@ -902,7 +902,7 @@ class W {
       return;
     }
     const e = this.legacyEvents.resolve(t) ?? this.impression.coreLegacyEvents.resolve(t);
-    return e || this.log.debug(`No resolver for ${g.of(t)}, raw signal only`), e;
+    return e || this.log.debug(`No resolver for ${f.of(t)}, raw signal only`), e;
   }
 }
 class $ extends W {
@@ -940,7 +940,7 @@ class pt {
     this.scope = t, this.elementManager = e, this.options = i, this.actionCtx = n, this.setStatus = o, this.state = r, this.trackingKey = "video", this.mediaPlay = { verb: "play", role: "media" }, this.mediaPause = { verb: "pause", role: "media" }, this.mediaLegacy = { verb: "legacy", role: "media" }, this.legacyEventsMapping = [], this.log = a.enter("VideoEventHandlers"), this.track = $.shared(this, {}), this.playback = this.track.context({ scope: void 0, userInitiated: !1, actionContext: this.actionCtx });
   }
   onPlaying(t) {
-    this.trackPlayback(this.mediaPlay, t), this.state.hasVideoPlayed = !0, this.state.hasVideoCompleted = !1, this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), x(this.options, "soundControl") && this.elementManager.hasScreenObject("btnSound") && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), x(this.options, "countdownActive") && this.elementManager.hasScreenObject("countdown") && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
+    this.trackPlayback(this.mediaPlay, t), this.state.hasVideoPlayed = !0, this.state.hasVideoCompleted = !1, this.elementManager.hidePlayButton(), console.log("onPlaying****", this.elementManager.hasScreenObject("btnReplay")), this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), x(this.options, "soundControl") && this.elementManager.hasScreenObject("btnSound") && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), x(this.options, "countdownActive") && this.elementManager.hasScreenObject("countdown") && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
   }
   onPause(t) {
     this.trackPlayback(this.mediaPause, t), t && this.elementManager.showPlayButton(), this.setStatus("paused");
@@ -981,7 +981,7 @@ class pt {
     this.track.state({ ...t, name: this.options.video }, n);
   }
 }
-class ft {
+class gt {
   constructor(t, e, i, n) {
     this.elementManager = t, this.options = e, this.actionCtx = i, this.trackingKey = "video", this.mediaProgress = { verb: "progress", role: "media" }, this.quartileEventMap = {
       videoStart: "video_start",
@@ -1056,7 +1056,7 @@ class ft {
     }), t;
   }
 }
-class gt {
+class ft {
   constructor(t, e, i, n, o, r, a) {
     this.elementManager = t, this.options = e, this.actionCtx = i, this.onSceneEnd = n, this.controller = r, this.unit = a, this.log = o.enter("VideoInstructionScene");
   }
@@ -1261,12 +1261,12 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
       (r, a) => this.setStatus(r, a),
       this.state,
       this.log
-    ), this.quartileTracker = new ft(
+    ), this.quartileTracker = new gt(
       this.elementManager,
       this.options,
       this.actionCtx,
       this.log
-    ), this.instructionScene = new gt(
+    ), this.instructionScene = new ft(
       this.elementManager,
       this.options,
       this.actionCtx,
@@ -1853,9 +1853,9 @@ export {
   mt as VideoCountdown,
   ot as VideoElementManager,
   pt as VideoEventHandlers,
-  gt as VideoInstructionScene,
+  ft as VideoInstructionScene,
   ct as VideoPlaybackController,
-  ft as VideoQuartileTracker,
+  gt as VideoQuartileTracker,
   at as VideoSafeFrameHandler,
   rt as VideoViewportObserver,
   it as defaultVideoControllerOptions,
