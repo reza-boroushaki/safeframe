@@ -414,14 +414,12 @@ class ct {
     const i = { timeupdate: 0 };
     t.on("timeupdate", () => {
       i.timeupdate++;
-    });
-    const n = typeof screen < "u" ? screen : this.scope;
-    e.addEventListener("canplay", () => {
-      this.log.debug("canplay"), this.elementManager.hidePlayButton(), n.unpauseCountdown && n.unpauseCountdown();
+    }), e.addEventListener("canplay", () => {
+      this.log.debug("canplay"), this.elementManager.hidePlayButton(), this.controller?.unpauseCountdown();
     }), e.addEventListener("waiting", () => {
-      n.pauseCountdown && n.pauseCountdown();
+      this.controller?.pauseCountdown();
     }), setTimeout(() => {
-      i.timeupdate || (this.elementManager.hasPlayButton() && this.elementManager.playButton.showAction(this.actionCtx, {}, noop), n.pauseCountdown && n.pauseCountdown());
+      i.timeupdate || (this.elementManager.hasPlayButton() && this.elementManager.playButton.showAction(this.actionCtx, {}, noop), this.controller?.pauseCountdown());
     }, 1500);
   }
   /**
@@ -439,7 +437,7 @@ class ct {
     t.indefinitely = !0, this.options.countdownActive && t.on("pause", (e) => {
       if (e >= t.getDuration())
         try {
-          this.scope.resetCountdown?.();
+          this.controller?.resetCountdown();
         } catch {
           this.setStatus("countdown reset failed", "warning");
         }
@@ -1399,10 +1397,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     return this._videoElement;
   }
   onPlaying() {
-    if (this.log.debug("onPlaying()"), this.eventHandlers.onPlaying(this.isUserGesture()), this.celtraVideo.autoplay && this.options.scriptedPlay === !0 && !this.viewportObserver.inViewport && (this.options.scriptedPlay = "playing", this.scriptedPause()), this.videoCountdown) {
-      const e = this.scope;
-      !this.videoCountdown.isCounting && this.hasVideoPlayed ? (this.videoCountdown.show(), e.beginCountdown?.()) : this.videoCountdown.paused && e.unpauseCountdown?.();
-    }
+    console.log("onPlaying() im new bitch*****"), this.log.debug("onPlaying()"), this.eventHandlers.onPlaying(this.isUserGesture()), this.celtraVideo.autoplay && this.options.scriptedPlay === !0 && !this.viewportObserver.inViewport && (this.options.scriptedPlay = "playing", this.scriptedPause()), this.videoCountdown && (!this.videoCountdown.isCounting && this.hasVideoPlayed ? (this.videoCountdown.show(), this.videoCountdown.begin()) : this.videoCountdown.paused && this.videoCountdown.unpause());
   }
   pause(t = noop) {
     this.log.debug("pause()"), this.celtraVideo.pauseAction(this.actionCtx, {}, t);
@@ -1419,7 +1414,16 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
   onPause() {
     this.log.debug("onPause()");
     const t = this.isUserGesture() && !this.suppressNextPausePlayButton;
-    this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(t), this.videoCountdown && this.scope.pauseCountdown?.();
+    this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(t), this.videoCountdown && this.videoCountdown.pause();
+  }
+  pauseCountdown() {
+    this.videoCountdown?.pause();
+  }
+  unpauseCountdown() {
+    this.videoCountdown?.unpause();
+  }
+  resetCountdown() {
+    this.videoCountdown?.reset();
   }
   onTimeUpdate(t) {
     this.log.debug("onTimeUpdate()"), this.videoCountdown && this.options.videoCountdown?.autoSync && this.videoCountdown?.syncWithVideo(t);
@@ -1573,26 +1577,11 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     const o = t.getNode()?.parentElement || this.scope.getNode();
     if (!o)
       throw new j("Countdown parent container not found");
-    this.videoCountdown = new mt(o, e, i), this.log.debug("VideoCountdown instance created", this.videoCountdown), this.videoCountdown.show(), this.log.debug("VideoCountdown.show() called"), this.attachCountdownMethods(), this.options.debug && this.log.debug("Video countdown initialized successfully", {
+    this.videoCountdown = new mt(o, e, i), this.log.debug("VideoCountdown instance created", this.videoCountdown), this.videoCountdown.show(), this.log.debug("VideoCountdown.show() called"), this.options.debug && this.log.debug("Video countdown initialized successfully", {
       duration: e,
       options: i,
       countdownElement: this.videoCountdown
     });
-  }
-  /**
-   * Attaches countdown helper methods to the screen object
-   */
-  attachCountdownMethods() {
-    const t = this.scope;
-    t.beginCountdown = () => {
-      this.videoCountdown && !this.videoCountdown.isCounting && (this.videoCountdown.begin(), this.options.debug && this.log.debug("Countdown started"));
-    }, t.pauseCountdown = () => {
-      this.videoCountdown && (this.videoCountdown.pause(), this.options.debug && this.log.debug("Countdown paused"));
-    }, t.unpauseCountdown = () => {
-      this.videoCountdown && (this.videoCountdown.unpause(), this.options.debug && this.log.debug("Countdown unpaused"));
-    }, t.resetCountdown = () => {
-      this.videoCountdown && (this.videoCountdown.reset(), this.options.debug && this.log.debug("Countdown reset"));
-    };
   }
   rebindDom(t = {}) {
     this.hasVideoPlayed = !1, this.hasVideoCompleted = !1, this.quartileTracker.resetTrackingSession(), this.viewportObserver.disconnect(), this.viewportObserver.setupViewportObserver();
