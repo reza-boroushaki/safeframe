@@ -115,7 +115,7 @@ class ot {
     this.scope = t, this.options = e, this.actionCtx = n, this.elements = {}, this.log = i.enter("VideoElementManager");
   }
   get playButton() {
-    return console.log("this.options.btnPlay*****", this.options.btnPlay), this.scope.find(this.options.btnPlay);
+    return console.log("this.options.btnPlay*****", this.scope.find(this.options.btnPlay)), this.scope.find(this.options.btnPlay);
   }
   get replayButton() {
     return this.scope.find(this.options.btnReplay);
