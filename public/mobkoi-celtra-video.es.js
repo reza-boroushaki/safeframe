@@ -1401,7 +1401,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
   onPlaying() {
     if (this.log.debug("onPlaying()"), this.eventHandlers.onPlaying(this.isUserGesture()), this.celtraVideo.autoplay && this.options.scriptedPlay === !0 && !this.viewportObserver.inViewport && (this.options.scriptedPlay = "playing", this.scriptedPause()), this.videoCountdown) {
       const e = this.scope;
-      !this.videoCountdown.isCounting && this.hasVideoPlayed ? e.beginCountdown?.() : this.videoCountdown.paused && e.unpauseCountdown?.();
+      !this.videoCountdown.isCounting && this.hasVideoPlayed ? (this.videoCountdown.show(), e.beginCountdown?.()) : this.videoCountdown.paused && e.unpauseCountdown?.();
     }
   }
   pause(t = noop) {
