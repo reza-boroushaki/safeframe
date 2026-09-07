@@ -115,7 +115,7 @@ class ot {
     this.scope = t, this.options = e, this.actionCtx = n, this.elements = {}, this.log = i.enter("VideoElementManager");
   }
   get playButton() {
-    return console.log("this.options.btnPlay*****", this.scope.find(this.options.btnPlay)), this.scope.find(this.options.btnPlay);
+    return this.scope.find(this.options.btnPlay);
   }
   get replayButton() {
     return this.scope.find(this.options.btnReplay);
@@ -1397,7 +1397,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     return this._videoElement;
   }
   onPlaying() {
-    console.log("onPlaying() im new bitch*****"), this.log.debug("onPlaying()"), this.eventHandlers.onPlaying(this.isUserGesture()), this.celtraVideo.autoplay && this.options.scriptedPlay === !0 && !this.viewportObserver.inViewport && (this.options.scriptedPlay = "playing", this.scriptedPause()), this.videoCountdown && (!this.videoCountdown.isCounting && this.hasVideoPlayed ? (this.videoCountdown.show(), this.videoCountdown.begin()) : this.videoCountdown.paused && this.videoCountdown.unpause());
+    this.log.debug("onPlaying()"), this.eventHandlers.onPlaying(this.isUserGesture()), this.celtraVideo.autoplay && this.options.scriptedPlay === !0 && !this.viewportObserver.inViewport && (this.options.scriptedPlay = "playing", this.scriptedPause()), this.videoCountdown && (!this.videoCountdown.isCounting && this.hasVideoPlayed ? (this.videoCountdown.show(), this.videoCountdown.begin()) : this.videoCountdown.paused && this.videoCountdown.unpause());
   }
   pause(t = noop) {
     this.log.debug("pause()"), this.celtraVideo.pauseAction(this.actionCtx, {}, t);
