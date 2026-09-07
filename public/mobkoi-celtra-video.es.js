@@ -38,7 +38,7 @@ class tt {
     }
   }
 }
-class z {
+class W {
   constructor(t) {
     this.name = t;
   }
@@ -59,13 +59,13 @@ class z {
     console.error(this.prefix, ...t);
   }
   enter(t) {
-    return this.add(new z(t));
+    return this.add(new W(t));
   }
   add(t) {
     return t.parent = this, t;
   }
 }
-const et = new z("MOBKOI"), I = et.enter("Celtra"), L = I.enter("VideoControllerOptions"), it = {
+const et = new W("MOBKOI"), I = et.enter("Celtra"), L = I.enter("VideoControllerOptions"), it = {
   video: "vidPlayer",
   btnSound: "btnSound",
   icoIsMuted: "icoIsMuted",
@@ -621,7 +621,7 @@ const O = class O {
 };
 O.endpointParam = "externalSignalTrackerURI", O.errorEndpointParam = "externalClientErrorURI", O.defaults = {
   pixelFallback: !0,
-  log: () => new z("mbk")
+  log: () => new W("mbk")
 };
 let D = O;
 class dt {
@@ -834,7 +834,7 @@ const m = class m {
 };
 m.storageKey = "mbkImpression", m.windowStorageKey = "__mbkTrackStorage";
 let F = m;
-class W {
+class z {
   constructor(t, e) {
     this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new Y(this.log, e, []);
   }
@@ -846,7 +846,7 @@ class W {
    */
   static shared(t, e) {
     const i = F.shared(e);
-    return i.track(t.trackingKey, () => new W(i, t.trackingKey), W).declare(t.legacyEventsMapping);
+    return i.track(t.trackingKey, () => new z(i, t.trackingKey), z).declare(t.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(t) {
@@ -905,7 +905,7 @@ class W {
     return e || this.log.debug(`No resolver for ${g.of(t)}, raw signal only`), e;
   }
 }
-class $ extends W {
+class $ extends z {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
@@ -1428,7 +1428,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     if (this.eventHandlers.onEnded(), this.videoCountdown) {
       this.videoCountdown.reset();
       const t = C(this.options, "showCountdownOnEnd");
-      console.log("displayCountdown*****", t), this.videoCountdown[t ? "show" : "hide"]();
+      this.videoCountdown[t ? "show" : "hide"]();
     }
   }
   onMute() {
@@ -1560,8 +1560,9 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
    * Initializes the video countdown component
    */
   initializeCountdown() {
-    if (this.log.debug("initializeCountdown called", { hasCountdownConfig: !!this.options.videoCountdown }), !this.options.videoCountdown)
+    if (this.log.debug("initializeCountdown called", { hasCountdownConfig: !!this.options.videoCountdown }), !this.options.videoCountdown?.enabled)
       return;
+    this.videoCountdown?.destroy(), this.videoCountdown = void 0;
     const t = this.elementManager.getScreenObject(this.options.video);
     if (!t) {
       this.log.error("Cannot initialize countdown: video not found");
@@ -1597,7 +1598,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     this.hasVideoPlayed = !1, this.hasVideoCompleted = !1, this.quartileTracker.resetTrackingSession(), this.viewportObserver.disconnect(), this.viewportObserver.setupViewportObserver();
     const e = this.celtraVideo.getNode();
     E.expectIntoWhenAppeared(this.scope, e).then((i) => {
-      this._videoElement = i, this.quartileTracker.setupQuartileListeners(), this.listenEventsFrom(i), t.scriptedPause && (!this.hasInstructionScene() || this.options.scriptedPlay) && this.scriptedPause();
+      this._videoElement = i, this.quartileTracker.setupQuartileListeners(), this.listenEventsFrom(i), this.options.videoCountdown?.enabled && this.initializeCountdown(), t.scriptedPause && (!this.hasInstructionScene() || this.options.scriptedPlay) && this.scriptedPause();
     }).catch((i) => {
       this.log.error(i);
     });
