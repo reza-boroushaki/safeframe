@@ -1425,7 +1425,11 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     this.log.debug("onTimeUpdate()"), this.videoCountdown && this.options.videoCountdown?.autoSync && this.videoCountdown?.syncWithVideo(t);
   }
   onEnded() {
-    this.eventHandlers.onEnded(), this.videoCountdown && (this.videoCountdown.reset(), C(this.options, "showCountdownOnEnd") ? (console.log("showCountdownOnEnd is true, showing countdown*****"), this.videoCountdown.show()) : (console.log("showCountdownOnEnd is false, hiding countdown*****"), this.videoCountdown.hide()));
+    if (this.eventHandlers.onEnded(), this.videoCountdown) {
+      this.videoCountdown.reset();
+      const t = C(this.options, "showCountdownOnEnd");
+      console.log("displayCountdown*****", t), this.videoCountdown[t ? "show" : "hide"]();
+    }
   }
   onMute() {
     this.eventHandlers.onMute();
