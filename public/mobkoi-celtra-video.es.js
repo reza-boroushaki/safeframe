@@ -935,7 +935,9 @@ class $ extends z {
 }
 class pt {
   constructor(t, e, i, n, o, r, a) {
-    this.scope = t, this.elementManager = e, this.options = i, this.actionCtx = n, this.setStatus = o, this.state = r, this.trackingKey = "video", this.mediaPlay = { verb: "play", role: "media" }, this.mediaPause = { verb: "pause", role: "media" }, this.mediaLegacy = { verb: "legacy", role: "media" }, this.legacyEventsMapping = [], this.log = a.enter("VideoEventHandlers"), this.track = $.shared(this, {}), this.playback = this.track.context({ scope: void 0, userInitiated: !1, actionContext: this.actionCtx });
+    this.scope = t, this.elementManager = e, this.options = i, this.actionCtx = n, this.setStatus = o, this.state = r, this.trackingKey = "video", this.mediaPlay = { verb: "play", role: "media" }, this.mediaPause = { verb: "pause", role: "media" }, this.mediaLegacy = { verb: "legacy", role: "media" }, this.legacyEventsMapping = [], this.log = a.enter("VideoEventHandlers"), this.track = $.shared(this, {
+      initiator: this.elementManager.getScreenObject(this.options.video)
+    }), this.playback = this.track.context({ scope: void 0, userInitiated: !1, actionContext: this.actionCtx });
   }
   onPlaying(t) {
     this.trackPlayback(this.mediaPlay, t), this.state.hasVideoPlayed = !0, this.state.hasVideoCompleted = !1, this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), C(this.options, "soundControl") && this.elementManager.hasScreenObject("btnSound") && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), C(this.options, "countdownActive") && this.elementManager.hasScreenObject("countdown") && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
@@ -995,7 +997,9 @@ class ft {
       videoMidpoint: 50,
       videoThirdQuartile: 75,
       videoComplete: 100
-    }, this.log = n.enter("VideoQuartileTracker"), this.quartileEvents = this.createQuartileEvents(), this.track = $.shared(this, {}), this.playback = this.track.context({ scope: void 0, userInitiated: !1, actionContext: this.actionCtx });
+    }, this.log = n.enter("VideoQuartileTracker"), this.quartileEvents = this.createQuartileEvents(), this.track = $.shared(this, {
+      initiator: this.elementManager.getScreenObject(this.options.video)
+    }), this.playback = this.track.context({ scope: void 0, userInitiated: !1, actionContext: this.actionCtx });
   }
   resetQuartileEvents() {
     Object.values(this.quartileEventMap).forEach((t) => {
