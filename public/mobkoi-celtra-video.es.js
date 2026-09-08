@@ -1098,7 +1098,7 @@ class pt {
 }
 class ft {
   constructor(t, e, i) {
-    this.parentElement = t, this.options = i, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, this.duration = e, this.mode = i.mode, this.size = this.getSizeInPixels(i.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), this.svg = this.createSVG(), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && this.svg.appendChild(this.textElement), this.container.appendChild(this.svg), this.parentElement.appendChild(this.container), this.updateProgress();
+    this.parentElement = t, this.options = i, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, this.duration = e, this.mode = i.mode, this.size = this.getSizeInPixels(i.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), this.svg = this.createSVG(), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && this.svg.appendChild(this.textElement), this.container.appendChild(this.svg), this.parentElement.appendChild(this.container), this.updateProgress(), console.log("Howdy its me a countdown****");
   }
   getSizeInPixels(t) {
     switch (t) {
