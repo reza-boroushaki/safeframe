@@ -88,13 +88,16 @@ const _ = new F("MOBKOI"), B = _.enter("Celtra"), tt = {
   autoplayrejected: !1
 };
 function et(o) {
-  const t = o.debug ?? (typeof creative < "u" && creative.userParams?.thisDebug === "true");
-  return {
+  const t = o.debug ?? (typeof creative < "u" && creative.userParams?.thisDebug === "true"), e = {
     ...tt,
     debug: t,
     ...o,
     mbkCustomEvents: o.mbkCustomEvents ? [...o.mbkCustomEvents] : []
   };
+  return o.videoCountdown && (e.videoCountdown = {
+    autoSync: !0,
+    ...o.videoCountdown
+  }), e;
 }
 function q(o, t) {
   return Object.prototype.hasOwnProperty.call(o, t);
@@ -1098,7 +1101,7 @@ class pt {
 }
 class ft {
   constructor(t, e, i) {
-    this.parentElement = t, this.options = i, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, this.duration = e, this.mode = i.mode, this.size = this.getSizeInPixels(i.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), this.svg = this.createSVG(), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && this.svg.appendChild(this.textElement), this.container.appendChild(this.svg), this.parentElement.appendChild(this.container), this.updateProgress(), console.log("Howdy its me a countdown****");
+    this.parentElement = t, this.options = i, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, this.duration = e, this.mode = i.mode, this.size = this.getSizeInPixels(i.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), this.svg = this.createSVG(), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && this.svg.appendChild(this.textElement), this.container.appendChild(this.svg), this.parentElement.appendChild(this.container), this.updateProgress(), console.log("Howdy too much changes****");
   }
   getSizeInPixels(t) {
     switch (t) {
@@ -1568,10 +1571,10 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
       this.log.error("Cannot initialize countdown: video not found");
       return;
     }
-    const e = Math.round(t.getDuration()) * 1e3, { enabled: i, autoSync: n, ...s } = this.options.videoCountdown, r = mt(s), c = t.getNode()?.parentElement || this.scope.getNode();
-    if (!c)
+    const e = Math.round(t.getDuration()) * 1e3, i = mt(this.options.videoCountdown), s = t.getNode()?.parentElement || this.scope.getNode();
+    if (!s)
       throw new M("Countdown parent container not found");
-    this.videoCountdown = new ft(c, e, r), this.videoCountdown.show();
+    this.videoCountdown = new ft(s, e, i), this.videoCountdown.show();
   }
   rebindDom(t = {}) {
     this.hasVideoPlayed = !1, this.hasVideoCompleted = !1, this.quartileTracker.resetTrackingSession(), this.viewportObserver.disconnect(), this.viewportObserver.setupViewportObserver();
