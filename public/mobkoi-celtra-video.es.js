@@ -1588,7 +1588,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     });
   }
   rebindDom(t = {}) {
-    this.hasVideoPlayed = !1, this.hasVideoCompleted = !1, this.quartileTracker.resetTrackingSession(), this.viewportObserver.disconnect(), this.viewportObserver.setupViewportObserver();
+    this.hasVideoPlayed = !1, this.hasVideoCompleted = !1, this.elementManager.hasScreenObject("btnReplay") && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), this.quartileTracker.resetTrackingSession(), this.viewportObserver.disconnect(), this.viewportObserver.setupViewportObserver();
     const e = this.celtraVideo.getNode();
     E.expectIntoWhenAppeared(this.scope, e).then((i) => {
       this._videoElement = i, this.quartileTracker.setupQuartileListeners(), this.listenEventsFrom(i), this.options.videoCountdown?.enabled && this.initializeCountdown(), t.scriptedPause && (!this.hasInstructionScene() || this.options.scriptedPlay) && this.scriptedPause();
