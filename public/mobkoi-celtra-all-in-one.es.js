@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const S = {
+const C = {
   container: "SwipeContainer",
   content: "SwipeContent",
   scene: "Animation",
@@ -15,7 +15,7 @@ const S = {
   edgeTolerance: 5,
   directionTolerance: 50
 };
-class p {
+class g {
   constructor(t) {
     this.name = t;
   }
@@ -36,20 +36,20 @@ class p {
     console.error(this.prefix, ...t);
   }
   enter(t) {
-    return this.add(new p(t));
+    return this.add(new g(t));
   }
   add(t) {
     return t.parent = this, t;
   }
 }
-const k = new p("MOBKOI"), v = k.enter("Celtra");
+const P = new g("MOBKOI"), v = P.enter("Celtra");
 function f(i) {
   return !!(i && typeof i.find == "function");
 }
 function c(i) {
   return globalThis[i];
 }
-class P {
+class O {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
@@ -88,7 +88,7 @@ class P {
     });
   }
 }
-const b = new P();
+const T = new O();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,7 +107,7 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = b;
+    this.contextResolver = T;
   }
   init(t) {
     const e = v.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
@@ -142,7 +142,7 @@ const y = (i) => {
   },
   measureViewport: (i) => i.offsetWidth || i.parentElement?.offsetWidth || 320,
   measureContent: (i) => i.getBoundingClientRect().width
-}, O = {
+}, k = {
   name: "vertical",
   defaultTouchAction: "pan-x",
   // let horizontal scroll pass through natively
@@ -155,7 +155,7 @@ const y = (i) => {
   measureViewport: (i) => i.offsetHeight || i.parentElement?.offsetHeight || 320,
   measureContent: (i) => i.getBoundingClientRect().height
 };
-class T {
+class b {
   constructor() {
     this.listeners = {};
   }
@@ -173,8 +173,8 @@ class T {
     this.listeners = {};
   }
 }
-const A = (i) => Math.pow(i - 1, 3) + 1, d = (i, t, e) => Math.min(Math.max(i, t), e);
-class u extends T {
+const I = (i) => Math.pow(i - 1, 3) + 1, d = (i, t, e) => Math.min(Math.max(i, t), e);
+class u extends b {
   constructor(t, e, s = {}) {
     super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? x, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), this.enable();
   }
@@ -184,7 +184,7 @@ class u extends T {
   }
   /** Convenience factory: `SwipeDetector.vertical(container, content, options)`. */
   static vertical(t, e, s = {}) {
-    return new u(t, e, { ...s, axis: O });
+    return new u(t, e, { ...s, axis: k });
   }
   /** (Re)attaches the pointerdown listener. Called automatically by the constructor. */
   enable() {
@@ -259,8 +259,8 @@ class u extends T {
     const e = d(t, this.minScroll, this.maxScroll), s = this.currentOffset, n = e - s, r = performance.now();
     this.stopAnimation();
     const o = (a) => {
-      const w = a - r, g = Math.min(w / this.easingDuration, 1), C = A(g);
-      this.currentOffset = s + n * C, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), g < 1 ? this.rafId = requestAnimationFrame(o) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
+      const w = a - r, p = Math.min(w / this.easingDuration, 1), S = I(p);
+      this.currentOffset = s + n * S, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), p < 1 ? this.rafId = requestAnimationFrame(o) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
     };
     this.rafId = requestAnimationFrame(o);
   }
@@ -268,7 +268,7 @@ class u extends T {
     this.rafId && cancelAnimationFrame(this.rafId), this.rafId = 0;
   }
 }
-class M {
+class E {
   static lerp(t, e, s) {
     return t + (e - t) * s;
   }
@@ -279,7 +279,7 @@ class M {
     return Math.min(Math.max(s, t), e);
   }
 }
-class I {
+class A {
   constructor(t, e) {
     this.context = t, this.options = e, this.started = !1, this.trackedEvents = /* @__PURE__ */ new Set(), this.trackingCtx = null, this.instructionsDismissed = !1, this.engagementFired = !1, this.log = v.enter("AIO");
   }
@@ -299,7 +299,7 @@ class I {
     this.detector = u.horizontal(t, e, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
       easingDuration: this.options.easingDuration ?? 600
-    }), this.detector.on("dragstart", () => {
+    }), console.log("SWIPE OPTIONs*****:", this.options), console.log("SWIPE CONTAINER*****:", t), console.log("SWIPE CONTENT*****:", e), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
     }), this.detector.on("dragmove", (s) => this.handleProgress(s)), this.detector.on("settle", (s) => this.handleProgress(s)), this.trackingCtx = new ActionContext(this.context.screen, {
       certainlyNotCausedByUserBehavior: !1,
@@ -310,16 +310,16 @@ class I {
     this.detector?.destroy();
   }
   handleProgress(t) {
-    this.syncScene(t.percent), this.maybeDismissInstructions(t.offset), this.maybeFireEngagement(t.offset), this.trackScrollEvents(t);
+    console.log("SWIPE PROGRESS*****:", t), this.syncScene(t.percent), this.maybeDismissInstructions(t.offset), this.maybeFireEngagement(t.offset), this.trackScrollEvents(t);
   }
   syncScene(t) {
     const e = this.context.screen.find(this.options.scene);
-    if (!e)
+    if (console.log("SWIPE SCENE*****:", e), !e)
       throw new Error(`Scene "${this.options.scene}" not found`);
     e?.renderAtProgress?.(t * 100);
   }
   maybeDismissInstructions(t) {
-    if (this.instructionsDismissed || t < this.options.instructionThreshold) return;
+    if (console.log("SWIPE MAYBE DISMISS INSTRUCTIONS*****:", t), this.instructionsDismissed || t < this.options.instructionThreshold) return;
     this.instructionsDismissed = !0;
     const e = this.context.screen.find(this.options.instructionScene);
     if (!e)
@@ -334,7 +334,7 @@ class I {
   }
   trackScrollEvents({ offset: t, max: e, viewport: s }) {
     t <= 5 && this.trackOnce("user_scrolled_to_left_edge"), t >= e - 5 && this.trackOnce("user_scrolled_to_right_edge"), t > 50 && this.trackOnce("user_scrolled_left"), t < e - 50 && this.trackedEvents.has("user_scrolled_to_right_edge") && this.trackOnce("user_scrolled_right");
-    const n = M.clamp(Math.round(t / s) + 1, 1, this.options.sections);
+    const n = E.clamp(Math.round(t / s) + 1, 1, this.options.sections);
     this.trackOnce(`user_scrolled_to_item${n}`);
   }
   trackOnce(t) {
@@ -342,15 +342,15 @@ class I {
     }));
   }
 }
-class E extends m {
+class M extends m {
   constructor() {
-    super(...arguments), this.name = "AIO", this.defaultConfig = S;
+    super(...arguments), this.name = "AIO", this.defaultConfig = C;
   }
   create(t, e) {
-    return new I(t, e);
+    return new A(t, e);
   }
 }
-const L = (i) => new E().init(i);
+const L = (i) => new M().init(i);
 export {
   L as setup
 };
