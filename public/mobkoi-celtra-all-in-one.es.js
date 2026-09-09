@@ -46,10 +46,10 @@ const T = new p("MOBKOI"), S = T.enter("Celtra");
 function f(i) {
   return !!(i && typeof i.find == "function");
 }
-function a(i) {
+function c(i) {
   return globalThis[i];
 }
-class k {
+class O {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
@@ -64,7 +64,7 @@ class k {
     return { creative: e, unit: n, screen: s, ctx: r };
   }
   resolveCreative(t) {
-    return t ?? a("creative");
+    return t ?? c("creative");
   }
   resolveScreen(t, e) {
     if (f(e))
@@ -74,21 +74,21 @@ class k {
       if (f(n))
         return n;
     }
-    const s = a("screen");
+    const s = c("screen");
     return f(s) ? s : void 0;
   }
   resolveUnit(t, e, s) {
-    return e ?? t?.getUnit?.() ?? s?.getUnit?.() ?? a("unit");
+    return e ?? t?.getUnit?.() ?? s?.getUnit?.() ?? c("unit");
   }
   resolveCtx(t, e) {
-    const s = t ?? a("ctx") ?? a("mbkCtx");
+    const s = t ?? c("ctx") ?? c("mbkCtx");
     return s || !e || typeof ActionContext > "u" ? s : new ActionContext(e, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
   }
 }
-const O = new k();
+const k = new O();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,14 +107,14 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = O;
+    this.contextResolver = k;
   }
   init(t) {
     const e = S.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
     if (r)
       return e.debug(`${this.name} already initialized`), r;
-    const o = h.deepMerge(this.defaultConfig, t), c = this.create(s, o);
-    return l.registry.set(n, c), c.start(), c;
+    const o = h.deepMerge(this.defaultConfig, t), a = this.create(s, o);
+    return l.registry.set(n, a), a.start(), a;
   }
 };
 l.registry = /* @__PURE__ */ new WeakMap();
@@ -176,7 +176,7 @@ class b {
 const I = (i) => Math.pow(i - 1, 3) + 1, d = (i, t, e) => Math.min(Math.max(i, t), e);
 class u extends b {
   constructor(t, e, s = {}) {
-    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? x, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), console.log("[SwipeDetector] init", {
+    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? x, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), console.log("[SwipeDetector] init", {
       axis: this.axis.name,
       containerTag: this.container?.tagName,
       contentTag: this.content?.tagName,
@@ -211,7 +211,7 @@ class u extends b {
   /** Re-measure container/content size along the drag axis, e.g. after a resize. */
   recalculateBounds() {
     const t = this.getBoundsOverride?.();
-    if (this.viewportSize = this.axis.measureViewport(this.container), t) {
+    if (this.viewportSize = this.getViewportSize?.() ?? this.axis.measureViewport(this.container), t) {
       this.minScroll = t.min, this.maxScroll = t.max, console.log("[SwipeDetector] recalculateBounds (override)", {
         viewportSize: this.viewportSize,
         minScroll: this.minScroll,
@@ -310,8 +310,8 @@ class u extends b {
   animateTo(t) {
     const e = d(t, this.minScroll, this.maxScroll), s = this.currentOffset, n = e - s, r = performance.now();
     this.stopAnimation();
-    const o = (c) => {
-      const w = c - r, g = Math.min(w / this.easingDuration, 1), y = I(g);
+    const o = (a) => {
+      const w = a - r, g = Math.min(w / this.easingDuration, 1), y = I(g);
       this.currentOffset = s + n * y, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), g < 1 ? this.rafId = requestAnimationFrame(o) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
     };
     this.rafId = requestAnimationFrame(o);
@@ -347,34 +347,30 @@ class E {
     t.once("appeared", () => this.init());
   }
   init() {
-    const t = this.context.screen.find(this.options.container), e = this.context.screen.find(this.options.content);
+    const { screen: t } = this.context, e = t.find(this.options.container), s = t.find(this.options.content), n = e?.node ?? null, r = s?.node ?? null, o = t.node;
     if (console.log("[AIO] init nodes", {
       containerName: this.options.container,
-      contentName: this.options.instructionGroup,
-      container: t,
-      content: e,
-      containerWidth: t?.offsetWidth,
-      contentWidth: e?.getBoundingClientRect?.().width,
-      containerRect: t?.getBoundingClientRect?.(),
-      contentRect: e?.getBoundingClientRect?.()
-    }), !t || !e) {
+      contentName: this.options.content,
+      containerObj: e,
+      contentObj: s,
+      container: n,
+      content: r,
+      sameNode: n === r,
+      screenWidth: o?.offsetWidth,
+      containerWidth: n?.offsetWidth,
+      contentWidth: r?.getBoundingClientRect?.().width
+    }), !n || !r) {
       console.log("[AIO] abort: container or content missing");
       return;
     }
-    this.detector = u.horizontal(t.node, e.node, {
+    this.detector = u.horizontal(n, r, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
-      easingDuration: this.options.easingDuration ?? 600
-      // Celtra often sizes the strip to the viewport; real width is N sections.
-      // getBounds: () => {
-      //   const viewport = container.offsetWidth || container.parentElement?.offsetWidth || 320
-      //   const sections = Math.max(1, this.options.sections)
-      //   const min = -((sections - 1) * viewport)
-      //   console.log("[AIO] getBounds", { viewport, sections, min, max: 0 })
-      //   return { min, max: 0 }
-      // },
+      easingDuration: this.options.easingDuration ?? 600,
+      // Match original TouchSwipeDetector._calculateBounds viewport source.
+      getViewportSize: () => o?.offsetWidth || n.parentElement?.offsetWidth || 320
     }), console.log("[AIO] detector ready", this.options), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
-    }), this.detector.on("dragmove", (s) => this.handleProgress(s)), this.detector.on("settle", (s) => this.handleProgress(s)), this.trackingCtx = new ActionContext(this.context.screen, {
+    }), this.detector.on("dragmove", (a) => this.handleProgress(a)), this.detector.on("settle", (a) => this.handleProgress(a)), this.trackingCtx = new ActionContext(this.context.screen, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
@@ -423,7 +419,7 @@ class M extends m {
     return new E(t, e);
   }
 }
-const B = (i) => new M().init(i);
+const D = (i) => new M().init(i);
 export {
-  B as setup
+  D as setup
 };
