@@ -49,7 +49,7 @@ function f(i) {
 function a(i) {
   return globalThis[i];
 }
-class k {
+class O {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
@@ -88,7 +88,7 @@ class k {
     });
   }
 }
-const O = new k();
+const k = new O();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,7 +107,7 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = O;
+    this.contextResolver = k;
   }
   init(t) {
     const e = S.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
@@ -363,7 +363,12 @@ class E {
     }
     this.detector = u.horizontal(t, e, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
-      easingDuration: this.options.easingDuration ?? 600
+      easingDuration: this.options.easingDuration ?? 600,
+      // Celtra often sizes SwipeContent to the viewport; real strip width is N sections.
+      getBounds: () => {
+        const s = t.offsetWidth || t.parentElement?.offsetWidth || 320, n = Math.max(1, this.options.sections), r = -((n - 1) * s);
+        return console.log("[AIO] getBounds", { viewport: s, sections: n, min: r, max: 0 }), { min: r, max: 0 };
+      }
     }), console.log("[AIO] detector ready", this.options), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
     }), this.detector.on("dragmove", (s) => this.handleProgress(s)), this.detector.on("settle", (s) => this.handleProgress(s)), this.trackingCtx = new ActionContext(this.context.screen, {
