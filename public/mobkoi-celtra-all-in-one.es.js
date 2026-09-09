@@ -88,7 +88,7 @@ class O {
     });
   }
 }
-const P = new O();
+const k = new O();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,7 +107,7 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = P;
+    this.contextResolver = k;
   }
   init(t) {
     const e = S.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
@@ -142,7 +142,7 @@ const v = (i) => {
   },
   measureViewport: (i) => i.offsetWidth || i.parentElement?.offsetWidth || 320,
   measureContent: (i) => i.getBoundingClientRect().width
-}, k = {
+}, P = {
   name: "vertical",
   defaultTouchAction: "pan-x",
   // let horizontal scroll pass through natively
@@ -194,7 +194,7 @@ class u extends b {
   }
   /** Convenience factory: `SwipeDetector.vertical(container, content, options)`. */
   static vertical(t, e, s = {}) {
-    return new u(t, e, { ...s, axis: k });
+    return new u(t, e, { ...s, axis: P });
   }
   /** (Re)attaches the pointerdown listener. Called automatically by the constructor. */
   enable() {
@@ -347,33 +347,31 @@ class E {
     t.once("appeared", () => this.init());
   }
   init() {
-    const t = this.context.screen.getNode(this.options.container), e = this.context.screen.find(this.options.instructionGroup), s = e?.getNode?.() ?? e?.node;
+    const t = this.context.screen.find(this.options.container), e = this.context.screen.find(this.options.content);
     if (console.log("[AIO] init nodes", {
       containerName: this.options.container,
       contentName: this.options.instructionGroup,
       container: t,
-      contentView: e,
-      content: s,
-      sameNode: t === s,
+      content: e,
       containerWidth: t?.offsetWidth,
-      contentWidth: s?.getBoundingClientRect?.().width,
+      contentWidth: e?.getBoundingClientRect?.().width,
       containerRect: t?.getBoundingClientRect?.(),
-      contentRect: s?.getBoundingClientRect?.()
-    }), !t || !s) {
+      contentRect: e?.getBoundingClientRect?.()
+    }), !t || !e) {
       console.log("[AIO] abort: container or content missing");
       return;
     }
-    this.detector = u.horizontal(t, s, {
+    this.detector = u.horizontal(t, e, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
       easingDuration: this.options.easingDuration ?? 600,
       // Celtra often sizes the strip to the viewport; real width is N sections.
       getBounds: () => {
-        const n = t.offsetWidth || t.parentElement?.offsetWidth || 320, r = Math.max(1, this.options.sections), o = -((r - 1) * n);
-        return console.log("[AIO] getBounds", { viewport: n, sections: r, min: o, max: 0 }), { min: o, max: 0 };
+        const s = t.offsetWidth || t.parentElement?.offsetWidth || 320, n = Math.max(1, this.options.sections), r = -((n - 1) * s);
+        return console.log("[AIO] getBounds", { viewport: s, sections: n, min: r, max: 0 }), { min: r, max: 0 };
       }
     }), console.log("[AIO] detector ready", this.options), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
-    }), this.detector.on("dragmove", (n) => this.handleProgress(n)), this.detector.on("settle", (n) => this.handleProgress(n)), this.trackingCtx = new ActionContext(this.context.screen, {
+    }), this.detector.on("dragmove", (s) => this.handleProgress(s)), this.detector.on("settle", (s) => this.handleProgress(s)), this.trackingCtx = new ActionContext(this.context.screen, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
@@ -398,9 +396,7 @@ class E {
       throw new Error(`Scene "${this.options.instructionScene}" not found`);
     e?.stopSceneAction?.(this.trackingCtx, {}, () => {
     }), e?.resetSceneAction?.(this.trackingCtx, {}, () => {
-    });
-    const s = this.context.screen.find(this.options.instructionGroup);
-    console.log("SWIPE GROUP*****:", s), s?.hideAction?.(this.trackingCtx, {}, () => {
+    }), this.context.screen.find(this.options.instructionGroup)?.hideAction?.(this.trackingCtx, {}, () => {
     });
   }
   maybeFireEngagement(t) {
