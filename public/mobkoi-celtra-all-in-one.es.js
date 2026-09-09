@@ -88,7 +88,7 @@ class O {
     });
   }
 }
-const k = new O();
+const P = new O();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,7 +107,7 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = k;
+    this.contextResolver = P;
   }
   init(t) {
     const e = S.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
@@ -142,7 +142,7 @@ const v = (i) => {
   },
   measureViewport: (i) => i.offsetWidth || i.parentElement?.offsetWidth || 320,
   measureContent: (i) => i.getBoundingClientRect().width
-}, P = {
+}, k = {
   name: "vertical",
   defaultTouchAction: "pan-x",
   // let horizontal scroll pass through natively
@@ -194,7 +194,7 @@ class u extends b {
   }
   /** Convenience factory: `SwipeDetector.vertical(container, content, options)`. */
   static vertical(t, e, s = {}) {
-    return new u(t, e, { ...s, axis: P });
+    return new u(t, e, { ...s, axis: k });
   }
   /** (Re)attaches the pointerdown listener. Called automatically by the constructor. */
   enable() {
@@ -398,7 +398,9 @@ class E {
       throw new Error(`Scene "${this.options.instructionScene}" not found`);
     e?.stopSceneAction?.(this.trackingCtx, {}, () => {
     }), e?.resetSceneAction?.(this.trackingCtx, {}, () => {
-    }), this.context.screen.find(this.options.instructionGroup)?.hideAction?.(this.trackingCtx, {}, () => {
+    });
+    const s = this.context.screen.find(this.options.instructionGroup);
+    console.log("SWIPE GROUP*****:", s), s?.hideAction?.(this.trackingCtx, {}, () => {
     });
   }
   maybeFireEngagement(t) {
