@@ -49,7 +49,7 @@ function f(i) {
 function a(i) {
   return globalThis[i];
 }
-class O {
+class k {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
@@ -88,7 +88,7 @@ class O {
     });
   }
 }
-const k = new O();
+const O = new k();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,7 +107,7 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = k;
+    this.contextResolver = O;
   }
   init(t) {
     const e = S.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
@@ -363,12 +363,15 @@ class E {
     }
     this.detector = u.horizontal(t.node, e.node, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
-      easingDuration: this.options.easingDuration ?? 600,
+      easingDuration: this.options.easingDuration ?? 600
       // Celtra often sizes the strip to the viewport; real width is N sections.
-      getBounds: () => {
-        const s = t.offsetWidth || t.parentElement?.offsetWidth || 320, n = Math.max(1, this.options.sections), r = -((n - 1) * s);
-        return console.log("[AIO] getBounds", { viewport: s, sections: n, min: r, max: 0 }), { min: r, max: 0 };
-      }
+      // getBounds: () => {
+      //   const viewport = container.offsetWidth || container.parentElement?.offsetWidth || 320
+      //   const sections = Math.max(1, this.options.sections)
+      //   const min = -((sections - 1) * viewport)
+      //   console.log("[AIO] getBounds", { viewport, sections, min, max: 0 })
+      //   return { min, max: 0 }
+      // },
     }), console.log("[AIO] detector ready", this.options), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
     }), this.detector.on("dragmove", (s) => this.handleProgress(s)), this.detector.on("settle", (s) => this.handleProgress(s)), this.trackingCtx = new ActionContext(this.context.screen, {
