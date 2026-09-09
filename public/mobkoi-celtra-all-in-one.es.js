@@ -42,14 +42,14 @@ class p {
     return t.parent = this, t;
   }
 }
-const T = new p("MOBKOI"), S = T.enter("Celtra");
+const O = new p("MOBKOI"), S = O.enter("Celtra");
 function f(i) {
   return !!(i && typeof i.find == "function");
 }
 function a(i) {
   return globalThis[i];
 }
-class O {
+class T {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
@@ -88,7 +88,7 @@ class O {
     });
   }
 }
-const k = new O();
+const k = new T();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -347,31 +347,38 @@ class E {
     t.once("appeared", () => this.init());
   }
   init() {
-    const t = this.context.screen.getNode(this.options.container), e = this.context.screen.getNode(this.options.content);
+    const t = this.context.screen.find(this.options.container), e = this.context.screen.find(this.options.content), s = t?.getNode?.() ?? t?.node, n = e?.getNode?.() ?? e?.node;
     if (console.log("[AIO] init nodes", {
       containerName: this.options.container,
       contentName: this.options.content,
-      container: t,
-      content: e,
-      containerWidth: t?.offsetWidth,
-      contentWidth: e?.getBoundingClientRect?.().width,
-      containerRect: t?.getBoundingClientRect?.(),
-      contentRect: e?.getBoundingClientRect?.()
-    }), !t || !e) {
+      containerView: t,
+      contentView: e,
+      container: s,
+      content: n,
+      sameNode: s === n,
+      containerWidth: s?.offsetWidth,
+      contentWidth: n?.getBoundingClientRect?.().width,
+      containerRect: s?.getBoundingClientRect?.(),
+      contentRect: n?.getBoundingClientRect?.()
+    }), !s || !n) {
       console.log("[AIO] abort: container or content missing");
       return;
     }
-    this.detector = u.horizontal(t, e, {
+    if (s === n) {
+      console.log("[AIO] abort: container and content resolved to the same DOM node");
+      return;
+    }
+    this.detector = u.horizontal(s, n, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
       easingDuration: this.options.easingDuration ?? 600,
       // Celtra often sizes SwipeContent to the viewport; real strip width is N sections.
       getBounds: () => {
-        const s = t.offsetWidth || t.parentElement?.offsetWidth || 320, n = Math.max(1, this.options.sections), r = -((n - 1) * s);
-        return console.log("[AIO] getBounds", { viewport: s, sections: n, min: r, max: 0 }), { min: r, max: 0 };
+        const r = s.offsetWidth || s.parentElement?.offsetWidth || 320, o = Math.max(1, this.options.sections), c = -((o - 1) * r);
+        return console.log("[AIO] getBounds", { viewport: r, sections: o, min: c, max: 0 }), { min: c, max: 0 };
       }
     }), console.log("[AIO] detector ready", this.options), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
-    }), this.detector.on("dragmove", (s) => this.handleProgress(s)), this.detector.on("settle", (s) => this.handleProgress(s)), this.trackingCtx = new ActionContext(this.context.screen, {
+    }), this.detector.on("dragmove", (r) => this.handleProgress(r)), this.detector.on("settle", (r) => this.handleProgress(r)), this.trackingCtx = new ActionContext(this.context.screen, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
