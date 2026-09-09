@@ -361,7 +361,7 @@ class E {
       console.log("[AIO] abort: container or content missing");
       return;
     }
-    this.detector = u.horizontal(t, e, {
+    this.detector = u.horizontal(t.node, e.node, {
       dragSensitivity: this.options.dragSensitivity ?? 1,
       easingDuration: this.options.easingDuration ?? 600,
       // Celtra often sizes the strip to the viewport; real width is N sections.
