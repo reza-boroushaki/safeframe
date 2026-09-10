@@ -845,7 +845,7 @@ class G {
     this.logger(`user_scrolled_to_item${i}`);
   }
   logger(t) {
-    console.log("[AIO] track:", { ...this.unitLegacy, legacyEvent: t }), this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.swipe);
+    this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.swipe);
   }
 }
 class H extends E {
