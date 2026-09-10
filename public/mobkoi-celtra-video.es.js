@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-class Z {
+class _ {
   constructor(t) {
     this.log = t.enter("SafeFrameUtil");
   }
@@ -38,7 +38,7 @@ class Z {
     }
   }
 }
-class F {
+class W {
   constructor(t) {
     this.name = t;
   }
@@ -59,13 +59,13 @@ class F {
     console.error(this.prefix, ...t);
   }
   enter(t) {
-    return this.add(new F(t));
+    return this.add(new W(t));
   }
   add(t) {
     return t.parent = this, t;
   }
 }
-const _ = new F("MOBKOI"), B = _.enter("Celtra"), tt = {
+const tt = new W("MOBKOI"), B = tt.enter("Celtra"), et = {
   video: "vidPlayer",
   btnSound: "btnSound",
   icoIsMuted: "icoIsMuted",
@@ -87,9 +87,9 @@ const _ = new F("MOBKOI"), B = _.enter("Celtra"), tt = {
   tagservice: !1,
   autoplayrejected: !1
 };
-function et(o) {
+function it(o) {
   const t = o.debug ?? (typeof creative < "u" && creative.userParams?.thisDebug === "true"), e = {
-    ...tt,
+    ...et,
     debug: t,
     ...o,
     mbkCustomEvents: o.mbkCustomEvents ? [...o.mbkCustomEvents] : []
@@ -99,11 +99,11 @@ function et(o) {
     ...o.videoCountdown
   }), e;
 }
-function q(o, t) {
+function G(o, t) {
   return Object.prototype.hasOwnProperty.call(o, t);
 }
 function C(o, t) {
-  if (q(o, t)) {
+  if (G(o, t)) {
     const e = o[t];
     return typeof e == "string" ? e === "true" : e;
   }
@@ -114,7 +114,7 @@ class M extends Error {
     super(t), this.cause = e;
   }
 }
-class it {
+class nt {
   constructor(t, e, i, n) {
     this.scope = t, this.options = e, this.actionCtx = n, this.elements = {}, this.log = i.enter("VideoElementManager");
   }
@@ -191,8 +191,8 @@ class it {
     t ? t.style.display = "none" : defer(() => this.hideNativeControls());
   }
 }
-const nt = 1e4;
-class G extends Error {
+const st = 1e4;
+class K extends Error {
   constructor(t) {
     super(t), this.name = "VideoElementWaitTimeoutError";
   }
@@ -217,21 +217,21 @@ class E {
     let n, s, r = !0, a = noop;
     const c = () => {
       r = !1, n && (n.disconnect(), n = void 0), s && (clearTimeout(s), s = void 0);
-    }, l = new Promise((h, y) => {
+    }, l = new Promise((h, w) => {
       a = () => {
-        r && (c(), y(new Error("Video element wait cancelled")));
+        r && (c(), w(new Error("Video element wait cancelled")));
       };
       const v = () => {
         if (!r)
           return;
-        const P = E.findInto(t);
-        P && (c(), h(P));
+        const k = E.findInto(t);
+        k && (c(), h(k));
       };
       typeof MutationObserver < "u" && (n = new MutationObserver(v), n.observe(t, { childList: !0, subtree: !0 }));
-      const k = e.timeoutMs ?? nt;
+      const P = e.timeoutMs ?? st;
       s = setTimeout(() => {
-        r && (c(), y(new G(`Timed out waiting ${k}ms for <video> element inside #${t.id}`)));
-      }, k);
+        r && (c(), w(new K(`Timed out waiting ${P}ms for <video> element inside #${t.id}`)));
+      }, P);
     });
     return Object.assign(l, { cancel: a });
   }
@@ -259,7 +259,7 @@ class E {
     return Object.assign(Promise.reject(t), { cancel: noop });
   }
 }
-class st {
+class ot {
   constructor(t, e, i, n, s) {
     this.elementManager = t, this.options = e, this.onViewportChange = i, this.activationView = s, this.isInViewport = !1, this.setupId = 0, this.log = n.enter("VideoViewportObserver");
   }
@@ -301,9 +301,9 @@ class st {
     this.setupId++, this.visibilityObserver && (this.visibilityObserver.disconnect(), this.visibilityObserver = void 0);
   }
 }
-class ot {
+class rt {
   constructor(t) {
-    this.log = t.enter("VideoSafeFrameHandler"), this.safeframeUtil = new Z(this.log);
+    this.log = t.enter("VideoSafeFrameHandler"), this.safeframeUtil = new _(this.log);
   }
   /**
    * Attempts to setup SafeFrame monitoring for video playback
@@ -331,7 +331,7 @@ class ot {
     this.sfInterval && (clearInterval(this.sfInterval), this.sfInterval = void 0);
   }
 }
-class rt {
+class at {
   constructor(t, e, i, n, s, r, a, c) {
     this.scope = t, this.elementManager = e, this.options = i, this.safeframeHandler = n, this.actionCtx = s, this.setStatus = r, this.controller = c, this.playSuccessFlag = !1, this.log = a.enter("VideoPlaybackController");
   }
@@ -407,7 +407,7 @@ class rt {
     this.videoElementWait = n, n.then((s) => {
       this.videoElementWait = void 0, e(s);
     }).catch((s) => {
-      this.videoElementWait = void 0, s instanceof G && this.log.warn("Video element not found for playback checks before timeout");
+      this.videoElementWait = void 0, s instanceof K && this.log.warn("Video element not found for playback checks before timeout");
     });
   }
   clearVideoElementWait() {
@@ -448,22 +448,22 @@ class rt {
     });
   }
 }
-class K {
+class Q {
   constructor(t) {
     this.scope = t.scope, this.userInitiated = t.userInitiated;
   }
 }
-class Q extends K {
+class J extends Q {
   constructor(t, e) {
     super(t), this.actionContext = e;
   }
 }
-class R {
+class H {
   constructor(t) {
     this.name = "celtra", this.log = t.enter("MbkCeltraChannel");
   }
   static actionContextOf(t) {
-    return t instanceof Q ? t.actionContext : void 0;
+    return t instanceof J ? t.actionContext : void 0;
   }
   emit(t, e) {
     if (!t.legacyEvent)
@@ -471,14 +471,14 @@ class R {
     const i = typeof Creative < "u" ? Creative : void 0;
     if (typeof i?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", t.legacyEvent), !1;
-    const n = R.actionContextOf(e);
+    const n = H.actionContextOf(e);
     if (!n)
       return this.log.warn("No ActionContext on the cause of", t.legacyEvent), !1;
     const s = t.legacyEvent;
     return i.trackCustomEventAction(n, { name: s }, () => this.log.debug("Celtra event accepted:", s)), !0;
   }
 }
-class at {
+class ct {
   constructor(t, e, i) {
     this.key = t, this.initiator = i, this.log = e.enter(`MbkCeltraContexts(${t})`);
   }
@@ -623,17 +623,17 @@ const V = class V {
 };
 V.endpointParam = "externalSignalTrackerURI", V.errorEndpointParam = "externalClientErrorURI", V.defaults = {
   pixelFallback: !0,
-  log: () => new F("mbk")
+  log: () => new W("mbk")
 };
-let N = V;
-class ct {
+let L = V;
+class lt {
   constructor(t, e) {
     this.config = t, this.name = "beacon", this.log = e.enter("MbkBeaconChannel");
   }
   emit(t) {
     const e = this.config.endpoint;
     if (!e)
-      return this.log.debug(`No ${N.endpointParam}, raw signal not sent`), !1;
+      return this.log.debug(`No ${L.endpointParam}, raw signal not sent`), !1;
     const i = globalThis.navigator?.sendBeacon;
     if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
@@ -641,14 +641,14 @@ class ct {
     return this.log.debug(s ? "queued" : "refused", n), s;
   }
 }
-const H = class H {
+const q = class q {
 };
-H.mapping = [
+q.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let W = H;
-class J {
+let z = q;
+class X {
   constructor(t, e, i) {
     this.key = e, this.resolvers = /* @__PURE__ */ new Map(), this.log = t.enter(`MbkLegacyEvents(${e})`), this.declare(i);
   }
@@ -686,7 +686,7 @@ class J {
       }
   }
 }
-class lt {
+class ut {
   constructor(t, e) {
     this.config = t, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = e.enter("MbkPixelChannel");
   }
@@ -702,7 +702,7 @@ class lt {
     return n.onload = s, n.onerror = s, n.src = i, this.log.debug("sent", i), !0;
   }
 }
-class ut {
+class ht {
   constructor(t, e) {
     this.config = t, this.log = e.enter("MbkTrackErrorReporter");
   }
@@ -726,7 +726,7 @@ class ut {
 }
 const m = class m {
   constructor(t) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new N(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = m.now(), this.beacon = new ct(this.config, this.log), this.pixel = new lt(this.config, this.log), this.reporter = new ut(this.config, this.log), this.coreLegacyEvents = new J(this.log, "core", W.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new L(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = m.now(), this.beacon = new lt(this.config, this.log), this.pixel = new ut(this.config, this.log), this.reporter = new ht(this.config, this.log), this.coreLegacyEvents = new X(this.log, "core", z.mapping);
   }
   /** The one impression of this creative, created on first use. */
   static shared(t) {
@@ -835,10 +835,10 @@ const m = class m {
   }
 };
 m.storageKey = "mbkImpression", m.windowStorageKey = "__mbkTrackStorage";
-let L = m;
-class D {
+let D = m;
+class F {
   constructor(t, e) {
-    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new J(this.log, e, []);
+    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new X(this.log, e, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -847,8 +847,8 @@ class D {
    * object.
    */
   static shared(t, e) {
-    const i = L.shared(e);
-    return i.track(t.trackingKey, () => new D(i, t.trackingKey), D).declare(t.legacyEventsMapping);
+    const i = D.shared(e);
+    return i.track(t.trackingKey, () => new F(i, t.trackingKey), F).declare(t.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(t) {
@@ -856,7 +856,7 @@ class D {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(t) {
-    return new K(t);
+    return new Q(t);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(t, e) {
@@ -907,13 +907,13 @@ class D {
     return e || this.log.debug(`No resolver for ${g.of(t)}, raw signal only`), e;
   }
 }
-class T extends D {
+class T extends F {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(t, e) {
-    const i = L.shared(e);
+    const i = D.shared(e);
     return i.track(
       t.trackingKey,
       () => new T(i, t.trackingKey, e.initiator),
@@ -921,7 +921,7 @@ class T extends D {
     ).declare(t.legacyEventsMapping);
   }
   constructor(t, e, i) {
-    super(t, e), this.contexts = new at(e, this.log, i), this.celtra = new R(this.log);
+    super(t, e), this.contexts = new ct(e, this.log, i), this.celtra = new H(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -930,14 +930,14 @@ class T extends D {
    */
   context(t) {
     const e = t.actionContext ?? this.contexts.forCause(t.userInitiated);
-    return new Q(t, e);
+    return new J(t, e);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(t, e) {
     this.impression.send(this.celtra, t, e), super.emitChannels(t, e);
   }
 }
-class ht {
+class dt {
   constructor(t, e, i, n, s, r, a) {
     this.scope = t, this.elementManager = e, this.options = i, this.actionCtx = n, this.setStatus = s, this.state = r, this.trackingKey = "video", this.mediaPlay = { verb: "play", role: "media" }, this.mediaPause = { verb: "pause", role: "media" }, this.mediaLegacy = { verb: "legacy", role: "media" }, this.legacyEventsMapping = [], this.log = a.enter("VideoEventHandlers"), this.track = T.shared(this, {
       initiator: this.elementManager.getScreenObject(this.options.video)
@@ -985,7 +985,7 @@ class ht {
     this.track.state({ ...t, name: this.options.video }, n);
   }
 }
-class dt {
+class pt {
   constructor(t, e, i, n) {
     this.elementManager = t, this.options = e, this.actionCtx = i, this.trackingKey = "video", this.mediaProgress = { verb: "progress", role: "media" }, this.quartileEventMap = {
       videoStart: "video_start",
@@ -1062,7 +1062,7 @@ class dt {
     }), t;
   }
 }
-class pt {
+class ft {
   constructor(t, e, i, n, s, r, a) {
     this.elementManager = t, this.options = e, this.actionCtx = i, this.onSceneEnd = n, this.controller = r, this.unit = a, this.log = s.enter("VideoInstructionScene");
   }
@@ -1099,9 +1099,9 @@ class pt {
     this.log.debug("Setting up instruction scene playback:", e), this.controller && typeof this.controller.setupInstructionScenePlayback == "function" ? this.controller.setupInstructionScenePlayback(e) : this.setupInstructionScenePlayback(e);
   }
 }
-class ft {
+class gt {
   constructor(t, e, i) {
-    this.parentElement = t, this.options = i, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, this.duration = e, this.mode = i.mode, this.size = this.getSizeInPixels(i.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), this.svg = this.createSVG(), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && this.svg.appendChild(this.textElement), this.container.appendChild(this.svg), this.parentElement.appendChild(this.container), this.updateProgress(), console.log("Howdy too much changes****");
+    this.parentElement = t, this.options = i, this.currentTime = 0, this.isVisible = !1, this.isPaused = !1, this.interval = null, this.intervalValue = 0, this.duration = e, this.mode = i.mode, this.size = this.getSizeInPixels(i.size), this.mode === "kinetic" && (this.duration = 0.95 * this.duration), this.container = this.createContainer(), this.svg = this.createSVG(), this.progressCircle = this.createProgressCircle(), this.textElement = this.createTextElement(), this.svg.appendChild(this.createBackgroundCircle()), this.svg.appendChild(this.progressCircle), this.mode === "countdown" && this.svg.appendChild(this.textElement), this.container.appendChild(this.svg), this.parentElement.appendChild(this.container), this.updateProgress();
   }
   getSizeInPixels(t) {
     switch (t) {
@@ -1120,12 +1120,24 @@ class ft {
     return t.className = "mbk-countdown", t.style.cssText = `
       position: absolute;
       z-index: 999999;
-      top: 25px;
-      left: 5px;
+      ${this.getPositionStyles()}
       opacity: 0;
       transition: opacity 0.3s;
       pointer-events: none;
     `, t;
+  }
+  getPositionStyles() {
+    const { anchor: t, offset: e } = this.options.position, i = `${e.x}px`, n = `${e.y}px`;
+    switch (t) {
+      case "top-right":
+        return `top: ${n}; right: ${i};`;
+      case "bottom-left":
+        return `bottom: ${n}; left: ${i};`;
+      case "bottom-right":
+        return `bottom: ${n}; right: ${i};`;
+      default:
+        return `top: ${n}; left: ${i};`;
+    }
   }
   createSVG() {
     const t = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -1208,19 +1220,36 @@ class ft {
     return this.isPaused;
   }
 }
-const gt = {
+class U {
+  static deepMerge(t, e) {
+    const i = { ...t };
+    for (const n of Object.keys(e)) {
+      const s = e[n], r = t[n];
+      s !== void 0 && (U.isPlainObject(r) && U.isPlainObject(s) ? i[n] = U.deepMerge(
+        r,
+        s
+      ) : i[n] = s);
+    }
+    return i;
+  }
+  static isPlainObject(t) {
+    return typeof t == "object" && t !== null && !Array.isArray(t) && Object.getPrototypeOf(t) === Object.prototype;
+  }
+}
+const mt = {
   mode: "countdown",
   size: "normal",
   barColor: "#fff",
-  bgColor: "rgba(0, 0, 0, 0.2)"
+  bgColor: "rgba(0, 0, 0, 0.2)",
+  position: {
+    anchor: "top-left",
+    offset: { x: 5, y: 25 }
+  }
 };
-function mt(o) {
-  return {
-    ...gt,
-    ...o
-  };
+function vt(o) {
+  return U.deepMerge(mt, o ?? {});
 }
-const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
+const bt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", wt = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75" width="28" height="28" aria-hidden="true" focusable="false">
   <path d="M39.389,13.769 L22.235,28.606 L6,28.606 L6,47.699 L21.989,47.699 L39.389,62.75 L39.389,13.769z"
         fill="currentColor" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
@@ -1229,23 +1258,23 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
            M61.6,14a38.8,38.8 0 0 1 0,48.6"
         fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
 </svg>
-`.trim(), yt = `
+`.trim(), Ct = `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 75 75" width="28" height="28" aria-hidden="true" focusable="false">
   <path d="m39,14-17,15H6V48H22l17,15z" fill="currentColor" stroke="currentColor" stroke-width="5" stroke-linejoin="round"/>
   <path d="m49,26 20,24m0-24-20,24" fill="none" stroke="currentColor" stroke-width="5" stroke-linecap="round"/>
 </svg>
-`.trim(), b = class b {
+`.trim(), y = class y {
   constructor(t, e, i, n, s) {
     this.scope = t, this.actionCtx = i, this.unitRef = s, this.status = "unstarted", this.state = {
       hasVideoPlayed: !1,
       hasVideoCompleted: !1
-    }, this.lastClickAt = 0, this.suppressNextPausePlayButton = !1, b.instanceCount++, this.log = n.enter("VideoController#" + b.instanceCount), this.options = et(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new it(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new ot(this.log), this.viewportObserver = new st(
+    }, this.lastClickAt = 0, this.suppressNextPausePlayButton = !1, y.instanceCount++, this.log = n.enter("VideoController#" + y.instanceCount), this.options = it(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new nt(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new rt(this.log), this.viewportObserver = new ot(
       this.elementManager,
       this.options,
       (r) => this.handleViewportChange(r),
       this.log,
       this.scope
-    ), this.playbackController = new rt(
+    ), this.playbackController = new at(
       this.scope,
       this.elementManager,
       this.options,
@@ -1254,7 +1283,7 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
       (r, a) => this.setStatus(r, a),
       this.log,
       this
-    ), this.eventHandlers = new ht(
+    ), this.eventHandlers = new dt(
       this.scope,
       this.elementManager,
       this.options,
@@ -1262,12 +1291,12 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
       (r, a) => this.setStatus(r, a),
       this.state,
       this.log
-    ), this.quartileTracker = new dt(
+    ), this.quartileTracker = new pt(
       this.elementManager,
       this.options,
       this.actionCtx,
       this.log
-    ), this.instructionScene = new pt(
+    ), this.instructionScene = new ft(
       this.elementManager,
       this.options,
       this.actionCtx,
@@ -1283,15 +1312,15 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
     return !!(t && typeof t.find == "function");
   }
   static resolveScreen(t, e) {
-    if (b.isValidScreen(e))
+    if (y.isValidScreen(e))
       return e;
     if (typeof t?.getScreen == "function") {
       const i = t.getScreen();
-      if (b.isValidScreen(i))
+      if (y.isValidScreen(i))
         return i;
     }
     try {
-      if (typeof screen < "u" && b.isValidScreen(screen))
+      if (typeof screen < "u" && y.isValidScreen(screen))
         return screen;
     } catch (i) {
       B.enter("VideoController").enter("setup").debug("Unable to access global 'screen' variable", i);
@@ -1324,13 +1353,13 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
     const i = globalThis.window;
     if (!i)
       throw new M("window not found");
-    const n = t.creative || i.creative, s = b.resolveScreen(n, t.screen || i.screen);
-    if (!b.isValidScreen(s))
+    const n = t.creative || i.creative, s = y.resolveScreen(n, t.screen || i.screen);
+    if (!y.isValidScreen(s))
       throw new M(`Invalid screen ref: ${s}`);
-    const r = b.resolveUnit(n, t.unit || i.unit, s), a = new ActionContext(s, {
+    const r = y.resolveUnit(n, t.unit || i.unit, s), a = new ActionContext(s, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
-    }), c = B.enter("VideoControllerInit"), l = new b(s, t, a, c, r);
+    }), c = B.enter("VideoControllerInit"), l = new y(s, t, a, c, r);
     s.mbkVidController = l;
     const h = () => {
       l.init(), l.playAfterScene();
@@ -1408,7 +1437,7 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
   }
   /** Whether a genuine tap on the video happened recently enough to have caused what is happening. */
   isUserGesture() {
-    return Date.now() - this.lastClickAt < b.USER_CLICK_WINDOW_MS;
+    return Date.now() - this.lastClickAt < y.USER_CLICK_WINDOW_MS;
   }
   onPause() {
     this.log.debug("onPause()");
@@ -1494,7 +1523,7 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
    * Sets the status of the video controller and logs it
    */
   setStatus(t, e = "status") {
-    q(this.options, e) && (this.options[e] = t);
+    G(this.options, e) && (this.options[e] = t);
   }
   /**
    * Handles video pausing/resuming based on viewport visibility
@@ -1552,12 +1581,12 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
     if (!C(this.options, "soundControl"))
       return;
     const e = document.getElementById("btn-sound");
-    e && (this.soundDomHost = e, e.style.cursor = "pointer", e.style.display = "flex", e.style.alignItems = "center", e.style.justifyContent = "center", e.style.userSelect = "none", e.style.setProperty("-webkit-user-select", "none"), e.style.color = vt, e.style.filter = wt, this.soundDomClickHandler && e.removeEventListener("click", this.soundDomClickHandler), this.soundDomClickHandler = () => {
+    e && (this.soundDomHost = e, e.style.cursor = "pointer", e.style.display = "flex", e.style.alignItems = "center", e.style.justifyContent = "center", e.style.userSelect = "none", e.style.setProperty("-webkit-user-select", "none"), e.style.color = bt, e.style.filter = yt, this.soundDomClickHandler && e.removeEventListener("click", this.soundDomClickHandler), this.soundDomClickHandler = () => {
       this.toggleSound();
     }, e.addEventListener("click", this.soundDomClickHandler), this.updateSoundDomIcon(typeof t?.muted == "boolean" ? t.muted : !0), this.log.debug("Mounted sound DOM UI on #btn-sound", { muted: t?.muted }));
   }
   updateSoundDomIcon(t) {
-    this.soundDomHost && (this.soundDomHost.innerHTML = t ? yt : bt);
+    this.soundDomHost && (this.soundDomHost.innerHTML = t ? Ct : wt);
   }
   /**
    * Initializes the video countdown component
@@ -1571,10 +1600,10 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
       this.log.error("Cannot initialize countdown: video not found");
       return;
     }
-    const e = Math.round(t.getDuration()) * 1e3, i = mt(this.options.videoCountdown), s = t.getNode()?.parentElement || this.scope.getNode();
+    const e = Math.round(t.getDuration()) * 1e3, i = vt(this.options.videoCountdown), s = t.getNode()?.parentElement || this.scope.getNode();
     if (!s)
       throw new M("Countdown parent container not found");
-    this.videoCountdown = new ft(s, e, i), this.videoCountdown.show();
+    this.videoCountdown = new gt(s, e, i), this.videoCountdown.show();
   }
   rebindDom(t = {}) {
     this.hasVideoPlayed = !1, this.hasVideoCompleted = !1, this.quartileTracker.resetTrackingSession(), this.viewportObserver.disconnect(), this.viewportObserver.setupViewportObserver();
@@ -1603,9 +1632,9 @@ const vt = "#fff", wt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", bt = `
     }), this.mountSoundDomUI(e);
   }
 };
-b.instanceCount = 0, b.USER_CLICK_WINDOW_MS = 700;
-let z = b;
-function X(o = {}) {
+y.instanceCount = 0, y.USER_CLICK_WINDOW_MS = 700;
+let R = y;
+function Y(o = {}) {
   const {
     win: t = typeof window < "u" ? window : globalThis,
     pollInterval: e = 25,
@@ -1616,7 +1645,7 @@ function X(o = {}) {
     screen: (u) => u != null,
     unit: (u) => u != null
   }, a = Date.now(), c = (...u) => n && console.log("[waitForCeltraGlobals]", ...u), l = () => Date.now(), h = () => l() - a;
-  function y() {
+  function w() {
     return {
       creative: v(t, "creative"),
       screen: v(t, "screen"),
@@ -1630,34 +1659,34 @@ function X(o = {}) {
       return;
     }
   }
-  function k(u) {
+  function P(u) {
     return s.every((O) => {
       const S = u[O];
       return (r[O] || ((p) => p != null))(S);
     });
   }
-  function P(u) {
+  function k(u) {
     const O = {}, S = {};
-    return s.forEach((w) => {
-      const p = Object.getOwnPropertyDescriptor(t, w);
-      if (S[w] = p, p && p.configurable === !1) {
-        c(`Cannot intercept "${w}" (non-configurable).`);
+    return s.forEach((b) => {
+      const p = Object.getOwnPropertyDescriptor(t, b);
+      if (S[b] = p, p && p.configurable === !1) {
+        c(`Cannot intercept "${b}" (non-configurable).`);
         return;
       }
-      let x = p && "value" in p ? p.value : v(t, w);
+      let x = p && "value" in p ? p.value : v(t, b);
       try {
-        Object.defineProperty(t, w, {
+        Object.defineProperty(t, b, {
           configurable: !0,
           enumerable: !0,
           get() {
             return x;
           },
           set(I) {
-            x = I, c(`Intercepted assignment to "${w}"`, I), u();
+            x = I, c(`Intercepted assignment to "${b}"`, I), u();
           }
-        }), O[w] = !0;
+        }), O[b] = !0;
       } catch (I) {
-        c(`Failed to intercept "${w}"`, I);
+        c(`Failed to intercept "${b}"`, I);
       }
     }), function() {
       Object.keys(O).forEach((p) => {
@@ -1671,16 +1700,16 @@ function X(o = {}) {
     };
   }
   return new Promise((u, O) => {
-    let S = !1, w = null, p = null, x = null;
+    let S = !1, b = null, p = null, x = null;
     function I(j, A) {
-      S || (S = !0, w && clearInterval(w), p && clearTimeout(p), x && x(), j ? u(A) : O(A));
+      S || (S = !0, b && clearInterval(b), p && clearTimeout(p), x && x(), j ? u(A) : O(A));
     }
-    function $(j) {
+    function N(j) {
       if (S)
         return;
-      const A = y();
-      if (k(A)) {
-        const Y = {
+      const A = w();
+      if (P(A)) {
+        const Z = {
           creative: A.creative,
           screen: A.screen,
           unit: A.unit,
@@ -1690,11 +1719,11 @@ function X(o = {}) {
             windowPath: "current"
           }
         };
-        I(!0, Y);
+        I(!0, Z);
       }
     }
-    $("immediate"), !S && (x = P(() => $("intercept")), $("post-intercept"), !S && (w = setInterval(() => $("poll"), e), p = setTimeout(() => {
-      const j = y();
+    N("immediate"), !S && (x = k(() => N("intercept")), N("post-intercept"), !S && (b = setInterval(() => N("poll"), e), p = setTimeout(() => {
+      const j = w();
       I(!1, {
         error: new Error(
           `Timed out after ${i}ms waiting for Celtra globals: ${s.join(", ")}`
@@ -1708,14 +1737,14 @@ function X(o = {}) {
     }, i)));
   });
 }
-function Ct(o = {}) {
+function St(o = {}) {
   const {
     win: t = typeof window < "u" ? window : globalThis,
     includeTop: e = !0,
     maxDepth: i = 3,
     debug: n = !1
   } = o, s = (...l) => n && console.log("[waitForCeltraGlobalsAnyWindow]", ...l);
-  function r(l, h, y) {
+  function r(l, h, w) {
     if (h < 0)
       return;
     let v;
@@ -1724,10 +1753,10 @@ function Ct(o = {}) {
     } catch {
       return;
     }
-    for (let k = 0; k < v.length; k++) {
-      const P = v[k];
+    for (let P = 0; P < v.length; P++) {
+      const k = v[P];
       try {
-        P.location.href, y.push(P), r(P, h - 1, y);
+        k.location.href, w.push(k), r(k, h - 1, w);
       } catch {
       }
     }
@@ -1735,7 +1764,7 @@ function Ct(o = {}) {
   const a = [];
   e && a.push(t), r(t, i, a), s("Candidate windows:", a.length);
   const c = a.map(
-    (l) => X({ ...o, win: l }).then((h) => ({
+    (l) => Y({ ...o, win: l }).then((h) => ({
       ...h,
       meta: {
         ...h.meta,
@@ -1744,15 +1773,15 @@ function Ct(o = {}) {
     }))
   );
   return typeof Promise.any == "function" ? Promise.any(c) : new Promise((l, h) => {
-    const y = [];
+    const w = [];
     let v = !1;
-    c.forEach((k, P) => {
-      k.then((u) => {
+    c.forEach((P, k) => {
+      P.then((u) => {
         v || (v = !0, l(u));
       }).catch((u) => {
-        y[P] = u, y.length === c.length && !v && (v = !0, h(
+        w[k] = u, w.length === c.length && !v && (v = !0, h(
           new AggregateError(
-            y,
+            w,
             `All ${c.length} windows failed to provide Celtra globals`
           )
         ));
@@ -1760,8 +1789,8 @@ function Ct(o = {}) {
     });
   });
 }
-const St = B.enter("VideoControllerInit"), d = B.enter("VideoIndex");
-function xt(o, t, e = {}, i) {
+const xt = B.enter("VideoControllerInit"), d = B.enter("VideoIndex");
+function Et(o, t, e = {}, i) {
   d.debug("init() starting", { hasUnit: !!o, hasScreen: !!t, hasCtx: !!i });
   let n = i;
   if (!n && typeof ActionContext < "u")
@@ -1774,7 +1803,7 @@ function xt(o, t, e = {}, i) {
       d.warn("ActionContext creation failed. Video play actions may fail.", s);
     }
   try {
-    const s = new z(t, e, n, St, o);
+    const s = new R(t, e, n, xt, o);
     t.mbkVidController = s, d.debug("VideoController instance created");
     const r = () => {
       d.debug("Starting VideoController initialization..."), s.init(), s.playAfterScene();
@@ -1784,16 +1813,16 @@ function xt(o, t, e = {}, i) {
     d.error("Critical error during init():", s);
   }
 }
-const U = (o) => o && typeof o.find == "function";
-function Et(o, t) {
-  if (U(t))
+const $ = (o) => o && typeof o.find == "function";
+function Pt(o, t) {
+  if ($(t))
     return t;
   d.debug("Global screen is native or invalid, searching via creative...");
   let e = t;
-  if (typeof o?.getScreen == "function" && (e = o.getScreen(), U(e)))
+  if (typeof o?.getScreen == "function" && (e = o.getScreen(), $(e)))
     return e;
   try {
-    if (typeof screen < "u" && U(screen))
+    if (typeof screen < "u" && $(screen))
       return screen;
   } catch (i) {
     d.debug("Unable to access global 'screen' variable", i);
@@ -1814,45 +1843,42 @@ function kt(o, t, e) {
     d.debug("Unable to access global 'unit' variable", i);
   }
 }
-function Pt(o = {}) {
+function Ot(o = {}) {
   d.debug("setup() called", o);
   const t = globalThis;
   d.debug("Environment snapshot", t, t.creative, t.screen, t.CreativeUnit);
   const e = o.creative || t.creative, i = o.unit || t.unit, n = o.screen || t.screen, s = o.ctx || t.ctx || t.mbkCtx, r = !!(o.creative || o.unit || o.screen);
   r ? d.debug("Using explicitly passed globals (recommended)") : d.debug("Falling back to global scope discovery");
-  const a = Et(e, n), c = kt(e, i, a);
+  const a = Pt(e, n), c = kt(e, i, a);
   if (d.debug("Environment check (Window):", {
     creative: !!e,
     unit: !!c,
-    screen: U(a),
+    screen: $(a),
     ctx: !!s,
     explicitArgs: r
-  }), !U(a)) {
+  }), !$(a)) {
     d.error("Video Controller: Could not find a valid Celtra Screen object. Passing globals explicitly in .setup() is recommended.");
     return;
   }
-  return xt(c || a, a, o, s);
+  return Et(c || a, a, o, s);
 }
 typeof addCssRule == "function" && addCssRule(".video-player-engine video", "background: none;");
-typeof window < "u" && (window.waitForCeltraGlobals = X, window.waitForCeltraGlobalsAnyWindow = Ct);
+typeof window < "u" && (window.waitForCeltraGlobals = Y, window.waitForCeltraGlobalsAnyWindow = St);
 export {
-  ft as Countdown,
-  z as VideoController,
-  it as VideoElementManager,
-  ht as VideoEventHandlers,
-  pt as VideoInstructionScene,
-  rt as VideoPlaybackController,
-  dt as VideoQuartileTracker,
-  ot as VideoSafeFrameHandler,
-  st as VideoViewportObserver,
-  gt as defaultCountdownOptions,
-  tt as defaultVideoControllerOptions,
+  R as VideoController,
+  nt as VideoElementManager,
+  dt as VideoEventHandlers,
+  ft as VideoInstructionScene,
+  at as VideoPlaybackController,
+  pt as VideoQuartileTracker,
+  rt as VideoSafeFrameHandler,
+  ot as VideoViewportObserver,
+  et as defaultVideoControllerOptions,
   C as hasBoolOption,
-  q as hasOption,
-  xt as init,
-  mt as initializeCountdownOptions,
-  et as initializeOptions,
-  Pt as setup,
-  X as waitForCeltraGlobals,
-  Ct as waitForCeltraGlobalsAnyWindow
+  G as hasOption,
+  Et as init,
+  it as initializeOptions,
+  Ot as setup,
+  Y as waitForCeltraGlobals,
+  St as waitForCeltraGlobalsAnyWindow
 };
