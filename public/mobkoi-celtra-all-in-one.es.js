@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const C = {
+const S = {
   container: "SwipeContainer",
   content: "SwipeContent",
   scene: "Animation",
@@ -42,14 +42,14 @@ class p {
     return t.parent = this, t;
   }
 }
-const T = new p("MOBKOI"), S = T.enter("Celtra");
+const k = new p("MOBKOI"), v = k.enter("Celtra");
 function f(i) {
   return !!(i && typeof i.find == "function");
 }
 function c(i) {
   return globalThis[i];
 }
-class O {
+class b {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
@@ -88,7 +88,7 @@ class O {
     });
   }
 }
-const k = new O();
+const O = new b();
 class h {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,10 +107,10 @@ class h {
 }
 const l = class l {
   constructor() {
-    this.contextResolver = k;
+    this.contextResolver = O;
   }
   init(t) {
-    const e = S.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
+    const e = v.enter(this.name), s = this.contextResolver.resolve(t), n = s.unit ?? s.screen, r = l.registry.get(n);
     if (r)
       return e.debug(`${this.name} already initialized`), r;
     const o = h.deepMerge(this.defaultConfig, t), a = this.create(s, o);
@@ -119,7 +119,7 @@ const l = class l {
 };
 l.registry = /* @__PURE__ */ new WeakMap();
 let m = l;
-const v = (i) => {
+const w = (i) => {
   const t = i.style.transform || getComputedStyle(i).transform || "", e = t.match(/translate3d\(\s*(-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/i);
   if (e) return { x: parseFloat(e[1] ?? "0"), y: parseFloat(e[2] ?? "0") };
   const s = t.match(/translate\(\s*(-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/i);
@@ -136,7 +136,7 @@ const v = (i) => {
   // let vertical page-scroll pass through natively
   getPrimary: (i) => i,
   getCross: (i, t) => t,
-  getTranslate: (i) => v(i).x,
+  getTranslate: (i) => w(i).x,
   setTranslate: (i, t) => {
     i.style.transform = `translate3d(${t}px, 0, 0)`;
   },
@@ -148,14 +148,14 @@ const v = (i) => {
   // let horizontal scroll pass through natively
   getPrimary: (i, t) => t,
   getCross: (i) => i,
-  getTranslate: (i) => v(i).y,
+  getTranslate: (i) => w(i).y,
   setTranslate: (i, t) => {
     i.style.transform = `translate3d(0, ${t}px, 0)`;
   },
   measureViewport: (i) => i.offsetHeight || i.parentElement?.offsetHeight || 320,
   measureContent: (i) => i.getBoundingClientRect().height
 };
-class b {
+class T {
   constructor() {
     this.listeners = {};
   }
@@ -173,20 +173,10 @@ class b {
     this.listeners = {};
   }
 }
-const I = (i) => Math.pow(i - 1, 3) + 1, d = (i, t, e) => Math.min(Math.max(i, t), e);
-class u extends b {
+const A = (i) => Math.pow(i - 1, 3) + 1, d = (i, t, e) => Math.min(Math.max(i, t), e);
+class u extends T {
   constructor(t, e, s = {}) {
-    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? x, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), console.log("[SwipeDetector] init", {
-      axis: this.axis.name,
-      containerTag: this.container?.tagName,
-      contentTag: this.content?.tagName,
-      containerSize: this.viewportSize,
-      minScroll: this.minScroll,
-      maxScroll: this.maxScroll,
-      contentRect: this.content?.getBoundingClientRect?.(),
-      containerRect: this.container?.getBoundingClientRect?.(),
-      touchAction: this.container.style.touchAction
-    }), this.enable();
+    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? x, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), this.enable();
   }
   /** Convenience factory: `SwipeDetector.horizontal(container, content, options)`. */
   static horizontal(t, e, s = {}) {
@@ -212,21 +202,11 @@ class u extends b {
   recalculateBounds() {
     const t = this.getBoundsOverride?.();
     if (this.viewportSize = this.getViewportSize?.() ?? this.axis.measureViewport(this.container), t) {
-      this.minScroll = t.min, this.maxScroll = t.max, console.log("[SwipeDetector] recalculateBounds (override)", {
-        viewportSize: this.viewportSize,
-        minScroll: this.minScroll,
-        maxScroll: this.maxScroll
-      });
+      this.minScroll = t.min, this.maxScroll = t.max;
       return;
     }
     const e = this.axis.measureContent(this.content);
-    this.maxScroll = 0, this.minScroll = Math.min(0, -(e - this.viewportSize)), console.log("[SwipeDetector] recalculateBounds", {
-      contentSize: e,
-      viewportSize: this.viewportSize,
-      minScroll: this.minScroll,
-      maxScroll: this.maxScroll,
-      canScroll: this.minScroll < 0
-    });
+    this.maxScroll = 0, this.minScroll = Math.min(0, -(e - this.viewportSize));
   }
   /** Animates to a given 0-based index, assuming `sectionCount` equal-size sections. */
   scrollToIndex(t, e) {
@@ -249,50 +229,19 @@ class u extends b {
     };
   }
   onPointerDown(t) {
-    if (t.pointerType === "mouse" && t.button !== 0) {
-      console.log("[SwipeDetector] pointerdown ignored (non-primary mouse button)", t.button);
-      return;
-    }
-    this.stopAnimation(), this.recalculateBounds(), this.active = !0, this.lockedTo = null, this.axisLockFired = !1, this.activePointerId = t.pointerId, this.startPrimary = this.axis.getPrimary(t.clientX, t.clientY), this.startCross = this.axis.getCross(t.clientX, t.clientY), this.currentOffset = this.axis.getTranslate(this.content), this.startOffset = this.currentOffset, this.samples = [], this.pushSample(performance.now(), this.currentOffset), console.log("[SwipeDetector] pointerdown", {
-      pointerType: t.pointerType,
-      pointerId: t.pointerId,
-      clientX: t.clientX,
-      clientY: t.clientY,
-      startPrimary: this.startPrimary,
-      startOffset: this.startOffset,
-      minScroll: this.minScroll,
-      maxScroll: this.maxScroll,
-      contentTransform: this.content.style.transform
-    }), this.emit("dragstart", { offset: this.currentOffset }), window.addEventListener("pointermove", this.onPointerMove), window.addEventListener("pointerup", this.onPointerUp), window.addEventListener("pointercancel", this.onPointerUp);
+    t.pointerType === "mouse" && t.button !== 0 || (this.stopAnimation(), this.recalculateBounds(), this.active = !0, this.lockedTo = null, this.axisLockFired = !1, this.activePointerId = t.pointerId, this.startPrimary = this.axis.getPrimary(t.clientX, t.clientY), this.startCross = this.axis.getCross(t.clientX, t.clientY), this.currentOffset = this.axis.getTranslate(this.content), this.startOffset = this.currentOffset, this.samples = [], this.pushSample(performance.now(), this.currentOffset), this.emit("dragstart", { offset: this.currentOffset }), window.addEventListener("pointermove", this.onPointerMove), window.addEventListener("pointerup", this.onPointerUp), window.addEventListener("pointercancel", this.onPointerUp));
   }
   onPointerMove(t) {
     if (!this.active || t.pointerId !== this.activePointerId) return;
     const e = this.axis.getPrimary(t.clientX, t.clientY) - this.startPrimary, s = this.axis.getCross(t.clientX, t.clientY) - this.startCross;
-    if (this.lockedTo || (Math.abs(s) > Math.abs(e) && Math.abs(s) > this.axisLockThreshold ? this.lockedTo = "cross" : Math.abs(e) > this.axisLockThreshold && (this.lockedTo = "primary"), this.lockedTo && !this.axisLockFired && (this.axisLockFired = !0, console.log("[SwipeDetector] axislock", {
-      lockedTo: this.lockedTo,
-      dPrimary: e,
-      dCross: s,
-      threshold: this.axisLockThreshold
-    }), this.emit("axislock", { axis: this.lockedTo }))), this.lockedTo !== "primary")
+    if (this.lockedTo || (Math.abs(s) > Math.abs(e) && Math.abs(s) > this.axisLockThreshold ? this.lockedTo = "cross" : Math.abs(e) > this.axisLockThreshold && (this.lockedTo = "primary"), this.lockedTo && !this.axisLockFired && (this.axisLockFired = !0, this.emit("axislock", { axis: this.lockedTo }))), this.lockedTo !== "primary")
       return;
     t.cancelable && t.preventDefault();
     const n = this.startOffset + e * this.dragSensitivity, r = d(n, this.minScroll, this.maxScroll);
-    console.log("[SwipeDetector] pointermove", {
-      dPrimary: e,
-      rawOffset: n,
-      nextOffset: r,
-      clamped: n !== r,
-      minScroll: this.minScroll,
-      maxScroll: this.maxScroll,
-      transform: `translate3d(${r}px, 0, 0)`
-    }), this.currentOffset = r, this.axis.setTranslate(this.content, r), this.pushSample(performance.now(), r), this.emit("dragmove", this.buildProgress());
+    this.currentOffset = r, this.axis.setTranslate(this.content, r), this.pushSample(performance.now(), r), this.emit("dragmove", this.buildProgress());
   }
   onPointerUp(t) {
-    if (!this.active || t.pointerId !== this.activePointerId || (this.active = !1, this.detachMoveListeners(), console.log("[SwipeDetector] pointerup", {
-      lockedTo: this.lockedTo,
-      currentOffset: this.currentOffset,
-      contentTransform: this.content.style.transform
-    }), this.lockedTo === "cross")) return;
+    if (!this.active || t.pointerId !== this.activePointerId || (this.active = !1, this.detachMoveListeners(), this.lockedTo === "cross")) return;
     const e = this.computeVelocity(), s = Math.abs(e) > 0.1 ? this.currentOffset + e * 300 : this.currentOffset;
     this.emit("dragend", { ...this.buildProgress(), velocity: e }), this.animateTo(s);
   }
@@ -311,8 +260,8 @@ class u extends b {
     const e = d(t, this.minScroll, this.maxScroll), s = this.currentOffset, n = e - s, r = performance.now();
     this.stopAnimation();
     const o = (a) => {
-      const w = a - r, g = Math.min(w / this.easingDuration, 1), y = I(g);
-      this.currentOffset = s + n * y, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), g < 1 ? this.rafId = requestAnimationFrame(o) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
+      const y = a - r, g = Math.min(y / this.easingDuration, 1), C = A(g);
+      this.currentOffset = s + n * C, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), g < 1 ? this.rafId = requestAnimationFrame(o) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
     };
     this.rafId = requestAnimationFrame(o);
   }
@@ -320,7 +269,7 @@ class u extends b {
     this.rafId && cancelAnimationFrame(this.rafId), this.rafId = 0;
   }
 }
-class A {
+class M {
   static lerp(t, e, s) {
     return t + (e - t) * s;
   }
@@ -332,8 +281,8 @@ class A {
   }
 }
 class E {
-  constructor(t, e) {
-    this.context = t, this.options = e, this.started = !1, this.trackedEvents = /* @__PURE__ */ new Set(), this.trackingCtx = null, this.instructionsDismissed = !1, this.engagementFired = !1, this.log = S.enter("AIO");
+  constructor(t, e, s) {
+    this.context = t, this.options = e, this.scriptName = s, this.started = !1, this.trackedEvents = /* @__PURE__ */ new Set(), this.trackingCtx = null, this.instructionsDismissed = !1, this.engagementFired = !1, this.log = v.enter(this.scriptName);
   }
   start() {
     if (this.started)
@@ -347,79 +296,76 @@ class E {
     t.once("appeared", () => this.init());
   }
   init() {
-    const { screen: t } = this.context, e = t.find(this.options.container), s = t.find(this.options.content), n = e?.node ?? null, r = s?.node ?? null, o = t.node;
-    if (console.log("[AIO] init nodes", {
-      containerName: this.options.container,
-      contentName: this.options.content,
-      containerObj: e,
-      contentObj: s,
-      container: n,
-      content: r,
-      sameNode: n === r,
-      screenWidth: o?.offsetWidth,
-      containerWidth: n?.offsetWidth,
-      contentWidth: r?.getBoundingClientRect?.().width
-    }), !n || !r) {
-      console.log("[AIO] abort: container or content missing");
-      return;
-    }
-    this.detector = u.horizontal(n, r, {
-      dragSensitivity: this.options.dragSensitivity ?? 1,
-      easingDuration: this.options.easingDuration ?? 600,
+    this.log.debug("initializing"), console.log("im clean****");
+    const t = this.requireView(this.options.container), e = this.requireView(this.options.content);
+    this.scene = this.requireView(this.options.scene);
+    const s = this.requireNode(t, this.options.container), n = this.requireNode(e, this.options.content), r = this.screen.node;
+    this.detector = u.horizontal(s, n, {
+      dragSensitivity: this.options.dragSensitivity,
+      easingDuration: this.options.easingDuration,
       // Match original TouchSwipeDetector._calculateBounds viewport source.
-      getViewportSize: () => o?.offsetWidth || n.parentElement?.offsetWidth || 320
-    }), console.log("[AIO] detector ready", this.options), this.detector.on("dragstart", () => {
+      getViewportSize: () => r?.offsetWidth || s.parentElement?.offsetWidth || n.offsetWidth
+    }), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.engagementFired = !1;
-    }), this.detector.on("dragmove", (a) => this.handleProgress(a)), this.detector.on("settle", (a) => this.handleProgress(a)), this.trackingCtx = new ActionContext(this.context.screen, {
+    }), this.detector.on("dragmove", (o) => this.handleProgress(o)), this.detector.on("settle", (o) => this.handleProgress(o)), this.trackingCtx = new ActionContext(this.screen, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
+  }
+  get screen() {
+    return this.context.screen;
+  }
+  requireView(t) {
+    const e = this.screen.find(t);
+    if (!e)
+      throw new Error(`"${t}" not found`);
+    return e;
+  }
+  requireNode(t, e) {
+    if (!t.node)
+      throw new Error(`"${e}" DOM node not found`);
+    return t.node;
   }
   destroy() {
     this.detector?.destroy();
   }
   handleProgress(t) {
-    console.log("SWIPE PROGRESS*****:", t), this.syncScene(t.percent), this.maybeDismissInstructions(t.offset), this.maybeFireEngagement(t.offset), this.trackScrollEvents(t);
+    this.syncScene(t.percent), this.maybeDismissInstructions(t.offset), this.maybeFireEngagement(t.offset), this.trackScrollEvents(t);
   }
   syncScene(t) {
-    const e = this.context.screen.find(this.options.scene);
-    if (console.log("SWIPE SCENE*****:", e), !e)
-      throw new Error(`Scene "${this.options.scene}" not found`);
-    e?.renderAtProgress?.(t * 100);
+    this.scene.renderAtProgress?.(t * 100);
   }
   maybeDismissInstructions(t) {
-    if (console.log("SWIPE MAYBE DISMISS INSTRUCTIONS*****:", t), this.instructionsDismissed || t < this.options.instructionThreshold) return;
+    if (this.instructionsDismissed || t < this.options.instructionThreshold) return;
     this.instructionsDismissed = !0;
-    const e = this.context.screen.find(this.options.instructionScene);
-    if (!e)
-      throw new Error(`Scene "${this.options.instructionScene}" not found`);
-    e?.stopSceneAction?.(this.trackingCtx, {}, () => {
-    }), e?.resetSceneAction?.(this.trackingCtx, {}, () => {
-    }), this.context.screen.find(this.options.instructionGroup)?.hideAction?.(this.trackingCtx, {}, () => {
+    const e = this.requireView(this.options.instructionScene);
+    e.stopSceneAction?.(this.trackingCtx, {}, () => {
+    }), e.resetSceneAction?.(this.trackingCtx, {}, () => {
+    }), this.requireView(this.options.instructionGroup).hideAction(this.trackingCtx, {}, () => {
     });
   }
   maybeFireEngagement(t) {
-    this.engagementFired || t < this.options.engagementThreshold || (this.engagementFired = !0);
+    this.engagementFired || t < this.options.engagementThreshold || (this.engagementFired = !0, !this.context.creative.getUserInteracted() && this.trackOnce("user_engaged"));
   }
   trackScrollEvents({ offset: t, max: e, viewport: s }) {
-    t <= 5 && this.trackOnce("user_scrolled_to_left_edge"), t >= e - 5 && this.trackOnce("user_scrolled_to_right_edge"), t > 50 && this.trackOnce("user_scrolled_left"), t < e - 50 && this.trackedEvents.has("user_scrolled_to_right_edge") && this.trackOnce("user_scrolled_right");
-    const n = A.clamp(Math.round(t / s) + 1, 1, this.options.sections);
+    t <= this.options.edgeTolerance && this.trackOnce("user_scrolled_to_left_edge"), t >= e - this.options.edgeTolerance && this.trackOnce("user_scrolled_to_right_edge"), t > this.options.directionTolerance && this.trackOnce("user_scrolled_left"), t < e - this.options.directionTolerance && this.trackedEvents.has("user_scrolled_to_right_edge") && this.trackOnce("user_scrolled_right");
+    const n = M.clamp(Math.round(t / s) + 1, 1, this.options.sections);
     this.trackOnce(`user_scrolled_to_item${n}`);
   }
   trackOnce(t) {
-    this.trackedEvents.has(t) || (this.trackedEvents.add(t), console.log("TRACKING:", t), Creative && this.trackingCtx && Creative.trackCustomEventAction(this.trackingCtx, { name: t }, () => {
+    this.trackedEvents.has(t) || (this.trackedEvents.add(t), Creative && this.trackingCtx && Creative.trackCustomEventAction(this.trackingCtx, { name: t }, () => {
     }));
   }
 }
-class M extends m {
+class I extends m {
   constructor() {
-    super(...arguments), this.name = "AIO", this.defaultConfig = C;
+    super(...arguments), this.name = "AIO", this.defaultConfig = S;
   }
   create(t, e) {
-    return new E(t, e);
+    return new E(t, e, this.name);
   }
 }
-const D = (i) => new M().init(i);
+const L = (i) => new I().init(i);
 export {
-  D as setup
+  L as setup
 };
