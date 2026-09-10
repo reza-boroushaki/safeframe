@@ -667,8 +667,8 @@ const h = class h {
   }
 };
 h.storageKey = "mbkImpression", h.windowStorageKey = "__mbkTrackStorage";
-let x = h;
-class w {
+let w = h;
+class x {
   constructor(t, e) {
     this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new B(this.log, e, []);
   }
@@ -679,8 +679,8 @@ class w {
    * object.
    */
   static shared(t, e) {
-    const s = x.shared(e);
-    return s.track(t.trackingKey, () => new w(s, t.trackingKey), w).declare(t.legacyEventsMapping);
+    const s = w.shared(e);
+    return s.track(t.trackingKey, () => new x(s, t.trackingKey), x).declare(t.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(t) {
@@ -739,13 +739,13 @@ class w {
     return e || this.log.debug(`No resolver for ${a.of(t)}, raw signal only`), e;
   }
 }
-class y extends w {
+class y extends x {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(t, e) {
-    const s = x.shared(e);
+    const s = w.shared(e);
     return s.track(
       t.trackingKey,
       () => new y(s, t.trackingKey, e.initiator),
@@ -771,7 +771,30 @@ class y extends w {
 }
 class G {
   constructor(t, e, s) {
-    this.context = t, this.options = e, this.scriptName = s, this.trackingKey = "aio", this.legacyEventsMapping = [], this.unitLegacy = { verb: "legacy", role: "unit" }, this.started = !1, this.trackingCtx = null, this.instructionsDismissed = !1, this.engagementFired = !1, this.reachedRightEdge = !1, this.log = P.enter(this.scriptName), this.track = y.shared(this, {});
+    this.options = t, this.creative = e, this.trackingKey = "aio", this.legacyEventsMapping = [], this.unitLegacy = { verb: "legacy", role: "unit" }, this.engagementFired = !1, this.reachedRightEdge = !1, this.track = y.shared(this, {}), this.swipe = this.track.context({
+      scope: void 0,
+      userInitiated: !0,
+      actionContext: s
+    });
+  }
+  onDragStart() {
+    this.engagementFired = !1;
+  }
+  trackEngagement(t) {
+    this.engagementFired || t < this.options.engagementThreshold || (this.engagementFired = !0, !this.creative.getUserInteracted() && this.logger("user_engaged"));
+  }
+  trackScrollEvents({ offset: t, max: e, viewport: s }) {
+    t <= this.options.edgeTolerance && this.logger("user_scrolled_to_left_edge"), t >= e - this.options.edgeTolerance && (this.reachedRightEdge = !0, this.logger("user_scrolled_to_right_edge")), t > this.options.directionTolerance && this.logger("user_scrolled_left"), t < e - this.options.directionTolerance && this.reachedRightEdge && this.logger("user_scrolled_right");
+    const i = N.clamp(1, this.options.sections, Math.round(t / s) + 1);
+    this.logger(`user_scrolled_to_item${i}`);
+  }
+  logger(t) {
+    this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.swipe);
+  }
+}
+class H {
+  constructor(t, e, s) {
+    this.context = t, this.options = e, this.scriptName = s, this.started = !1, this.trackingCtx = null, this.instructionsDismissed = !1, this.log = P.enter(this.scriptName);
   }
   start() {
     if (this.started)
@@ -789,20 +812,16 @@ class G {
     const t = this.requireView(this.options.container), e = this.requireView(this.options.content);
     this.scene = this.requireView(this.options.scene);
     const s = this.requireNode(t, this.options.container), i = this.requireNode(e, this.options.content), r = this.screen.node;
-    this.detector = m.horizontal(s, i, {
+    this.trackingCtx = this.context.ctx ?? new ActionContext(this.screen, {
+      certainlyNotCausedByUserBehavior: !1,
+      consideredUserInitiatedByBrowser: !1
+    }), this.tracking = new G(this.options, this.context.creative, this.trackingCtx), this.detector = m.horizontal(s, i, {
       dragSensitivity: this.options.dragSensitivity,
       easingDuration: this.options.easingDuration,
       getViewportSize: () => r?.offsetWidth || s.parentElement?.offsetWidth || i.offsetWidth
     }), this.detector.on("dragstart", () => {
-      this.instructionsDismissed = !1, this.engagementFired = !1;
-    }), this.detector.on("dragmove", (c) => this.handleProgress(c)), this.detector.on("settle", (c) => this.handleProgress(c)), this.trackingCtx = this.context.ctx ?? new ActionContext(this.screen, {
-      certainlyNotCausedByUserBehavior: !1,
-      consideredUserInitiatedByBrowser: !1
-    }), this.swipe = this.track.context({
-      scope: void 0,
-      userInitiated: !0,
-      actionContext: this.trackingCtx
-    });
+      this.instructionsDismissed = !1, this.tracking.onDragStart();
+    }), this.detector.on("dragmove", (c) => this.handleProgress(c)), this.detector.on("settle", (c) => this.handleProgress(c));
   }
   get screen() {
     return this.context.screen;
@@ -822,12 +841,12 @@ class G {
     this.detector?.destroy();
   }
   handleProgress(t) {
-    this.syncScene(t.percent), this.maybeDismissInstructions(t.offset), this.maybeFireEngagement(t.offset), this.trackScrollEvents(t);
+    this.syncScene(t.percent), this.dismissInstructions(t.offset), this.tracking.trackEngagement(t.offset), this.tracking.trackScrollEvents(t);
   }
   syncScene(t) {
     this.scene.renderAtProgress?.(t * 100);
   }
-  maybeDismissInstructions(t) {
+  dismissInstructions(t) {
     if (this.instructionsDismissed || t < this.options.instructionThreshold) return;
     this.instructionsDismissed = !0;
     const e = this.requireView(this.options.instructionScene);
@@ -836,27 +855,16 @@ class G {
     }), this.requireView(this.options.instructionGroup).hideAction(this.trackingCtx, {}, () => {
     });
   }
-  maybeFireEngagement(t) {
-    this.engagementFired || t < this.options.engagementThreshold || (this.engagementFired = !0, !this.context.creative.getUserInteracted() && this.logger("user_engaged"));
-  }
-  trackScrollEvents({ offset: t, max: e, viewport: s }) {
-    t <= this.options.edgeTolerance && this.logger("user_scrolled_to_left_edge"), t >= e - this.options.edgeTolerance && (this.reachedRightEdge = !0, this.logger("user_scrolled_to_right_edge")), t > this.options.directionTolerance && this.logger("user_scrolled_left"), t < e - this.options.directionTolerance && this.reachedRightEdge && this.logger("user_scrolled_right");
-    const i = N.clamp(Math.round(t / s) + 1, 1, this.options.sections);
-    this.logger(`user_scrolled_to_item${i}`);
-  }
-  logger(t) {
-    this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.swipe);
-  }
 }
-class H extends E {
+class Q extends E {
   constructor() {
     super(...arguments), this.name = "AIO", this.defaultConfig = R;
   }
   create(t, e) {
-    return new G(t, e, this.name);
+    return new H(t, e, this.name);
   }
 }
-const Q = (n) => new H().init(n);
+const J = (n) => new Q().init(n);
 export {
-  Q as setup
+  J as setup
 };
