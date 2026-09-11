@@ -109,7 +109,7 @@ function C(o, t) {
   }
   return null;
 }
-class M extends Error {
+class I extends Error {
   constructor(t, e) {
     super(t), this.cause = e;
   }
@@ -151,7 +151,7 @@ class nt {
     if (!this._celtraVideo) {
       const t = this.options.video, e = this.getScreenObject(t);
       if (!e)
-        throw new M(`FAILED to find Celtra video component "${t}"; Check your Celtra component names.`);
+        throw new I(`FAILED to find Celtra video component "${t}"; Check your Celtra component names.`);
       this._celtraVideo = e;
     }
     return this._celtraVideo;
@@ -1333,7 +1333,7 @@ const mt = {
     } catch (n) {
       B.enter("VideoController").enter("setup").debug("Unable to access global 'unit' variable", n);
     }
-    throw new M("unit not found in global scope");
+    throw new I("unit not found in global scope");
   }
   /**
    * Automatically sets up the Video Controller by scanning the environment for Celtra globals.
@@ -1345,10 +1345,10 @@ const mt = {
     B.enter("VideoController").enter("setup").debug("setup() called", t);
     const i = globalThis.window;
     if (!i)
-      throw new M("window not found");
+      throw new I("window not found");
     const n = t.creative || i.creative, s = v.resolveScreen(n, t.screen || i.screen);
     if (!v.isValidScreen(s))
-      throw new M(`Invalid screen ref: ${s}`);
+      throw new I(`Invalid screen ref: ${s}`);
     const r = v.resolveUnit(n, t.unit || i.unit, s), a = new ActionContext(s, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
@@ -1414,7 +1414,7 @@ const mt = {
   }
   get videoElement() {
     if (!this._videoElement)
-      throw new M("Expected <video> element");
+      throw new I("Expected <video> element");
     return this._videoElement;
   }
   onPlaying() {
@@ -1543,7 +1543,7 @@ const mt = {
   }
   playWhenAppearing() {
     if (typeof IntersectionObserver > "u")
-      throw new M("IntersectionObserver not available, cannot wait for video viewport appearance");
+      throw new I("IntersectionObserver not available, cannot wait for video viewport appearance");
     this.log.debug("Waiting for video to appear in viewport...");
     const t = new IntersectionObserver((e) => {
       e.some((n) => n.isIntersecting) && (t.disconnect(), this.log.debug("Video appeared in viewport, playing..."), this.playIfAllowed());
@@ -1587,6 +1587,10 @@ const mt = {
   initializeCountdown() {
     if (!this.options.countdownActive)
       return;
+    if (this.options.countdown !== "countdown" && !this.elementManager.hasScreenObject("countdown"))
+      throw new I(
+        `Countdown component "${this.options.countdown}" not found; Check your Celtra component names.`
+      );
     this.videoCountdown?.destroy(), this.videoCountdown = void 0;
     const t = this.elementManager.countdown?.node, e = vt(
       t ? {
@@ -1597,7 +1601,7 @@ const mt = {
     t && this.options.videoCountdown && this.log.warn("VideoCountdown options are defined, falling back to legacy");
     const i = this.celtraVideo, n = i.getNode(), s = t || n?.parentElement || this.scope.getNode();
     if (!s)
-      throw new M("Countdown parent container not found");
+      throw new I("Countdown parent container not found");
     const r = Math.round(i.getDuration()) * 1e3;
     this.videoCountdown = new gt(s, r, e), this.videoCountdown.show();
   }
@@ -1682,12 +1686,12 @@ function Y(o = {}) {
           get() {
             return x;
           },
-          set(I) {
-            x = I, c(`Intercepted assignment to "${b}"`, I), h();
+          set(A) {
+            x = A, c(`Intercepted assignment to "${b}"`, A), h();
           }
         }), O[b] = !0;
-      } catch (I) {
-        c(`Failed to intercept "${b}"`, I);
+      } catch (A) {
+        c(`Failed to intercept "${b}"`, A);
       }
     }), function() {
       Object.keys(O).forEach((p) => {
@@ -1702,30 +1706,30 @@ function Y(o = {}) {
   }
   return new Promise((h, O) => {
     let S = !1, b = null, p = null, x = null;
-    function I(j, A) {
-      S || (S = !0, b && clearInterval(b), p && clearTimeout(p), x && x(), j ? h(A) : O(A));
+    function A(j, M) {
+      S || (S = !0, b && clearInterval(b), p && clearTimeout(p), x && x(), j ? h(M) : O(M));
     }
     function $(j) {
       if (S)
         return;
-      const A = y();
-      if (P(A)) {
+      const M = y();
+      if (P(M)) {
         const Z = {
-          creative: A.creative,
-          screen: A.screen,
-          unit: A.unit,
+          creative: M.creative,
+          screen: M.screen,
+          unit: M.unit,
           meta: {
             trigger: j,
             elapsedMs: u(),
             windowPath: "current"
           }
         };
-        I(!0, Z);
+        A(!0, Z);
       }
     }
     $("immediate"), !S && (x = k(() => $("intercept")), $("post-intercept"), !S && (b = setInterval(() => $("poll"), e), p = setTimeout(() => {
       const j = y();
-      I(!1, {
+      A(!1, {
         error: new Error(
           `Timed out after ${i}ms waiting for Celtra globals: ${s.join(", ")}`
         ),
