@@ -52,7 +52,7 @@ class b {
     }
   }
 }
-class m {
+class y {
   constructor(e) {
     this.name = e;
   }
@@ -73,13 +73,13 @@ class m {
     console.error(this.prefix, ...e);
   }
   enter(e) {
-    return this.add(new m(e));
+    return this.add(new y(e));
   }
   add(e) {
     return e.parent = this, e;
   }
 }
-const E = new m("MOBKOI"), w = E.enter("Celtra");
+const E = new y("MOBKOI"), w = E.enter("Celtra");
 class C {
   constructor() {
     this.callbacks = [], this.rafId = null, this.running = !1;
@@ -107,7 +107,7 @@ class C {
     }), this.rafId = requestAnimationFrame(() => this.tick()));
   }
 }
-const k = [
+const P = [
   "[id^=mobkoi]",
   "mbk-container",
   "#mobkoi-creative",
@@ -117,7 +117,7 @@ const k = [
   "#ad-container",
   "[data-ad-container]"
 ];
-class h {
+class d {
   /**
    * Query an element in ancestor documents, starting at the immediate parent.
    */
@@ -141,7 +141,7 @@ class h {
    * Query in the current document, then ancestor documents.
    */
   static querySelector(e) {
-    return document.querySelector(e) ?? h.queryParentDocument(e);
+    return document.querySelector(e) ?? d.queryParentDocument(e);
   }
   /**
    * Resolve the first matching Element from a selector, Element, or list of either.
@@ -154,7 +154,7 @@ class h {
       if (n instanceof Element)
         return n;
       if (typeof n == "string") {
-        const i = h.querySelector(n);
+        const i = d.querySelector(n);
         if (i)
           return i;
       }
@@ -176,20 +176,20 @@ class h {
    * Resolve an ad/creative container element.
    * Prefers explicit selectors, then unitDiv, then common ad fallbacks, then document.body.
    */
-  static resolveContainerElement(e, t, n = k) {
+  static resolveContainerElement(e, t, n = P) {
     if (e) {
-      const s = h.resolveElement(e);
+      const s = d.resolveElement(e);
       if (s)
         return s;
       typeof e == "string" ? console.warn(`Dom: containerElement "${e}" not found`) : Array.isArray(e) && console.warn("Dom: containerElement selectors not found", e);
     }
     if (t)
       return t;
-    const i = h.queryFirst(n);
+    const i = d.queryFirst(n);
     return i || (console.warn("Dom: No container found, using document.body"), document.body);
   }
 }
-class P {
+class k {
   constructor() {
     this.events = /* @__PURE__ */ new Map();
   }
@@ -210,7 +210,7 @@ class P {
     });
   }
 }
-class O extends P {
+class O extends k {
   constructor(e) {
     super(), this.element = e, this.values = {
       y: null,
@@ -271,10 +271,10 @@ class O extends P {
     this.dirty = {}, this.isDirtyFlag = !1;
   }
 }
-function T(r) {
+function A(r) {
   return r ? r.ownerDocument.defaultView ?? window : window;
 }
-class d {
+class h {
   static lerp(e, t, n) {
     return e + (t - e) * n;
   }
@@ -285,7 +285,7 @@ class d {
     return Math.min(Math.max(n, e), t);
   }
 }
-class A {
+class M {
   constructor(e, t, n, i) {
     this.context = e, this.options = t, this.content = n, this.log = i, this.done = !1, this.lastValue = 0;
   }
@@ -303,24 +303,24 @@ class A {
         e.markClean();
         return;
       }
-      const n = d.lerp(e.vh, -e.vh, 0), i = d.lerp(e.vh, -e.vh, 1);
+      const n = h.lerp(e.vh, -e.vh, 0), i = h.lerp(e.vh, -e.vh, 1);
       if (e.y < n && e.y > i) {
         const s = e.vh - this.options.scrollOptions.startPercent * e.vh, o = (1 - this.options.scrollOptions.endPercent) * e.vh;
         if (this.done && this.isEndSceneScrollMode()) {
-          const S = d.clamp(
+          const S = h.clamp(
             0,
             100,
-            Math.round(d.map(o, i, 0, 100, e.y))
+            Math.round(h.map(o, i, 0, 100, e.y))
           );
           this.content.endScene?.renderAtProgress?.(S), e.markClean();
           return;
         }
-        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(d.map(s, Number(o.toFixed(1)), 0, 100, c));
+        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(h.map(s, Number(o.toFixed(1)), 0, 100, c));
         let l = a;
         this.options.singleDirection && a < this.lastValue && (l = this.lastValue);
-        const y = d.clamp(0, 100, l);
-        this.content.apply(y), this.context.creative?.userParams?.debug === "true" && this.log.debug(
-          `scrub percent = ${y}
+        const g = h.clamp(0, 100, l);
+        this.content.apply(g), this.content.overlayScene?.renderAtProgress?.(g), this.context.creative?.userParams?.debug === "true" && this.log.debug(
+          `scrub percent = ${g}
 	=> map(${s}, ${o}, 0, 100, ${c})`
         ), a >= 100 && !this.done && (this.done = !0, this.handleCompletion()), this.lastValue = l;
       }
@@ -365,9 +365,9 @@ class A {
     });
   }
 }
-class M {
-  constructor(e, t, n, i) {
-    this.screen = e, this.scene = t, this.nextPageScene = n, this.endScene = i;
+class T {
+  constructor(e, t, n, i, s) {
+    this.screen = e, this.scene = t, this.nextPageScene = n, this.endScene = i, this.overlayScene = s;
   }
   get playableScene() {
     return this.scene;
@@ -386,8 +386,8 @@ class M {
   }
 }
 class F {
-  constructor(e, t, n, i) {
-    this.screen = e, this.video = t, this.nextPageScene = n, this.endScene = i, this.playableScene = null, this.scheduleHideControls();
+  constructor(e, t, n, i, s) {
+    this.screen = e, this.video = t, this.nextPageScene = n, this.endScene = i, this.overlayScene = s, this.playableScene = null, this.scheduleHideControls();
   }
   apply(e) {
     const t = this.video.getDuration();
@@ -426,8 +426,9 @@ class R {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
+    console.log("its me again***");
     const e = this.resolveTargets();
-    this.driver = new A(this.context, this.options, e, this.log);
+    this.driver = new M(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
     let n;
     if (this.isCeltraNativeMode()) {
@@ -457,13 +458,13 @@ class R {
     };
   }
   startNativeBrowserMode(e) {
-    const t = this.context.unit, n = h.resolveContainerElement(this.options.containerElement, t?.unitDiv);
+    const t = this.context.unit, n = d.resolveContainerElement(this.options.containerElement, t?.unitDiv);
     this.log.debug("RxScroll: Using native browser mode", n);
     const i = new O(n), s = e.createCallback(i), o = () => {
       i.update(), s();
     };
     this.ticker.add(o);
-    const c = T(n), a = () => i.update();
+    const c = A(n), a = () => i.update();
     c.addEventListener("scroll", a, { passive: !0 }), c.addEventListener("resize", a, { passive: !0 });
     let l = !1;
     return c !== window && (l = !0, window.addEventListener("scroll", a, { passive: !0 })), i.update(), {
@@ -527,26 +528,27 @@ class R {
     const n = e.find(t);
     if (!n)
       throw new Error(`ReactiveScroll: Scene "${t}" not found. Make sure the scene name matches.`);
-    const { nextPageScene: i, endScene: s } = this.resolveEndTargets();
-    return new M(e, n, i, s);
+    const { nextPageScene: i, endScene: s, overlayScene: o } = this.resolveOptionalScenes();
+    return new T(e, n, i, s, o);
   }
   resolveVideoContent() {
     const { screen: e } = this.context, t = this.options.video, n = e.find(t);
     if (!n)
       throw new Error(`ReactiveScroll: Video "${t}" not found.`);
-    const { nextPageScene: i, endScene: s } = this.resolveEndTargets();
-    return new F(e, n, i, s);
+    const { nextPageScene: i, endScene: s, overlayScene: o } = this.resolveOptionalScenes();
+    return new F(e, n, i, s, o);
   }
-  /** Shared by scene + video: nextPage / onEndScene targets for handleCompletion. */
-  resolveEndTargets() {
+  /** Shared by scene + video: optional nextPage / onEndScene / overlayScene targets. */
+  resolveOptionalScenes() {
     const { screen: e, unit: t } = this.context;
     return {
       nextPageScene: this.options.nextPage ? t?.find?.(this.options.nextPage.page) : void 0,
-      endScene: this.options.onEndScene ? e.find(this.options.onEndScene.scene) : void 0
+      endScene: this.options.onEndScene ? e.find(this.options.onEndScene.scene) : void 0,
+      overlayScene: this.options.overlayScene?.active ? e.find(this.options.overlayScene.scene) : void 0
     };
   }
 }
-function g(r) {
+function v(r) {
   return !!(r && typeof r.find == "function");
 }
 function u(r) {
@@ -570,15 +572,15 @@ class j {
     return e ?? u("creative");
   }
   resolveScreen(e, t) {
-    if (g(t))
+    if (v(t))
       return t;
     if (typeof e?.getScreen == "function") {
       const i = e.getScreen();
-      if (g(i))
+      if (v(i))
         return i;
     }
     const n = u("screen");
-    return g(n) ? n : void 0;
+    return v(n) ? n : void 0;
   }
   resolveUnit(e, t, n) {
     return t ?? e?.getUnit?.() ?? n?.getUnit?.() ?? u("unit");
@@ -621,8 +623,8 @@ const p = class p {
   }
 };
 p.registry = /* @__PURE__ */ new WeakMap();
-let v = p;
-class B extends v {
+let m = p;
+class B extends m {
   constructor() {
     super(...arguments), this.name = "RxScroll", this.defaultConfig = x;
   }
