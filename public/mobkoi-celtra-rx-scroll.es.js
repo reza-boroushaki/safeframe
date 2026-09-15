@@ -324,8 +324,8 @@ class T {
     this.pageTransitionTimer && (clearTimeout(this.pageTransitionTimer), this.pageTransitionTimer = void 0);
   }
   handleCompletion() {
-    this.options.nextPage?.active && !this.pageTransitionTimer && (this.pageTransitionTimer = this.schedulePageTransition()), this.options.onEndScene?.active && this.content.endScene?.playSceneAction && this.context.ctx && this.content.endScene.playSceneAction(this.context.ctx, {}, () => {
-    });
+    this.options.nextPage?.active && !this.pageTransitionTimer && (this.pageTransitionTimer = this.schedulePageTransition()), this.options.onEndScene?.active && this.content.endScene?.playSceneAction && this.context.ctx && (console.log("playSceneAction***", this.content.endScene.playSceneAction), this.content.endScene.playSceneAction(this.context.ctx, {}, () => {
+    }));
   }
   schedulePageTransition() {
     if (!this.options.nextPage)
@@ -413,6 +413,7 @@ class F {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
+    console.log("init***");
     const e = this.resolveTargets();
     this.driver = new T(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
