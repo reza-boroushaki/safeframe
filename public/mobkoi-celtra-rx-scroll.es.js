@@ -13,7 +13,7 @@ const x = {
   containerElement: null,
   forceNativeMode: !1
 };
-class S {
+class b {
   constructor(e) {
     this.log = e.enter("SafeFrameUtil");
   }
@@ -79,8 +79,8 @@ class m {
     return e.parent = this, e;
   }
 }
-const b = new m("MOBKOI"), w = b.enter("Celtra");
-class E {
+const E = new m("MOBKOI"), w = E.enter("Celtra");
+class C {
   constructor() {
     this.callbacks = [], this.rafId = null, this.running = !1;
   }
@@ -107,7 +107,7 @@ class E {
     }), this.rafId = requestAnimationFrame(() => this.tick()));
   }
 }
-const C = [
+const k = [
   "[id^=mobkoi]",
   "mbk-container",
   "#mobkoi-creative",
@@ -176,7 +176,7 @@ class h {
    * Resolve an ad/creative container element.
    * Prefers explicit selectors, then unitDiv, then common ad fallbacks, then document.body.
    */
-  static resolveContainerElement(e, t, n = C) {
+  static resolveContainerElement(e, t, n = k) {
     if (e) {
       const s = h.resolveElement(e);
       if (s)
@@ -189,7 +189,7 @@ class h {
     return i || (console.warn("Dom: No container found, using document.body"), document.body);
   }
 }
-class k {
+class P {
   constructor() {
     this.events = /* @__PURE__ */ new Map();
   }
@@ -210,7 +210,7 @@ class k {
     });
   }
 }
-class P extends k {
+class O extends P {
   constructor(e) {
     super(), this.element = e, this.values = {
       y: null,
@@ -271,10 +271,10 @@ class P extends k {
     this.dirty = {}, this.isDirtyFlag = !1;
   }
 }
-function O(r) {
+function T(r) {
   return r ? r.ownerDocument.defaultView ?? window : window;
 }
-class p {
+class d {
   static lerp(e, t, n) {
     return e + (t - e) * n;
   }
@@ -285,7 +285,7 @@ class p {
     return Math.min(Math.max(n, e), t);
   }
 }
-class T {
+class A {
   constructor(e, t, n, i) {
     this.context = e, this.options = t, this.content = n, this.log = i, this.done = !1, this.lastValue = 0;
   }
@@ -294,7 +294,7 @@ class T {
   }
   createCallback(e) {
     return () => {
-      if (this.options.killOnEnd && this.done)
+      if (this.options.killOnEnd && this.done && !this.isEndSceneScrollMode())
         return;
       const t = this.context.unit;
       if (t?.currentScreen && t.currentScreen !== this.content.screen || !e.isDirty())
@@ -303,15 +303,25 @@ class T {
         e.markClean();
         return;
       }
-      const n = p.lerp(e.vh, -e.vh, 0), i = p.lerp(e.vh, -e.vh, 1);
+      const n = d.lerp(e.vh, -e.vh, 0), i = d.lerp(e.vh, -e.vh, 1);
       if (e.y < n && e.y > i) {
-        const s = this.options.loop ? Math.abs(e.y) : e.y, o = e.vh - this.options.scrollOptions.startPercent * e.vh, c = (1 - this.options.scrollOptions.endPercent) * e.vh, a = Math.round(p.map(o, Number(c.toFixed(1)), 0, 100, s));
+        const s = e.vh - this.options.scrollOptions.startPercent * e.vh, o = (1 - this.options.scrollOptions.endPercent) * e.vh;
+        if (this.done && this.isEndSceneScrollMode()) {
+          const S = d.clamp(
+            0,
+            100,
+            Math.round(d.map(o, i, 0, 100, e.y))
+          );
+          this.content.endScene?.renderAtProgress?.(S), e.markClean();
+          return;
+        }
+        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(d.map(s, Number(o.toFixed(1)), 0, 100, c));
         let l = a;
         this.options.singleDirection && a < this.lastValue && (l = this.lastValue);
-        const y = p.clamp(0, 100, l);
+        const y = d.clamp(0, 100, l);
         this.content.apply(y), this.context.creative?.userParams?.debug === "true" && this.log.debug(
           `scrub percent = ${y}
-	=> map(${o}, ${c}, 0, 100, ${s})`
+	=> map(${s}, ${o}, 0, 100, ${c})`
         ), a >= 100 && !this.done && (this.done = !0, this.handleCompletion()), this.lastValue = l;
       }
       e.markClean();
@@ -324,8 +334,11 @@ class T {
     this.pageTransitionTimer && (clearTimeout(this.pageTransitionTimer), this.pageTransitionTimer = void 0);
   }
   handleCompletion() {
-    this.options.nextPage?.active && !this.pageTransitionTimer && (this.pageTransitionTimer = this.schedulePageTransition()), this.options.onEndScene?.active && this.content.endScene?.playSceneAction && this.context.ctx && (console.log("playSceneAction***", this.content.endScene.playSceneAction), this.content.endScene.playSceneAction(this.context.ctx, {}, () => {
+    this.isEndSceneScrollMode() || (this.options.nextPage?.active && !this.pageTransitionTimer && (this.pageTransitionTimer = this.schedulePageTransition()), this.options.onEndScene?.active && this.content.endScene?.playSceneAction && this.context.ctx && this.content.endScene.playSceneAction(this.context.ctx, {}, () => {
     }));
+  }
+  isEndSceneScrollMode() {
+    return this.options.onEndScene?.active === !0 && this.options.onEndScene.mode === "scroll" && !!this.content.endScene;
   }
   schedulePageTransition() {
     if (!this.options.nextPage)
@@ -352,7 +365,7 @@ class T {
     });
   }
 }
-class A {
+class M {
   constructor(e, t, n, i) {
     this.screen = e, this.scene = t, this.nextPageScene = n, this.endScene = i;
   }
@@ -372,7 +385,7 @@ class A {
     });
   }
 }
-class M {
+class F {
   constructor(e, t, n, i) {
     this.screen = e, this.video = t, this.nextPageScene = n, this.endScene = i, this.playableScene = null, this.scheduleHideControls();
   }
@@ -395,9 +408,9 @@ class M {
     t && (t.style.display = "none");
   }
 }
-class F {
+class R {
   constructor(e, t) {
-    this.context = e, this.options = t, this.started = !1, this.modeHandles = [], this.ticker = new E(), this.log = w.enter("RxScroll"), this.safeFrameUtil = new S(this.log);
+    this.context = e, this.options = t, this.started = !1, this.modeHandles = [], this.ticker = new C(), this.log = w.enter("RxScroll"), this.safeFrameUtil = new b(this.log);
   }
   start() {
     if (this.started) {
@@ -413,9 +426,8 @@ class F {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
-    console.log("init***");
     const e = this.resolveTargets();
-    this.driver = new T(this.context, this.options, e, this.log);
+    this.driver = new A(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
     let n;
     if (this.isCeltraNativeMode()) {
@@ -447,11 +459,11 @@ class F {
   startNativeBrowserMode(e) {
     const t = this.context.unit, n = h.resolveContainerElement(this.options.containerElement, t?.unitDiv);
     this.log.debug("RxScroll: Using native browser mode", n);
-    const i = new P(n), s = e.createCallback(i), o = () => {
+    const i = new O(n), s = e.createCallback(i), o = () => {
       i.update(), s();
     };
     this.ticker.add(o);
-    const c = O(n), a = () => i.update();
+    const c = T(n), a = () => i.update();
     c.addEventListener("scroll", a, { passive: !0 }), c.addEventListener("resize", a, { passive: !0 });
     let l = !1;
     return c !== window && (l = !0, window.addEventListener("scroll", a, { passive: !0 })), i.update(), {
@@ -516,14 +528,14 @@ class F {
     if (!n)
       throw new Error(`ReactiveScroll: Scene "${t}" not found. Make sure the scene name matches.`);
     const { nextPageScene: i, endScene: s } = this.resolveEndTargets();
-    return new A(e, n, i, s);
+    return new M(e, n, i, s);
   }
   resolveVideoContent() {
     const { screen: e } = this.context, t = this.options.video, n = e.find(t);
     if (!n)
       throw new Error(`ReactiveScroll: Video "${t}" not found.`);
     const { nextPageScene: i, endScene: s } = this.resolveEndTargets();
-    return new M(e, n, i, s);
+    return new F(e, n, i, s);
   }
   /** Shared by scene + video: nextPage / onEndScene targets for handleCompletion. */
   resolveEndTargets() {
@@ -537,10 +549,10 @@ class F {
 function g(r) {
   return !!(r && typeof r.find == "function");
 }
-function d(r) {
+function u(r) {
   return globalThis[r];
 }
-class R {
+class j {
   resolve(e = {}) {
     const t = this.resolveCreative(e.creative);
     if (!t)
@@ -555,7 +567,7 @@ class R {
     return { creative: t, unit: i, screen: n, ctx: s };
   }
   resolveCreative(e) {
-    return e ?? d("creative");
+    return e ?? u("creative");
   }
   resolveScreen(e, t) {
     if (g(t))
@@ -565,27 +577,27 @@ class R {
       if (g(i))
         return i;
     }
-    const n = d("screen");
+    const n = u("screen");
     return g(n) ? n : void 0;
   }
   resolveUnit(e, t, n) {
-    return t ?? e?.getUnit?.() ?? n?.getUnit?.() ?? d("unit");
+    return t ?? e?.getUnit?.() ?? n?.getUnit?.() ?? u("unit");
   }
   resolveCtx(e, t) {
-    const n = e ?? d("ctx") ?? d("mbkCtx");
+    const n = e ?? u("ctx") ?? u("mbkCtx");
     return n || !t || typeof ActionContext > "u" ? n : new ActionContext(t, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
   }
 }
-const j = new R();
-class u {
+const D = new j();
+class f {
   static deepMerge(e, t) {
     const n = { ...e };
     for (const i of Object.keys(t)) {
       const s = t[i], o = e[i];
-      s !== void 0 && (u.isPlainObject(o) && u.isPlainObject(s) ? n[i] = u.deepMerge(
+      s !== void 0 && (f.isPlainObject(o) && f.isPlainObject(s) ? n[i] = f.deepMerge(
         o,
         s
       ) : n[i] = s);
@@ -596,34 +608,34 @@ class u {
     return typeof e == "object" && e !== null && !Array.isArray(e) && Object.getPrototypeOf(e) === Object.prototype;
   }
 }
-const f = class f {
+const p = class p {
   constructor() {
-    this.contextResolver = j;
+    this.contextResolver = D;
   }
   init(e) {
-    const t = w.enter(this.name), n = this.contextResolver.resolve(e), i = n.unit ?? n.screen, s = f.registry.get(i);
+    const t = w.enter(this.name), n = this.contextResolver.resolve(e), i = n.unit ?? n.screen, s = p.registry.get(i);
     if (s)
       return t.debug(`${this.name} already initialized`), s;
-    const o = u.deepMerge(this.defaultConfig, e), c = this.create(n, o);
-    return f.registry.set(i, c), c.start(), c;
+    const o = f.deepMerge(this.defaultConfig, e), c = this.create(n, o);
+    return p.registry.set(i, c), c.start(), c;
   }
 };
-f.registry = /* @__PURE__ */ new WeakMap();
-let v = f;
-class D extends v {
+p.registry = /* @__PURE__ */ new WeakMap();
+let v = p;
+class B extends v {
   constructor() {
     super(...arguments), this.name = "RxScroll", this.defaultConfig = x;
   }
   create(e, t) {
     const n = e.creative?.constructor?.name === "CrossScreenBanner";
-    return new F(e, {
+    return new R(e, {
       ...t,
       forceNativeMode: n,
       containerElement: n ? ["[id^=mobkoi]", "mbk-container"] : null
     });
   }
 }
-const B = (r) => new D().init(r);
+const V = (r) => new B().init(r);
 export {
-  B as setup
+  V as setup
 };
