@@ -82,7 +82,7 @@ const j = it.enter("Celtra"), I = {
   icoIsMuted: "icoIsMuted",
   icoIsUnmuted: "icoIsUnmuted",
   btnPlay: "btnPlay",
-  btnReplay: "iconReplay",
+  btnReplay: "Replay",
   countdown: "countdown"
 }, nt = {
   ...I,
