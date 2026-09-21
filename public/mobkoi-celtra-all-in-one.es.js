@@ -865,7 +865,7 @@ class _ {
     this.detector?.destroy();
   }
   handleProgress(t) {
-    this.syncScene(t.percent), this.dismissInstructions(t.offset), this.tracking.trackEngagement(t.offset);
+    this.syncScene(t.percent), this.dismissInstructions(t.offset), this.tracking.trackEngagement(t.offset), this.tracking.trackScrollEvents(t);
   }
   syncScene(t) {
     this.scene.renderAtProgress?.(t * 100);
