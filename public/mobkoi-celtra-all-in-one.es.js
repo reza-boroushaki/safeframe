@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const R = {
+const j = {
   container: "SwipeContainer",
   content: "SwipeContent",
   scene: "Animation",
@@ -15,7 +15,7 @@ const R = {
   edgeTolerance: 5,
   directionTolerance: 50
 };
-class C {
+class b {
   constructor(t) {
     this.name = t;
   }
@@ -36,30 +36,43 @@ class C {
     console.error(this.prefix, ...t);
   }
   enter(t) {
-    return this.add(new C(t));
+    return this.add(new b(t));
   }
   add(t) {
     return t.parent = this, t;
   }
 }
-const F = new C("MOBKOI"), P = F.enter("Celtra");
-function b(n) {
+const z = new b("MOBKOI");
+class k extends Error {
+  constructor(t, e = void 0) {
+    super(t), this.name = new.target.name, this.cause = typeof e == "string" ? new k(e, void 0) : e;
+  }
+  toString() {
+    return super.toString() + (this.cause ? `
+	because of:
+` + this.cause.toString() : "");
+  }
+}
+const L = z.enter("Celtra");
+class m extends k {
+}
+function E(n) {
   return !!(n && typeof n.find == "function");
 }
 function u(n) {
   return globalThis[n];
 }
-class D {
+class V {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
-      throw new Error('Celtra context: "creative" not found');
+      throw new m('Celtra context: "creative" not found');
     const s = this.resolveScreen(e, t.screen);
     if (!s)
-      throw new Error('Celtra context: "screen" is missing or not a Celtra screen');
+      throw new m('Celtra context: "screen" is missing or not a Celtra screen');
     const i = this.resolveUnit(e, t.unit, s);
     if (!i)
-      throw new Error('Celtra context: "unit" not found');
+      throw new m('Celtra context: "unit" not found');
     const r = this.resolveCtx(t.ctx, s);
     return { creative: e, unit: i, screen: s, ctx: r };
   }
@@ -67,15 +80,15 @@ class D {
     return t ?? u("creative");
   }
   resolveScreen(t, e) {
-    if (b(e))
+    if (E(e))
       return e;
     if (typeof t?.getScreen == "function") {
       const i = t.getScreen();
-      if (b(i))
+      if (E(i))
         return i;
     }
     const s = u("screen");
-    return b(s) ? s : void 0;
+    return E(s) ? s : void 0;
   }
   resolveUnit(t, e, s) {
     return e ?? t?.getUnit?.() ?? s?.getUnit?.() ?? u("unit");
@@ -88,7 +101,7 @@ class D {
     });
   }
 }
-const j = new D();
+const q = new V();
 class f {
   static deepMerge(t, e) {
     const s = { ...t };
@@ -107,10 +120,10 @@ class f {
 }
 const g = class g {
   constructor() {
-    this.contextResolver = j;
+    this.contextResolver = q;
   }
   init(t) {
-    const e = P.enter(this.name), s = this.contextResolver.resolve(t), i = s.unit ?? s.screen, r = g.registry.get(i);
+    const e = L.enter(this.name), s = this.contextResolver.resolve(t), i = s.unit ?? s.screen, r = g.registry.get(i);
     if (r)
       return e.debug(`${this.name} already initialized`), r;
     const c = f.deepMerge(this.defaultConfig, t), d = this.create(s, c);
@@ -118,44 +131,46 @@ const g = class g {
   }
 };
 g.registry = /* @__PURE__ */ new WeakMap();
-let E = g;
-const O = (n) => {
+let I = g;
+const B = (n) => {
   const t = n.style.transform || getComputedStyle(n).transform || "", e = t.match(/translate3d\(\s*(-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/i);
-  if (e) return { x: parseFloat(e[1] ?? "0"), y: parseFloat(e[2] ?? "0") };
+  if (e)
+    return { x: parseFloat(e[1] ?? "0"), y: parseFloat(e[2] ?? "0") };
   const s = t.match(/translate\(\s*(-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/i);
-  if (s) return { x: parseFloat(s[1] ?? "0"), y: parseFloat(s[2] ?? "0") };
+  if (s)
+    return { x: parseFloat(s[1] ?? "0"), y: parseFloat(s[2] ?? "0") };
   const i = t.match(/matrix\(([^)]+)\)/i);
   if (i) {
     const r = (i[1] ?? "").split(",").map((c) => parseFloat(c.trim()));
     return { x: r[4] ?? 0, y: r[5] ?? 0 };
   }
   return { x: 0, y: 0 };
-}, S = {
+}, P = {
   name: "horizontal",
   defaultTouchAction: "pan-y",
   // let vertical page-scroll pass through natively
   getPrimary: (n) => n,
   getCross: (n, t) => t,
-  getTranslate: (n) => O(n).x,
+  getTranslate: (n) => B(n).x,
   setTranslate: (n, t) => {
     n.style.transform = `translate3d(${t}px, 0, 0)`;
   },
   measureViewport: (n) => n.offsetWidth || n.parentElement?.offsetWidth || 320,
   measureContent: (n) => n.getBoundingClientRect().width
-}, z = {
+}, N = {
   name: "vertical",
   defaultTouchAction: "pan-x",
   // let horizontal scroll pass through natively
   getPrimary: (n, t) => t,
   getCross: (n) => n,
-  getTranslate: (n) => O(n).y,
+  getTranslate: (n) => B(n).y,
   setTranslate: (n, t) => {
     n.style.transform = `translate3d(0, ${t}px, 0)`;
   },
   measureViewport: (n) => n.offsetHeight || n.parentElement?.offsetHeight || 320,
   measureContent: (n) => n.getBoundingClientRect().height
 };
-class V {
+class K {
   constructor() {
     this.listeners = {};
   }
@@ -173,18 +188,18 @@ class V {
     this.listeners = {};
   }
 }
-const q = (n) => Math.pow(n - 1, 3) + 1, p = (n, t, e) => Math.min(Math.max(n, t), e);
-class m extends V {
+const W = (n) => Math.pow(n - 1, 3) + 1, p = (n, t, e) => Math.min(Math.max(n, t), e);
+class v extends K {
   constructor(t, e, s = {}) {
-    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? S, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), this.enable();
+    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? P, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), this.enable();
   }
   /** Convenience factory: `SwipeDetector.horizontal(container, content, options)`. */
   static horizontal(t, e, s = {}) {
-    return new m(t, e, { ...s, axis: S });
+    return new v(t, e, { ...s, axis: P });
   }
   /** Convenience factory: `SwipeDetector.vertical(container, content, options)`. */
   static vertical(t, e, s = {}) {
-    return new m(t, e, { ...s, axis: z });
+    return new v(t, e, { ...s, axis: N });
   }
   /** (Re)attaches the pointerdown listener. Called automatically by the constructor. */
   enable() {
@@ -210,7 +225,8 @@ class m extends V {
   }
   /** Animates to a given 0-based index, assuming `sectionCount` equal-size sections. */
   scrollToIndex(t, e) {
-    if (e <= 0) return;
+    if (e <= 0)
+      return;
     const s = p(t, 0, e - 1), i = Math.max(e - 1, 1), r = this.minScroll * (s / i);
     this.animateTo(r);
   }
@@ -232,7 +248,8 @@ class m extends V {
     t.pointerType === "mouse" && t.button !== 0 || (this.stopAnimation(), this.recalculateBounds(), this.active = !0, this.lockedTo = null, this.axisLockFired = !1, this.activePointerId = t.pointerId, this.startPrimary = this.axis.getPrimary(t.clientX, t.clientY), this.startCross = this.axis.getCross(t.clientX, t.clientY), this.currentOffset = this.axis.getTranslate(this.content), this.startOffset = this.currentOffset, this.samples = [], this.pushSample(performance.now(), this.currentOffset), this.emit("dragstart", { offset: this.currentOffset }), window.addEventListener("pointermove", this.onPointerMove), window.addEventListener("pointerup", this.onPointerUp), window.addEventListener("pointercancel", this.onPointerUp));
   }
   onPointerMove(t) {
-    if (!this.active || t.pointerId !== this.activePointerId) return;
+    if (!this.active || t.pointerId !== this.activePointerId)
+      return;
     const e = this.axis.getPrimary(t.clientX, t.clientY) - this.startPrimary, s = this.axis.getCross(t.clientX, t.clientY) - this.startCross;
     if (this.lockedTo || (Math.abs(s) > Math.abs(e) && Math.abs(s) > this.axisLockThreshold ? this.lockedTo = "cross" : Math.abs(e) > this.axisLockThreshold && (this.lockedTo = "primary"), this.lockedTo && !this.axisLockFired && (this.axisLockFired = !0, this.emit("axislock", { axis: this.lockedTo }))), this.lockedTo !== "primary")
       return;
@@ -241,7 +258,8 @@ class m extends V {
     this.currentOffset = r, this.axis.setTranslate(this.content, r), this.pushSample(performance.now(), r), this.emit("dragmove", this.buildProgress());
   }
   onPointerUp(t) {
-    if (!this.active || t.pointerId !== this.activePointerId || (this.active = !1, this.detachMoveListeners(), this.lockedTo === "cross")) return;
+    if (!this.active || t.pointerId !== this.activePointerId || (this.active = !1, this.detachMoveListeners(), this.lockedTo === "cross"))
+      return;
     const e = this.computeVelocity(), s = Math.abs(e) > 0.1 ? this.currentOffset + e * 300 : this.currentOffset;
     this.emit("dragend", { ...this.buildProgress(), velocity: e }), this.animateTo(s);
   }
@@ -252,7 +270,8 @@ class m extends V {
     this.samples.push({ t, offset: e }), this.samples.length > 5 && this.samples.shift();
   }
   computeVelocity() {
-    if (this.samples.length < 2) return 0;
+    if (this.samples.length < 2)
+      return 0;
     const t = this.samples[0], e = this.samples[this.samples.length - 1], s = e.t - t.t;
     return s <= 0 ? 0 : (e.offset - t.offset) / s;
   }
@@ -260,8 +279,8 @@ class m extends V {
     const e = p(t, this.minScroll, this.maxScroll), s = this.currentOffset, i = e - s, r = performance.now();
     this.stopAnimation();
     const c = (d) => {
-      const M = d - r, A = Math.min(M / this.easingDuration, 1), U = q(A);
-      this.currentOffset = s + i * U, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), A < 1 ? this.rafId = requestAnimationFrame(c) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
+      const F = d - r, O = Math.min(F / this.easingDuration, 1), D = W(O);
+      this.currentOffset = s + i * D, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), O < 1 ? this.rafId = requestAnimationFrame(c) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
     };
     this.rafId = requestAnimationFrame(c);
   }
@@ -269,7 +288,7 @@ class m extends V {
     this.rafId && cancelAnimationFrame(this.rafId), this.rafId = 0;
   }
 }
-class N {
+class X {
   static lerp(t, e, s) {
     return t + (e - t) * s;
   }
@@ -280,22 +299,22 @@ class N {
     return Math.min(Math.max(s, t), e);
   }
 }
-class $ {
+class M {
   constructor(t) {
     this.scope = t.scope, this.userInitiated = t.userInitiated;
   }
 }
-class L extends $ {
+class U extends M {
   constructor(t, e) {
     super(t), this.actionContext = e;
   }
 }
-class I {
+class S {
   constructor(t) {
     this.name = "celtra", this.log = t.enter("MbkCeltraChannel");
   }
   static actionContextOf(t) {
-    return t instanceof L ? t.actionContext : void 0;
+    return t instanceof U ? t.actionContext : void 0;
   }
   emit(t, e) {
     if (!t.legacyEvent)
@@ -303,14 +322,14 @@ class I {
     const s = typeof Creative < "u" ? Creative : void 0;
     if (typeof s?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", t.legacyEvent), !1;
-    const i = I.actionContextOf(e);
+    const i = S.actionContextOf(e);
     if (!i)
       return this.log.warn("No ActionContext on the cause of", t.legacyEvent), !1;
     const r = t.legacyEvent;
     return s.trackCustomEventAction(i, { name: r }, () => this.log.debug("Celtra event accepted:", r)), !0;
   }
 }
-class K {
+class Y {
   constructor(t, e, s) {
     this.key = t, this.initiator = s, this.log = e.enter(`MbkCeltraContexts(${t})`);
   }
@@ -426,7 +445,7 @@ const l = class l {
     this.options = t;
   }
   get endpoint() {
-    return this.options.endpoint ?? this.runtimeParam(l.endpointParam);
+    return this.options.endpoint ?? this.runtimeParam(l.endpointParam) ?? l.defaults.endpoint;
   }
   get errorEndpoint() {
     return this.options.errorEndpoint ?? this.runtimeParam(l.errorEndpointParam);
@@ -454,18 +473,19 @@ const l = class l {
   }
 };
 l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
+  endpoint: "https://events.mobkoi.com/track/engagement/",
   pixelFallback: !0,
-  log: () => new C("mbk")
+  log: () => new b("mbk")
 };
-let v = l;
-class W {
+let x = l;
+class G {
   constructor(t, e) {
     this.config = t, this.name = "beacon", this.log = e.enter("MbkBeaconChannel");
   }
   emit(t) {
     const e = this.config.endpoint;
     if (!e)
-      return this.log.debug(`No ${v.endpointParam}, raw signal not sent`), !1;
+      return this.log.debug(`No ${x.endpointParam}, raw signal not sent`), !1;
     const s = globalThis.navigator?.sendBeacon;
     if (typeof s != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
@@ -473,14 +493,14 @@ class W {
     return this.log.debug(r ? "queued" : "refused", i), r;
   }
 }
-const T = class T {
+const A = class A {
 };
-T.mapping = [
+A.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let k = T;
-class B {
+let T = A;
+class R {
   constructor(t, e, s) {
     this.key = e, this.resolvers = /* @__PURE__ */ new Map(), this.log = t.enter(`MbkLegacyEvents(${e})`), this.declare(s);
   }
@@ -518,7 +538,7 @@ class B {
       }
   }
 }
-class X {
+class H {
   constructor(t, e) {
     this.config = t, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = e.enter("MbkPixelChannel");
   }
@@ -534,7 +554,7 @@ class X {
     return i.onload = r, i.onerror = r, i.src = s, this.log.debug("sent", s), !0;
   }
 }
-class Y {
+class Q {
   constructor(t, e) {
     this.config = t, this.log = e.enter("MbkTrackErrorReporter");
   }
@@ -556,9 +576,11 @@ class Y {
       }
   }
 }
+class J extends k {
+}
 const h = class h {
   constructor(t) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new v(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = h.now(), this.beacon = new W(this.config, this.log), this.pixel = new X(this.config, this.log), this.reporter = new Y(this.config, this.log), this.coreLegacyEvents = new B(this.log, "core", k.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new x(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = h.now(), this.beacon = new G(this.config, this.log), this.pixel = new H(this.config, this.log), this.reporter = new Q(this.config, this.log), this.coreLegacyEvents = new R(this.log, "core", T.mapping);
   }
   /** The one impression of this creative, created on first use. */
   static shared(t) {
@@ -601,8 +623,8 @@ const h = class h {
     const i = this.tracks.get(t);
     if (i) {
       if (!(i instanceof s))
-        throw new Error(
-          `MbkTrack: script "${t}" is already tracked as a ${i.constructor.name}, not a ${s.name}. Every instance of one script must pick the same specialisation.`
+        throw new J(
+          `"${t}" is already tracked as a ${i.constructor.name}, not a ${s.name}. Every instance of one script must pick the same specialisation.`
         );
       return i;
     }
@@ -668,9 +690,9 @@ const h = class h {
 };
 h.storageKey = "mbkImpression", h.windowStorageKey = "__mbkTrackStorage";
 let w = h;
-class x {
+class y {
   constructor(t, e) {
-    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new B(this.log, e, []);
+    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new R(this.log, e, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -680,7 +702,7 @@ class x {
    */
   static shared(t, e) {
     const s = w.shared(e);
-    return s.track(t.trackingKey, () => new x(s, t.trackingKey), x).declare(t.legacyEventsMapping);
+    return s.track(t.trackingKey, () => new y(s, t.trackingKey), y).declare(t.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(t) {
@@ -688,7 +710,7 @@ class x {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(t) {
-    return new $(t);
+    return new M(t);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(t, e) {
@@ -739,21 +761,21 @@ class x {
     return e || this.log.debug(`No resolver for ${a.of(t)}, raw signal only`), e;
   }
 }
-class y extends x {
+class C extends y {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(t, e) {
-    const s = w.shared(e);
-    return s.track(
+    const s = w.shared(e), i = s.track(
       t.trackingKey,
-      () => new y(s, t.trackingKey, e.initiator),
-      y
-    ).declare(t.legacyEventsMapping);
+      () => new C(s, t.trackingKey, e.initiator),
+      C
+    );
+    return i.contexts.useInitiator(e.initiator), i.declare(t.legacyEventsMapping);
   }
   constructor(t, e, s) {
-    super(t, e), this.contexts = new K(e, this.log, s), this.celtra = new I(this.log);
+    super(t, e), this.contexts = new Y(e, this.log, s), this.celtra = new S(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -762,16 +784,16 @@ class y extends x {
    */
   context(t) {
     const e = t.actionContext ?? this.contexts.forCause(t.userInitiated);
-    return new L(t, e);
+    return new U(t, e);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(t, e) {
     this.impression.send(this.celtra, t, e), super.emitChannels(t, e);
   }
 }
-class G {
+class Z {
   constructor(t, e, s) {
-    this.options = t, this.creative = e, this.trackingKey = "aio", this.legacyEventsMapping = [], this.unitLegacy = { verb: "legacy", role: "unit" }, this.engagementFired = !1, this.reachedRightEdge = !1, this.track = y.shared(this, {}), this.swipe = this.track.context({
+    this.options = t, this.creative = e, this.trackingKey = "aio", this.legacyEventsMapping = [], this.unitLegacy = { verb: "legacy", role: "unit" }, this.engagementFired = !1, this.reachedRightEdge = !1, this.track = C.shared(this, {}), this.swipe = this.track.context({
       scope: void 0,
       userInitiated: !0,
       actionContext: s
@@ -784,17 +806,19 @@ class G {
     this.engagementFired || t < this.options.engagementThreshold || (this.engagementFired = !0, !this.creative.getUserInteracted() && this.logger("user_engaged"));
   }
   trackScrollEvents({ offset: t, max: e, viewport: s }) {
-    t <= this.options.edgeTolerance && this.logger("user_scrolled_to_left_edge"), t >= e - this.options.edgeTolerance && (this.reachedRightEdge = !0, this.logger("user_scrolled_to_right_edge")), t > this.options.directionTolerance && this.logger("user_scrolled_left"), t < e - this.options.directionTolerance && this.reachedRightEdge && this.logger("user_scrolled_right");
-    const i = N.clamp(1, this.options.sections, Math.round(t / s) + 1);
+    t <= this.options.edgeTolerance && this.logger("user_scrolled_to_left_edge"), t >= e - this.options.edgeTolerance && (this.reachedRightEdge = !0, this.logger("user_scrolled_to_right_edge_reza")), t > this.options.directionTolerance && this.logger("user_scrolled_left"), t < e - this.options.directionTolerance && this.reachedRightEdge && this.logger("user_scrolled_right");
+    const i = X.clamp(1, this.options.sections, Math.round(t / s) + 1);
     this.logger(`user_scrolled_to_item${i}`);
   }
   logger(t) {
     this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.swipe);
   }
 }
-class H {
+class $ extends m {
+}
+class _ {
   constructor(t, e, s) {
-    this.context = t, this.options = e, this.scriptName = s, this.started = !1, this.trackingCtx = null, this.instructionsDismissed = !1, this.log = P.enter(this.scriptName);
+    this.context = t, this.options = e, this.scriptName = s, this.started = !1, this.trackingCtx = null, this.instructionsDismissed = !1, this.log = L.enter(this.scriptName);
   }
   start() {
     if (this.started)
@@ -815,7 +839,7 @@ class H {
     this.trackingCtx = this.context.ctx ?? new ActionContext(this.screen, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
-    }), this.tracking = new G(this.options, this.context.creative, this.trackingCtx), this.detector = m.horizontal(s, i, {
+    }), this.tracking = new Z(this.options, this.context.creative, this.trackingCtx), this.detector = v.horizontal(s, i, {
       dragSensitivity: this.options.dragSensitivity,
       easingDuration: this.options.easingDuration,
       getViewportSize: () => r?.offsetWidth || s.parentElement?.offsetWidth || i.offsetWidth
@@ -829,12 +853,12 @@ class H {
   requireView(t) {
     const e = this.screen.find(t);
     if (!e)
-      throw new Error(`"${t}" not found`);
+      throw new $(`"${t}" not found`);
     return e;
   }
   requireNode(t, e) {
     if (!t.node)
-      throw new Error(`"${e}" DOM node not found`);
+      throw new $(`"${e}" DOM node not found`);
     return t.node;
   }
   destroy() {
@@ -847,7 +871,8 @@ class H {
     this.scene.renderAtProgress?.(t * 100);
   }
   dismissInstructions(t) {
-    if (this.instructionsDismissed || t < this.options.instructionThreshold) return;
+    if (this.instructionsDismissed || t < this.options.instructionThreshold)
+      return;
     this.instructionsDismissed = !0;
     const e = this.requireView(this.options.instructionScene);
     e.stopSceneAction?.(this.trackingCtx, {}, () => {
@@ -856,15 +881,15 @@ class H {
     });
   }
 }
-class Q extends E {
+class tt extends I {
   constructor() {
-    super(...arguments), this.name = "AIO", this.defaultConfig = R;
+    super(...arguments), this.name = "AIO", this.defaultConfig = j;
   }
   create(t, e) {
-    return new H(t, e, this.name);
+    return new _(t, e, this.name);
   }
 }
-const J = (n) => new Q().init(n);
+const et = (n) => new tt().init(n);
 export {
-  J as setup
+  et as setup
 };
