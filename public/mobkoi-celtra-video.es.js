@@ -962,7 +962,7 @@ class mt {
     this.trackPlayback(this.mediaPlay, t), this.state.hasVideoPlayed = !0, this.state.hasVideoCompleted = !1, this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject(I.btnReplay) && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), C(this.options, "soundControl") && this.elementManager.hasScreenObject(I.btnSound) && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), C(this.options, "countdownActive") && this.elementManager.hasScreenObject(I.countdown) && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
   }
   onPause(t) {
-    this.trackPlayback(this.mediaPause, t), console.log("onPause", t), t && this.elementManager.showPlayButton(), this.setStatus("paused");
+    this.trackPlayback(this.mediaPause, t), t && this.elementManager.showPlayButton(), this.setStatus("paused");
   }
   onMute() {
     if (C(this.options, "soundControl")) {
@@ -1439,7 +1439,7 @@ const yt = {
     this.log.debug("pause()"), this.celtraVideo.pauseAction(this.actionCtx, {}, t);
   }
   scriptedPause() {
-    this.log.debug("scriptedPause()"), this.suppressPlayButtonOnNextPause(), this.elementManager.hidePlayButton(), this.pause(() => {
+    this.log.debug("scriptedPause()"), this._videoElement?.paused ? this.suppressNextPausePlayButton = !1 : this.suppressPlayButtonOnNextPause(), this.elementManager.hidePlayButton(), this.pause(() => {
       this.playWhenAppearing();
     });
   }
@@ -1450,7 +1450,7 @@ const yt = {
   onPause() {
     this.log.debug("onPause()");
     const t = this.isUserGesture() && !this.suppressNextPausePlayButton;
-    console.log("this.isUserGesture()", this.isUserGesture(), "this.suppressNextPausePlayButton", this.suppressNextPausePlayButton), this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(t), this.videoCountdown && this.videoCountdown.pause();
+    this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(t), this.videoCountdown && this.videoCountdown.pause();
   }
   pauseCountdown() {
     this.videoCountdown?.pause();
