@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const R = {
+const j = {
   container: "SwipeContainer",
   content: "SwipeContent",
   scene: "Animation",
@@ -15,7 +15,7 @@ const R = {
   edgeTolerance: 5,
   directionTolerance: 50
 };
-class y {
+class b {
   constructor(t) {
     this.name = t;
   }
@@ -36,16 +36,16 @@ class y {
     console.error(this.prefix, ...t);
   }
   enter(t) {
-    return this.add(new y(t));
+    return this.add(new b(t));
   }
   add(t) {
     return t.parent = this, t;
   }
 }
-const D = new y("MOBKOI");
-class b extends Error {
+const z = new b("MOBKOI");
+class k extends Error {
   constructor(t, e = void 0) {
-    super(t), this.name = new.target.name, this.cause = typeof e == "string" ? new b(e, void 0) : e;
+    super(t), this.name = new.target.name, this.cause = typeof e == "string" ? new k(e, void 0) : e;
   }
   toString() {
     return super.toString() + (this.cause ? `
@@ -53,62 +53,62 @@ class b extends Error {
 ` + this.cause.toString() : "");
   }
 }
-const O = D.enter("Celtra");
-class p extends b {
+const L = z.enter("Celtra");
+class m extends k {
 }
-function k(n) {
+function E(n) {
   return !!(n && typeof n.find == "function");
 }
-function d(n) {
+function u(n) {
   return globalThis[n];
 }
-class z {
+class V {
   resolve(t = {}) {
     const e = this.resolveCreative(t.creative);
     if (!e)
-      throw new p('Celtra context: "creative" not found');
+      throw new m('Celtra context: "creative" not found');
     const s = this.resolveScreen(e, t.screen);
     if (!s)
-      throw new p('Celtra context: "screen" is missing or not a Celtra screen');
+      throw new m('Celtra context: "screen" is missing or not a Celtra screen');
     const i = this.resolveUnit(e, t.unit, s);
     if (!i)
-      throw new p('Celtra context: "unit" not found');
+      throw new m('Celtra context: "unit" not found');
     const r = this.resolveCtx(t.ctx, s);
     return { creative: e, unit: i, screen: s, ctx: r };
   }
   resolveCreative(t) {
-    return t ?? d("creative");
+    return t ?? u("creative");
   }
   resolveScreen(t, e) {
-    if (k(e))
+    if (E(e))
       return e;
     if (typeof t?.getScreen == "function") {
       const i = t.getScreen();
-      if (k(i))
+      if (E(i))
         return i;
     }
-    const s = d("screen");
-    return k(s) ? s : void 0;
+    const s = u("screen");
+    return E(s) ? s : void 0;
   }
   resolveUnit(t, e, s) {
-    return e ?? t?.getUnit?.() ?? s?.getUnit?.() ?? d("unit");
+    return e ?? t?.getUnit?.() ?? s?.getUnit?.() ?? u("unit");
   }
   resolveCtx(t, e) {
-    const s = t ?? d("ctx") ?? d("mbkCtx");
+    const s = t ?? u("ctx") ?? u("mbkCtx");
     return s || !e || typeof ActionContext > "u" ? s : new ActionContext(e, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
   }
 }
-const V = new z();
-class u {
+const q = new V();
+class f {
   static deepMerge(t, e) {
     const s = { ...t };
     for (const i of Object.keys(e)) {
-      const r = e[i], o = t[i];
-      r !== void 0 && (u.isPlainObject(o) && u.isPlainObject(r) ? s[i] = u.deepMerge(
-        o,
+      const r = e[i], c = t[i];
+      r !== void 0 && (f.isPlainObject(c) && f.isPlainObject(r) ? s[i] = f.deepMerge(
+        c,
         r
       ) : s[i] = r);
     }
@@ -120,19 +120,19 @@ class u {
 }
 const g = class g {
   constructor() {
-    this.contextResolver = V;
+    this.contextResolver = q;
   }
   init(t) {
-    const e = O.enter(this.name), s = this.contextResolver.resolve(t), i = s.unit ?? s.screen, r = g.registry.get(i);
+    const e = L.enter(this.name), s = this.contextResolver.resolve(t), i = s.unit ?? s.screen, r = g.registry.get(i);
     if (r)
       return e.debug(`${this.name} already initialized`), r;
-    const o = u.deepMerge(this.defaultConfig, t), l = this.create(s, o);
-    return g.registry.set(i, l), l.start(), l;
+    const c = f.deepMerge(this.defaultConfig, t), d = this.create(s, c);
+    return g.registry.set(i, d), d.start(), d;
   }
 };
 g.registry = /* @__PURE__ */ new WeakMap();
-let C = g;
-const M = (n) => {
+let I = g;
+const B = (n) => {
   const t = n.style.transform || getComputedStyle(n).transform || "", e = t.match(/translate3d\(\s*(-?\d+(?:\.\d+)?)px,\s*(-?\d+(?:\.\d+)?)px/i);
   if (e)
     return { x: parseFloat(e[1] ?? "0"), y: parseFloat(e[2] ?? "0") };
@@ -141,36 +141,36 @@ const M = (n) => {
     return { x: parseFloat(s[1] ?? "0"), y: parseFloat(s[2] ?? "0") };
   const i = t.match(/matrix\(([^)]+)\)/i);
   if (i) {
-    const r = (i[1] ?? "").split(",").map((o) => parseFloat(o.trim()));
+    const r = (i[1] ?? "").split(",").map((c) => parseFloat(c.trim()));
     return { x: r[4] ?? 0, y: r[5] ?? 0 };
   }
   return { x: 0, y: 0 };
-}, I = {
+}, P = {
   name: "horizontal",
   defaultTouchAction: "pan-y",
   // let vertical page-scroll pass through natively
   getPrimary: (n) => n,
   getCross: (n, t) => t,
-  getTranslate: (n) => M(n).x,
+  getTranslate: (n) => B(n).x,
   setTranslate: (n, t) => {
     n.style.transform = `translate3d(${t}px, 0, 0)`;
   },
   measureViewport: (n) => n.offsetWidth || n.parentElement?.offsetWidth || 320,
   measureContent: (n) => n.getBoundingClientRect().width
-}, j = {
+}, N = {
   name: "vertical",
   defaultTouchAction: "pan-x",
   // let horizontal scroll pass through natively
   getPrimary: (n, t) => t,
   getCross: (n) => n,
-  getTranslate: (n) => M(n).y,
+  getTranslate: (n) => B(n).y,
   setTranslate: (n, t) => {
     n.style.transform = `translate3d(0, ${t}px, 0)`;
   },
   measureViewport: (n) => n.offsetHeight || n.parentElement?.offsetHeight || 320,
   measureContent: (n) => n.getBoundingClientRect().height
 };
-class q {
+class K {
   constructor() {
     this.listeners = {};
   }
@@ -188,18 +188,18 @@ class q {
     this.listeners = {};
   }
 }
-const N = (n) => Math.pow(n - 1, 3) + 1, f = (n, t, e) => Math.min(Math.max(n, t), e);
-class m extends q {
+const W = (n) => Math.pow(n - 1, 3) + 1, p = (n, t, e) => Math.min(Math.max(n, t), e);
+class v extends K {
   constructor(t, e, s = {}) {
-    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? I, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), this.enable();
+    super(), this.active = !1, this.startPrimary = 0, this.startCross = 0, this.startOffset = 0, this.currentOffset = 0, this.lockedTo = null, this.axisLockFired = !1, this.minScroll = 0, this.maxScroll = 0, this.viewportSize = 0, this.samples = [], this.rafId = 0, this.activePointerId = null, this.container = t, this.content = e, this.axis = s.axis ?? P, this.dragSensitivity = s.dragSensitivity ?? 1, this.easingDuration = s.easingDuration ?? 600, this.axisLockThreshold = s.axisLockThreshold ?? 10, this.getBoundsOverride = s.getBounds, this.getViewportSize = s.getViewportSize, this.container.style.touchAction = s.touchAction ?? this.axis.defaultTouchAction, this.content.style.willChange = "transform", this.onPointerDown = this.onPointerDown.bind(this), this.onPointerMove = this.onPointerMove.bind(this), this.onPointerUp = this.onPointerUp.bind(this), this.recalculateBounds(), this.enable();
   }
   /** Convenience factory: `SwipeDetector.horizontal(container, content, options)`. */
   static horizontal(t, e, s = {}) {
-    return new m(t, e, { ...s, axis: I });
+    return new v(t, e, { ...s, axis: P });
   }
   /** Convenience factory: `SwipeDetector.vertical(container, content, options)`. */
   static vertical(t, e, s = {}) {
-    return new m(t, e, { ...s, axis: j });
+    return new v(t, e, { ...s, axis: N });
   }
   /** (Re)attaches the pointerdown listener. Called automatically by the constructor. */
   enable() {
@@ -227,7 +227,7 @@ class m extends q {
   scrollToIndex(t, e) {
     if (e <= 0)
       return;
-    const s = f(t, 0, e - 1), i = Math.max(e - 1, 1), r = this.minScroll * (s / i);
+    const s = p(t, 0, e - 1), i = Math.max(e - 1, 1), r = this.minScroll * (s / i);
     this.animateTo(r);
   }
   /** Current progress snapshot, useful for reading state without waiting for an event. */
@@ -241,7 +241,7 @@ class m extends q {
       max: e,
       viewport: this.viewportSize,
       rawOffset: this.currentOffset,
-      percent: e > 0 ? f(t / e, 0, 1) : 0
+      percent: e > 0 ? p(t / e, 0, 1) : 0
     };
   }
   onPointerDown(t) {
@@ -254,7 +254,7 @@ class m extends q {
     if (this.lockedTo || (Math.abs(s) > Math.abs(e) && Math.abs(s) > this.axisLockThreshold ? this.lockedTo = "cross" : Math.abs(e) > this.axisLockThreshold && (this.lockedTo = "primary"), this.lockedTo && !this.axisLockFired && (this.axisLockFired = !0, this.emit("axislock", { axis: this.lockedTo }))), this.lockedTo !== "primary")
       return;
     t.cancelable && t.preventDefault();
-    const i = this.startOffset + e * this.dragSensitivity, r = f(i, this.minScroll, this.maxScroll);
+    const i = this.startOffset + e * this.dragSensitivity, r = p(i, this.minScroll, this.maxScroll);
     this.currentOffset = r, this.axis.setTranslate(this.content, r), this.pushSample(performance.now(), r), this.emit("dragmove", this.buildProgress());
   }
   onPointerUp(t) {
@@ -276,19 +276,19 @@ class m extends q {
     return s <= 0 ? 0 : (e.offset - t.offset) / s;
   }
   animateTo(t) {
-    const e = f(t, this.minScroll, this.maxScroll), s = this.currentOffset, i = e - s, r = performance.now();
+    const e = p(t, this.minScroll, this.maxScroll), s = this.currentOffset, i = e - s, r = performance.now();
     this.stopAnimation();
-    const o = (l) => {
-      const U = l - r, T = Math.min(U / this.easingDuration, 1), F = N(T);
-      this.currentOffset = s + i * F, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), T < 1 ? this.rafId = requestAnimationFrame(o) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
+    const c = (d) => {
+      const F = d - r, O = Math.min(F / this.easingDuration, 1), D = W(O);
+      this.currentOffset = s + i * D, this.axis.setTranslate(this.content, this.currentOffset), this.emit("settle", this.buildProgress()), O < 1 ? this.rafId = requestAnimationFrame(c) : (this.rafId = 0, this.emit("settled", this.buildProgress()));
     };
-    this.rafId = requestAnimationFrame(o);
+    this.rafId = requestAnimationFrame(c);
   }
   stopAnimation() {
     this.rafId && cancelAnimationFrame(this.rafId), this.rafId = 0;
   }
 }
-class K {
+class X {
   static lerp(t, e, s) {
     return t + (e - t) * s;
   }
@@ -299,28 +299,37 @@ class K {
     return Math.min(Math.max(s, t), e);
   }
 }
-class $ {
+class M {
   constructor(t) {
     this.scope = t.scope, this.userInitiated = t.userInitiated;
   }
 }
-class L extends $ {
+class U extends M {
   constructor(t, e) {
     super(t), this.actionContext = e;
   }
 }
-class W {
+class S {
   constructor(t) {
     this.name = "celtra", this.log = t.enter("MbkCeltraChannel");
   }
   static actionContextOf(t) {
-    return t instanceof L ? t.actionContext : void 0;
+    return t instanceof U ? t.actionContext : void 0;
   }
   emit(t, e) {
-    return !1;
+    if (!t.legacyEvent)
+      return !1;
+    const s = typeof Creative < "u" ? Creative : void 0;
+    if (typeof s?.trackCustomEventAction != "function")
+      return this.log.debug("Creative API unavailable, no Celtra event for", t.legacyEvent), !1;
+    const i = S.actionContextOf(e);
+    if (!i)
+      return this.log.warn("No ActionContext on the cause of", t.legacyEvent), !1;
+    const r = t.legacyEvent;
+    return s.trackCustomEventAction(i, { name: r }, () => this.log.debug("Celtra event accepted:", r)), !0;
   }
 }
-class X {
+class Y {
   constructor(t, e, s) {
     this.key = t, this.initiator = s, this.log = e.enter(`MbkCeltraContexts(${t})`);
   }
@@ -355,22 +364,7 @@ class X {
     return e.mbkCtx ?? e.ctx;
   }
 }
-class Y {
-  constructor(t, e) {
-    this.config = t, this.name = "beacon", this.log = e.enter("MbkBeaconChannel");
-  }
-  emit(t) {
-    return !1;
-  }
-}
-const P = class P {
-};
-P.mapping = [
-  { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
-  { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
-];
-let S = P;
-class c {
+class a {
   /** Dictionary key of a kind, by value: `"view:panel"`. */
   static of(t) {
     return `${t.verb}:${t.role}`;
@@ -388,9 +382,9 @@ class c {
    */
   static signature(t) {
     return [
-      c.of(t),
-      c.instance(t),
-      c.path(t.scope),
+      a.of(t),
+      a.instance(t),
+      a.path(t.scope),
       t.percent,
       t.from,
       t.to,
@@ -407,7 +401,7 @@ class c {
    * by a `pause` is one subject changing rather than two things happening.
    */
   static subject(t) {
-    return [t.role, c.instance(t), c.path(t.scope)].join("|");
+    return [t.role, a.instance(t), a.path(t.scope)].join("|");
   }
   /** `"2"`, `"vidPlayer1"`, or `""` for a singleton such as the unit. */
   static instance(t) {
@@ -417,76 +411,53 @@ class c {
   static path(t) {
     const e = [];
     for (let s = t; s; s = s.scope) {
-      const i = c.instance(s);
+      const i = a.instance(s);
       e.unshift(i ? `${s.role}:${i}` : s.role);
     }
     return e.join(">");
   }
 }
-class B {
-  constructor(t, e, s) {
-    this.key = e, this.resolvers = /* @__PURE__ */ new Map(), this.log = t.enter(`MbkLegacyEvents(${e})`), this.declare(s);
+class o {
+  /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
+  static of(t, e) {
+    const s = { k: t.verb, vs1: t.role };
+    return o.set(s, "vs2", t.legacyEvent), o.set(s, "vs3", t.name), o.set(s, "vs4", a.path(t.scope) || void 0), o.set(s, "vs5", t.mode), o.set(s, "vi1", t.index), o.set(s, "vi2", t.ms), o.set(s, "vi3", t.from), o.set(s, "vi4", t.to), o.set(s, "vi5", t.completed === void 0 ? void 0 : Number(t.completed)), o.set(s, "vf1", t.percent), o.set(s, "vf2", t.modeMs), o.set(s, "iid", e), s;
   }
-  /** Adds or replaces resolvers. Later declaration wins for the same kind. */
-  declare(t) {
-    for (const e of t) {
-      if (!e?.kind || typeof e.legacyEvent != "function") {
-        this.log.warn("Ignoring malformed legacy mapping", e);
-        continue;
-      }
-      this.resolvers.set(c.of(e.kind), e.legacyEvent);
-    }
-    return this;
-  }
-  has(t) {
-    return this.resolvers.has(c.of(t));
+  static toQueryString(t) {
+    return Object.keys(t).map((e) => `${encodeURIComponent(e)}=${encodeURIComponent(String(t[e]))}`).join("&");
   }
   /**
-   * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
-   *   for its kind or when the registered one threw.
+   * The URL both the beacon and the pixel send to.
+   *
+   * A `{{event}}` placeholder is substituted with the resolved Celtra event name, on the model of
+   * the existing `externalVideoTrackerURI`, so an endpoint already shaped that way keeps working.
    */
-  resolve(t) {
-    const e = this.resolvers.get(c.of(t));
-    if (e)
-      try {
-        const { legacyEvent: s, ...i } = t, r = e(i);
-        if (typeof r != "string" || !r) {
-          this.log.warn(`Resolver for ${c.of(t)} produced no name`, r);
-          return;
-        }
-        return r;
-      } catch (s) {
-        this.log.warn(`Resolver for ${c.of(t)} failed, no Celtra event emitted`, s);
-        return;
-      }
+  static url(t, e, s) {
+    const i = t.includes("{{event}}") ? t.replace("{{event}}", encodeURIComponent(e.legacyEvent ?? e.verb)) : t, r = i.includes("?") ? "&" : "?";
+    return `${i}${r}${o.toQueryString(o.of(e, s))}`;
+  }
+  static set(t, e, s) {
+    s != null && s !== "" && (t[e] = s);
   }
 }
-class G {
-  constructor(t, e) {
-    this.config = t, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = e.enter("MbkPixelChannel");
-  }
-  emit(t) {
-    return !1;
-  }
-}
-const h = class h {
+const l = class l {
   constructor(t) {
     this.options = t;
   }
   get endpoint() {
-    return this.options.endpoint ?? this.runtimeParam(h.endpointParam) ?? h.defaults.endpoint;
+    return this.options.endpoint ?? this.runtimeParam(l.endpointParam) ?? l.defaults.endpoint;
   }
   get errorEndpoint() {
-    return this.options.errorEndpoint ?? this.runtimeParam(h.errorEndpointParam);
+    return this.options.errorEndpoint ?? this.runtimeParam(l.errorEndpointParam);
   }
   get impressionId() {
     return this.options.impressionId ? this.options.impressionId : (typeof creative < "u" ? creative : void 0)?.sessionId;
   }
   get pixelFallback() {
-    return this.options.pixelFallback ?? h.defaults.pixelFallback;
+    return this.options.pixelFallback ?? l.defaults.pixelFallback;
   }
   get log() {
-    return this.options.log ?? h.defaults.log();
+    return this.options.log ?? l.defaults.log();
   }
   /** Completes the configuration in place. Later values win, undefined ones leave the current one. */
   update(t) {
@@ -501,18 +472,94 @@ const h = class h {
     return typeof s == "string" && s ? s : void 0;
   }
 };
-h.endpointParam = "externalSignalTrackerURI", h.errorEndpointParam = "externalClientErrorURI", h.defaults = {
+l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
   endpoint: "https://events.mobkoi.com/track/engagement/",
   pixelFallback: !0,
-  log: () => new y("mbk")
+  log: () => new b("mbk")
 };
-let E = h;
+let x = l;
+class G {
+  constructor(t, e) {
+    this.config = t, this.name = "beacon", this.log = e.enter("MbkBeaconChannel");
+  }
+  emit(t) {
+    const e = this.config.endpoint;
+    if (!e)
+      return this.log.debug(`No ${x.endpointParam}, raw signal not sent`), !1;
+    const s = globalThis.navigator?.sendBeacon;
+    if (typeof s != "function")
+      return this.log.debug("sendBeacon unavailable"), !1;
+    const i = o.url(e, t, this.config.impressionId), r = s.call(globalThis.navigator, i);
+    return this.log.debug(r ? "queued" : "refused", i), r;
+  }
+}
+const A = class A {
+};
+A.mapping = [
+  { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
+  { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
+];
+let T = A;
+class R {
+  constructor(t, e, s) {
+    this.key = e, this.resolvers = /* @__PURE__ */ new Map(), this.log = t.enter(`MbkLegacyEvents(${e})`), this.declare(s);
+  }
+  /** Adds or replaces resolvers. Later declaration wins for the same kind. */
+  declare(t) {
+    for (const e of t) {
+      if (!e?.kind || typeof e.legacyEvent != "function") {
+        this.log.warn("Ignoring malformed legacy mapping", e);
+        continue;
+      }
+      this.resolvers.set(a.of(e.kind), e.legacyEvent);
+    }
+    return this;
+  }
+  has(t) {
+    return this.resolvers.has(a.of(t));
+  }
+  /**
+   * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
+   *   for its kind or when the registered one threw.
+   */
+  resolve(t) {
+    const e = this.resolvers.get(a.of(t));
+    if (e)
+      try {
+        const { legacyEvent: s, ...i } = t, r = e(i);
+        if (typeof r != "string" || !r) {
+          this.log.warn(`Resolver for ${a.of(t)} produced no name`, r);
+          return;
+        }
+        return r;
+      } catch (s) {
+        this.log.warn(`Resolver for ${a.of(t)} failed, no Celtra event emitted`, s);
+        return;
+      }
+  }
+}
 class H {
+  constructor(t, e) {
+    this.config = t, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = e.enter("MbkPixelChannel");
+  }
+  emit(t) {
+    const e = this.config.endpoint;
+    if (!e)
+      return !1;
+    if (typeof Image != "function")
+      return this.log.debug("Image unavailable"), !1;
+    const s = o.url(e, t, this.config.impressionId), i = new Image();
+    this.pending.add(i);
+    const r = () => this.pending.delete(i);
+    return i.onload = r, i.onerror = r, i.src = s, this.log.debug("sent", s), !0;
+  }
+}
+class Q {
   constructor(t, e) {
     this.config = t, this.log = e.enter("MbkTrackErrorReporter");
   }
   report(t, e, s) {
-    this.log.warn(`Channel "${t}" failed for ${c.of(e)}`, s);
+    this.log.warn(`Channel "${t}" failed for ${a.of(e)}`, s);
     const i = this.config.errorEndpoint;
     if (i)
       try {
@@ -520,32 +567,32 @@ class H {
           `error=${encodeURIComponent(`mbkTrack:${t}`)}`,
           `reason=${encodeURIComponent(String(s?.message ?? s))}`,
           `k=${encodeURIComponent(e.verb)}`
-        ], o = this.config.impressionId;
-        o && r.push(`iid=${encodeURIComponent(o)}`);
-        const l = `${i}${i.includes("?") ? "&" : "?"}${r.join("&")}`;
-        globalThis.navigator?.sendBeacon?.(l);
+        ], c = this.config.impressionId;
+        c && r.push(`iid=${encodeURIComponent(c)}`);
+        const d = `${i}${i.includes("?") ? "&" : "?"}${r.join("&")}`;
+        globalThis.navigator?.sendBeacon?.(d);
       } catch (r) {
         this.log.debug("Could not report the channel failure", r);
       }
   }
 }
-class J extends b {
+class J extends k {
 }
-const a = class a {
+const h = class h {
   constructor(t) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new E(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = a.now(), this.beacon = new Y(this.config, this.log), this.pixel = new G(this.config, this.log), this.reporter = new H(this.config, this.log), this.coreLegacyEvents = new B(this.log, "core", S.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new x(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = h.now(), this.beacon = new G(this.config, this.log), this.pixel = new H(this.config, this.log), this.reporter = new Q(this.config, this.log), this.coreLegacyEvents = new R(this.log, "core", T.mapping);
   }
   /** The one impression of this creative, created on first use. */
   static shared(t) {
-    const e = a.storage(), s = e[a.storageKey];
+    const e = h.storage(), s = e[h.storageKey];
     if (s)
       return s.configure(t), s;
-    const i = new a(t);
-    return e[a.storageKey] = i, i;
+    const i = new h(t);
+    return e[h.storageKey] = i, i;
   }
   /** Drops it. For tests, and for a creative that reloads its scripts. */
   static reset() {
-    delete a.storage()[a.storageKey];
+    delete h.storage()[h.storageKey];
   }
   /**
    * Stash on `unit` when available, else on the window, following the precedent set by
@@ -553,7 +600,7 @@ const a = class a {
    */
   static storage() {
     const t = globalThis;
-    return t.unit ? t.unit : (t[a.windowStorageKey] || (t[a.windowStorageKey] = {}), t[a.windowStorageKey]);
+    return t.unit ? t.unit : (t[h.windowStorageKey] || (t[h.windowStorageKey] = {}), t[h.windowStorageKey]);
   }
   static now() {
     const t = globalThis.performance;
@@ -592,11 +639,11 @@ const a = class a {
    * cannot move under data already sent.
    */
   markStart() {
-    return this.emitted.size > 0 || this.states.size > 0 ? (this.log.debug("Impression start not moved: signals were already emitted"), !1) : (this.startedAt = a.now(), !0);
+    return this.emitted.size > 0 || this.states.size > 0 ? (this.log.debug("Impression start not moved: signals were already emitted"), !1) : (this.startedAt = h.now(), !0);
   }
   /** Milliseconds since the start of the impression. */
   elapsedMs() {
-    return Math.round(a.now() - this.startedAt);
+    return Math.round(h.now() - this.startedAt);
   }
   /**
    * Clears deduplication for one media player so a new DOM instance can re-emit quartiles and
@@ -616,14 +663,14 @@ const a = class a {
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
   admits(t, e) {
-    const s = c.signature(t);
+    const s = a.signature(t);
     switch (e) {
       case "repeated":
         return !0;
       case "once":
         return this.emitted.has(s) ? (this.log.debug("Already emitted, skipping", s), !1) : (this.emitted.add(s), !0);
       case "state": {
-        const i = c.subject(t);
+        const i = a.subject(t);
         return this.states.get(i) === s ? (this.log.debug("Unchanged, skipping", s), !1) : (this.states.set(i, s), !0);
       }
     }
@@ -641,11 +688,11 @@ const a = class a {
     }
   }
 };
-a.storageKey = "mbkImpression", a.windowStorageKey = "__mbkTrackStorage";
-let v = a;
-class x {
+h.storageKey = "mbkImpression", h.windowStorageKey = "__mbkTrackStorage";
+let w = h;
+class y {
   constructor(t, e) {
-    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new B(this.log, e, []);
+    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new R(this.log, e, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -654,8 +701,8 @@ class x {
    * object.
    */
   static shared(t, e) {
-    const s = v.shared(e);
-    return s.track(t.trackingKey, () => new x(s, t.trackingKey), x).declare(t.legacyEventsMapping);
+    const s = w.shared(e);
+    return s.track(t.trackingKey, () => new y(s, t.trackingKey), y).declare(t.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(t) {
@@ -663,7 +710,7 @@ class x {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(t) {
-    return new $(t);
+    return new M(t);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(t, e) {
@@ -711,24 +758,24 @@ class x {
       return;
     }
     const e = this.legacyEvents.resolve(t) ?? this.impression.coreLegacyEvents.resolve(t);
-    return e || this.log.debug(`No resolver for ${c.of(t)}, raw signal only`), e;
+    return e || this.log.debug(`No resolver for ${a.of(t)}, raw signal only`), e;
   }
 }
-class w extends x {
+class C extends y {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(t, e) {
-    const s = v.shared(e), i = s.track(
+    const s = w.shared(e), i = s.track(
       t.trackingKey,
-      () => new w(s, t.trackingKey, e.initiator),
-      w
+      () => new C(s, t.trackingKey, e.initiator),
+      C
     );
     return i.contexts.useInitiator(e.initiator), i.declare(t.legacyEventsMapping);
   }
   constructor(t, e, s) {
-    super(t, e), this.contexts = new X(e, this.log, s), this.celtra = new W(this.log);
+    super(t, e), this.contexts = new Y(e, this.log, s), this.celtra = new S(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -737,16 +784,16 @@ class w extends x {
    */
   context(t) {
     const e = t.actionContext ?? this.contexts.forCause(t.userInitiated);
-    return new L(t, e);
+    return new U(t, e);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(t, e) {
     this.impression.send(this.celtra, t, e), super.emitChannels(t, e);
   }
 }
-class Q {
+class Z {
   constructor(t, e, s) {
-    this.options = t, this.creative = e, this.trackingKey = "aio", this.legacyEventsMapping = [], this.unitLegacy = { verb: "legacy", role: "unit" }, this.engagementFired = !1, this.reachedRightEdge = !1, this.track = w.shared(this, {}), this.swipe = this.track.context({
+    this.options = t, this.creative = e, this.trackingKey = "aio", this.legacyEventsMapping = [], this.unitLegacy = { verb: "legacy", role: "unit" }, this.engagementFired = !1, this.reachedRightEdge = !1, this.track = C.shared(this, {}), this.swipe = this.track.context({
       scope: void 0,
       userInitiated: !0,
       actionContext: s
@@ -760,18 +807,18 @@ class Q {
   }
   trackScrollEvents({ offset: t, max: e, viewport: s }) {
     t <= this.options.edgeTolerance && this.logger("user_scrolled_to_left_edge"), t >= e - this.options.edgeTolerance && (this.reachedRightEdge = !0, this.logger("user_scrolled_to_right_edge")), t > this.options.directionTolerance && this.logger("user_scrolled_left"), t < e - this.options.directionTolerance && this.reachedRightEdge && this.logger("user_scrolled_right");
-    const i = K.clamp(1, this.options.sections, Math.round(t / s) + 1);
+    const i = X.clamp(1, this.options.sections, Math.round(t / s) + 1);
     this.logger(`user_scrolled_to_item${i}`);
   }
   logger(t) {
     this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.swipe);
   }
 }
-class A extends p {
+class $ extends m {
 }
-class Z {
+class _ {
   constructor(t, e, s) {
-    this.context = t, this.options = e, this.scriptName = s, this.started = !1, this.trackingCtx = null, this.instructionsDismissed = !1, this.log = O.enter(this.scriptName);
+    this.context = t, this.options = e, this.scriptName = s, this.started = !1, this.trackingCtx = null, this.instructionsDismissed = !1, this.log = L.enter(this.scriptName);
   }
   start() {
     if (this.started)
@@ -792,13 +839,13 @@ class Z {
     this.trackingCtx = this.context.ctx ?? new ActionContext(this.screen, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
-    }), this.tracking = new Q(this.options, this.context.creative, this.trackingCtx), this.detector = m.horizontal(s, i, {
+    }), this.tracking = new Z(this.options, this.context.creative, this.trackingCtx), this.detector = v.horizontal(s, i, {
       dragSensitivity: this.options.dragSensitivity,
       easingDuration: this.options.easingDuration,
       getViewportSize: () => r?.offsetWidth || s.parentElement?.offsetWidth || i.offsetWidth
     }), this.detector.on("dragstart", () => {
       this.instructionsDismissed = !1, this.tracking.onDragStart();
-    }), this.detector.on("dragmove", (o) => this.handleProgress(o)), this.detector.on("settle", (o) => this.handleProgress(o));
+    }), this.detector.on("dragmove", (c) => this.handleProgress(c)), this.detector.on("settle", (c) => this.handleProgress(c));
   }
   get screen() {
     return this.context.screen;
@@ -806,12 +853,12 @@ class Z {
   requireView(t) {
     const e = this.screen.find(t);
     if (!e)
-      throw new A(`"${t}" not found`);
+      throw new $(`"${t}" not found`);
     return e;
   }
   requireNode(t, e) {
     if (!t.node)
-      throw new A(`"${e}" DOM node not found`);
+      throw new $(`"${e}" DOM node not found`);
     return t.node;
   }
   destroy() {
@@ -834,15 +881,15 @@ class Z {
     });
   }
 }
-class _ extends C {
+class tt extends I {
   constructor() {
-    super(...arguments), this.name = "AIO", this.defaultConfig = R;
+    super(...arguments), this.name = "AIO", this.defaultConfig = j;
   }
   create(t, e) {
-    return new Z(t, e, this.name);
+    return new _(t, e, this.name);
   }
 }
-const tt = (n) => new _().init(n);
+const et = (n) => new tt().init(n);
 export {
-  tt as setup
+  et as setup
 };
