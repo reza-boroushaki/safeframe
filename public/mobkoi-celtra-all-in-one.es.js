@@ -832,7 +832,7 @@ class _ {
     t.once("appeared", () => this.init());
   }
   init() {
-    this.log.debug("initializing");
+    this.log.debug("initializing"), console.log("heloo******");
     const t = this.requireView(this.options.container), e = this.requireView(this.options.content);
     this.scene = this.requireView(this.options.scene);
     const s = this.requireNode(t, this.options.container), i = this.requireNode(e, this.options.content), r = this.screen.node;
@@ -865,7 +865,7 @@ class _ {
     this.detector?.destroy();
   }
   handleProgress(t) {
-    this.syncScene(t.percent), this.dismissInstructions(t.offset), this.tracking.trackEngagement(t.offset), this.tracking.trackScrollEvents(t);
+    this.syncScene(t.percent), this.dismissInstructions(t.offset), this.tracking.trackEngagement(t.offset);
   }
   syncScene(t) {
     this.scene.renderAtProgress?.(t * 100);
