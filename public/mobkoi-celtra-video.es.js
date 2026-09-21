@@ -82,7 +82,7 @@ const j = it.enter("Celtra"), I = {
   icoIsMuted: "icoIsMuted",
   icoIsUnmuted: "icoIsUnmuted",
   btnPlay: "btnPlay",
-  btnReplay: "Replay",
+  btnReplay: "btnReplay",
   countdown: "countdown"
 }, nt = {
   ...I,
@@ -634,7 +634,7 @@ const O = class O {
   }
 };
 O.endpointParam = "externalSignalTrackerURI", O.errorEndpointParam = "externalClientErrorURI", O.defaults = {
-  endpoint: "https://events.mobkoi.com/engagement/",
+  endpoint: "https://events.mobkoi.com/track/engagement/",
   pixelFallback: !0,
   log: () => new W("mbk")
 };
@@ -962,7 +962,7 @@ class mt {
     this.trackPlayback(this.mediaPlay, t), this.state.hasVideoPlayed = !0, this.state.hasVideoCompleted = !1, this.elementManager.hidePlayButton(), this.elementManager.hasScreenObject(I.btnReplay) && this.elementManager.replayButton.hideAction(this.actionCtx, {}, noop), C(this.options, "soundControl") && this.elementManager.hasScreenObject(I.btnSound) && this.elementManager.soundButton.showAction(this.actionCtx, {}, noop), C(this.options, "countdownActive") && this.elementManager.hasScreenObject(I.countdown) && this.elementManager.countdown.showAction(this.actionCtx, {}, noop), this.setStatus("playing");
   }
   onPause(t) {
-    this.trackPlayback(this.mediaPause, t), t && this.elementManager.showPlayButton(), this.setStatus("paused");
+    this.trackPlayback(this.mediaPause, t), console.log("onPause", t), t && this.elementManager.showPlayButton(), this.setStatus("paused");
   }
   onMute() {
     if (C(this.options, "soundControl")) {
@@ -1450,7 +1450,7 @@ const yt = {
   onPause() {
     this.log.debug("onPause()");
     const t = this.isUserGesture() && !this.suppressNextPausePlayButton;
-    this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(t), this.videoCountdown && this.videoCountdown.pause();
+    console.log("this.isUserGesture()", this.isUserGesture(), "this.suppressNextPausePlayButton", this.suppressNextPausePlayButton), this.suppressNextPausePlayButton = !1, this.eventHandlers.onPause(t), this.videoCountdown && this.videoCountdown.pause();
   }
   pauseCountdown() {
     this.videoCountdown?.pause();
