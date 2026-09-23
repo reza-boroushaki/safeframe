@@ -426,7 +426,6 @@ class R {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
-    console.log("its me again***");
     const e = this.resolveTargets();
     this.driver = new M(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
@@ -593,7 +592,7 @@ class j {
     });
   }
 }
-const D = new j();
+const B = new j();
 class f {
   static deepMerge(e, t) {
     const n = { ...e };
@@ -612,7 +611,7 @@ class f {
 }
 const p = class p {
   constructor() {
-    this.contextResolver = D;
+    this.contextResolver = B;
   }
   init(e) {
     const t = w.enter(this.name), n = this.contextResolver.resolve(e), i = n.unit ?? n.screen, s = p.registry.get(i);
@@ -624,20 +623,20 @@ const p = class p {
 };
 p.registry = /* @__PURE__ */ new WeakMap();
 let m = p;
-class B extends m {
+class D extends m {
   constructor() {
     super(...arguments), this.name = "RxScroll", this.defaultConfig = x;
   }
   create(e, t) {
     const n = e.creative?.constructor?.name === "CrossScreenBanner";
-    return new R(e, {
+    return console.log("isUniBanner******", n), new R(e, {
       ...t,
       forceNativeMode: n,
       containerElement: n ? ["[id^=mobkoi]", "mbk-container"] : null
     });
   }
 }
-const V = (r) => new B().init(r);
+const U = (r) => new D().init(r);
 export {
-  V as setup
+  U as setup
 };
