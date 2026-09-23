@@ -426,11 +426,12 @@ class R {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
+    console.log("isCeltraNativeMode******", this.context.creative?.runtimeParams?.purpose);
     const e = this.resolveTargets();
     this.driver = new M(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
     let n;
-    if (console.log("isCeltraNativeMode******", this.context.creative?.runtimeParams?.purpose), this.isCeltraNativeMode()) {
+    if (this.isCeltraNativeMode()) {
       n = this.context.unit.getRxStateObject?.() ?? void 0;
       const s = this.startCeltraNativeMode(this.driver, t.passed, n);
       s && this.modeHandles.push(s);
