@@ -117,7 +117,7 @@ const k = [
   "#ad-container",
   "[data-ad-container]"
 ];
-class h {
+class d {
   /**
    * Query an element in ancestor documents, starting at the immediate parent.
    */
@@ -141,7 +141,7 @@ class h {
    * Query in the current document, then ancestor documents.
    */
   static querySelector(e) {
-    return document.querySelector(e) ?? h.queryParentDocument(e);
+    return document.querySelector(e) ?? d.queryParentDocument(e);
   }
   /**
    * Resolve the first matching Element from a selector, Element, or list of either.
@@ -154,7 +154,7 @@ class h {
       if (n instanceof Element)
         return n;
       if (typeof n == "string") {
-        const i = h.querySelector(n);
+        const i = d.querySelector(n);
         if (i)
           return i;
       }
@@ -178,14 +178,14 @@ class h {
    */
   static resolveContainerElement(e, t, n = k) {
     if (e) {
-      const s = h.resolveElement(e);
+      const s = d.resolveElement(e);
       if (s)
         return s;
       typeof e == "string" ? console.warn(`Dom: containerElement "${e}" not found`) : Array.isArray(e) && console.warn("Dom: containerElement selectors not found", e);
     }
     if (t)
       return t;
-    const i = h.queryFirst(n);
+    const i = d.queryFirst(n);
     return i || (console.warn("Dom: No container found, using document.body"), document.body);
   }
 }
@@ -255,8 +255,8 @@ class O extends P {
     for (const i of Object.keys(n)) {
       const s = n[i];
       if (this.values[i] !== s) {
-        const r = this.values[i];
-        this.values[i] = s, this.dirty[i] = !0, this.isDirtyFlag = !0, this.emit(`change:${i}`, s, r);
+        const o = this.values[i];
+        this.values[i] = s, this.dirty[i] = !0, this.isDirtyFlag = !0, this.emit(`change:${i}`, s, o);
       }
     }
   }
@@ -271,10 +271,10 @@ class O extends P {
     this.dirty = {}, this.isDirtyFlag = !1;
   }
 }
-function M(o) {
-  return o ? o.ownerDocument.defaultView ?? window : window;
+function A(r) {
+  return r ? r.ownerDocument.defaultView ?? window : window;
 }
-class d {
+class h {
   static lerp(e, t, n) {
     return e + (t - e) * n;
   }
@@ -285,7 +285,7 @@ class d {
     return Math.min(Math.max(n, e), t);
   }
 }
-class A {
+class M {
   constructor(e, t, n, i) {
     this.context = e, this.options = t, this.content = n, this.log = i, this.done = !1, this.lastValue = 0;
   }
@@ -303,25 +303,25 @@ class A {
         e.markClean();
         return;
       }
-      const n = d.lerp(e.vh, -e.vh, 0), i = d.lerp(e.vh, -e.vh, 1);
+      const n = h.lerp(e.vh, -e.vh, 0), i = h.lerp(e.vh, -e.vh, 1);
       if (e.y < n && e.y > i) {
-        const s = e.vh - this.options.scrollOptions.startPercent * e.vh, r = (1 - this.options.scrollOptions.endPercent) * e.vh;
+        const s = e.vh - this.options.scrollOptions.startPercent * e.vh, o = (1 - this.options.scrollOptions.endPercent) * e.vh;
         if (this.done && this.isEndSceneScrollMode()) {
-          const w = d.clamp(
+          const w = h.clamp(
             0,
             100,
-            Math.round(d.map(r, i, 0, 100, e.y))
+            Math.round(h.map(o, i, 0, 100, e.y))
           );
           this.content.endScene?.renderAtProgress?.(w), e.markClean();
           return;
         }
-        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(d.map(s, Number(r.toFixed(1)), 0, 100, c));
+        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(h.map(s, Number(o.toFixed(1)), 0, 100, c));
         let l = a;
         this.options.singleDirection && a < this.lastValue && (l = this.lastValue);
-        const g = d.clamp(0, 100, l);
+        const g = h.clamp(0, 100, l);
         this.content.apply(g), this.content.overlayScene?.renderAtProgress?.(g), this.context.creative?.userParams?.debug === "true" && this.log.debug(
           `scrub percent = ${g}
-	=> map(${s}, ${r}, 0, 100, ${c})`
+	=> map(${s}, ${o}, 0, 100, ${c})`
         ), a >= 100 && !this.done && (this.done = !0, this.handleCompletion()), this.lastValue = l;
       }
       e.markClean();
@@ -427,7 +427,7 @@ class R {
   }
   init() {
     const e = this.resolveTargets();
-    this.driver = new A(this.context, this.options, e, this.log);
+    this.driver = new M(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
     let n;
     if (this.isCeltraNativeMode()) {
@@ -457,13 +457,13 @@ class R {
     };
   }
   startNativeBrowserMode(e) {
-    const t = this.context.unit, n = h.resolveContainerElement(this.options.containerElement, t?.unitDiv);
+    const t = this.context.unit, n = d.resolveContainerElement(this.options.containerElement, t?.unitDiv);
     this.log.debug("RxScroll: Using native browser mode", n);
-    const i = new O(n), s = e.createCallback(i), r = () => {
+    const i = new O(n), s = e.createCallback(i), o = () => {
       i.update(), s();
     };
-    this.ticker.add(r);
-    const c = M(n), a = () => i.update();
+    this.ticker.add(o);
+    const c = A(n), a = () => i.update();
     c.addEventListener("scroll", a, { passive: !0 }), c.addEventListener("resize", a, { passive: !0 });
     let l = !1;
     return c !== window && (l = !0, window.addEventListener("scroll", a, { passive: !0 })), i.update(), {
@@ -471,7 +471,7 @@ class R {
       handle: {
         mode: "native-browser",
         stop: () => {
-          this.ticker.remove(r), c.removeEventListener("scroll", a), c.removeEventListener("resize", a), l && window.removeEventListener("scroll", a);
+          this.ticker.remove(o), c.removeEventListener("scroll", a), c.removeEventListener("resize", a), l && window.removeEventListener("scroll", a);
         }
       }
     };
@@ -481,8 +481,8 @@ class R {
     const n = e.scene;
     let i = !1;
     const s = setInterval(() => {
-      const r = t?.ext?.inViewPercentage?.();
-      typeof r != "number" || r <= this.options.safeFramePlayValue * 100 || e.playSceneOnEnd(() => {
+      const o = t?.ext?.inViewPercentage?.();
+      typeof o != "number" || o <= this.options.safeFramePlayValue * 100 || e.playSceneOnEnd(() => {
         i || (i = !0, clearInterval(s), n && this.options.nextPage?.active && e.schedulePageTransitionAfterPlayerEnd(n), n && this.options.onEndScene?.active && e.scheduleEndSceneAfterPlayerEnd(n));
       });
     }, 200);
@@ -527,15 +527,15 @@ class R {
     const n = e.find(t);
     if (!n)
       throw new Error(`ReactiveScroll: Scene "${t}" not found. Make sure the scene name matches.`);
-    const { nextPageScene: i, endScene: s, overlayScene: r } = this.resolveOptionalScenes();
-    return new T(e, n, i, s, r);
+    const { nextPageScene: i, endScene: s, overlayScene: o } = this.resolveOptionalScenes();
+    return new T(e, n, i, s, o);
   }
   resolveVideoContent() {
     const { screen: e } = this.context, t = this.options.video, n = e.find(t);
     if (!n)
       throw new Error(`ReactiveScroll: Video "${t}" not found.`);
-    const { nextPageScene: i, endScene: s, overlayScene: r } = this.resolveOptionalScenes();
-    return new F(e, n, i, s, r);
+    const { nextPageScene: i, endScene: s, overlayScene: o } = this.resolveOptionalScenes();
+    return new F(e, n, i, s, o);
   }
   /** Shared by scene + video: optional nextPage / onEndScene / overlayScene targets. */
   resolveOptionalScenes() {
@@ -547,11 +547,11 @@ class R {
     };
   }
 }
-function v(o) {
-  return !!(o && typeof o.find == "function");
+function v(r) {
+  return !!(r && typeof r.find == "function");
 }
-function u(o) {
-  return globalThis[o];
+function u(r) {
+  return globalThis[r];
 }
 class j {
   resolve(e = {}) {
@@ -592,14 +592,14 @@ class j {
     });
   }
 }
-const B = new j();
+const D = new j();
 class f {
   static deepMerge(e, t) {
     const n = { ...e };
     for (const i of Object.keys(t)) {
-      const s = t[i], r = e[i];
-      s !== void 0 && (f.isPlainObject(r) && f.isPlainObject(s) ? n[i] = f.deepMerge(
-        r,
+      const s = t[i], o = e[i];
+      s !== void 0 && (f.isPlainObject(o) && f.isPlainObject(s) ? n[i] = f.deepMerge(
+        o,
         s
       ) : n[i] = s);
     }
@@ -611,30 +611,32 @@ class f {
 }
 const p = class p {
   constructor() {
-    this.contextResolver = B;
+    this.contextResolver = D;
   }
   init(e) {
     const t = S.enter(this.name), n = this.contextResolver.resolve(e), i = n.unit ?? n.screen, s = p.registry.get(i);
     if (s)
       return t.debug(`${this.name} already initialized`), s;
-    const r = f.deepMerge(this.defaultConfig, e), c = this.create(n, r);
+    const o = f.deepMerge(this.defaultConfig, e), c = this.create(n, o);
     return p.registry.set(i, c), c.start(), c;
   }
 };
 p.registry = /* @__PURE__ */ new WeakMap();
 let m = p;
-class D extends m {
+class B extends m {
   constructor() {
     super(...arguments), this.name = "RxScroll", this.defaultConfig = x;
   }
   create(e, t) {
-    const n = e.unit, i = !!(n && typeof n.getRxStateObject == "function" && n.getRxStateObject() !== null);
-    console.log("isCeltraNativeMode******", i);
-    const s = e.creative?.constructor?.name === "CrossScreenBanner";
+    const n = e.creative?.constructor?.name === "CrossScreenBanner";
     return new R(e, {
       ...t,
-      forceNativeMode: s,
-      containerElement: s ? ["[id^=mobkoi]", "mbk-container"] : null
+      forceNativeMode: n,
+      containerElement: n ? ["[id^=mobkoi]", "mbk-container"] : null
     });
   }
 }
+const V = (r) => new B().init(r);
+export {
+  V as setup
+};
