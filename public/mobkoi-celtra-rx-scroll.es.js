@@ -441,10 +441,8 @@ class R {
     t.passed ? this.modeHandles.push(this.startSafeFrameMode(this.driver, t.apiObject)) : !this.isCeltraNativeMode() && !n && this.modeHandles.push(this.startFallbackMode(this.driver));
   }
   isCeltraNativeMode() {
-    if (this.options.forceNativeMode)
-      return !1;
     const e = this.context.unit;
-    return !!(e && typeof e.getRxStateObject == "function" && e.getRxStateObject() !== null);
+    return !this.options.forceNativeMode && !!(e && typeof e.getRxStateObject == "function" && e.getRxStateObject() !== null);
   }
   startCeltraNativeMode(e, t, n) {
     if (!n || t)
