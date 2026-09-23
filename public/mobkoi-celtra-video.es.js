@@ -351,7 +351,7 @@ class ct {
       };
       try {
         const e = this.controller && typeof this.controller.getScreenObject == "function" ? this.controller.getScreenObject(this.options.video) : this.elementManager.getScreenObject(this.options.video);
-        e.muted || e.muteAction(this.actionCtx, {}, noop), e._player.on("autoplayrejected", () => {
+        !e.muted && !this.controller?.state.userUnmuted && e.muteAction(this.actionCtx, {}, noop), e._player.on("autoplayrejected", () => {
           this.log.debug("autoplayrejected"), this.options.scriptedPlay || (this.elementManager.showPlayButton(), this.options.autoplayrejected = !0);
         }), e.hasAppearedAtLeastOnce ? e.playAction(this.actionCtx, {}, t) : e.once("appeared", () => {
           e.playAction(this.actionCtx, {}, t);
@@ -964,7 +964,7 @@ class pt {
   }
   toggleSound() {
     const t = this.scope.find(String(this.options.video));
-    t.muted ? (this.options.debug && this.log.debug("Unmuting video"), t.unMuteAction(this.actionCtx, {}, noop), this.logger("mbk_video_unmuted")) : (this.options.debug && this.log.debug("Muting video"), t.muteAction(this.actionCtx, {}, noop), this.logger("mbk_video_muted"));
+    t.muted ? (this.options.debug && this.log.debug("Unmuting video"), t.unMuteAction(this.actionCtx, {}, noop), this.state.userUnmuted = !0, this.logger("mbk_video_unmuted")) : (this.options.debug && this.log.debug("Muting video"), t.muteAction(this.actionCtx, {}, noop), this.state.userUnmuted = !1, this.logger("mbk_video_muted"));
   }
   logger(t) {
     this.options.mbkCustomEvents.indexOf(t) === -1 ? (this.options.debug && this.log.debug(`[Event] - ${t}`), this.options.mbkCustomEvents.push(t), this.track.once({ ...this.mediaLegacy, name: this.options.video, legacyEvent: t }, this.playback)) : this.options.debug && this.log.debug("event already exist", this.options.mbkCustomEvents);
@@ -1237,7 +1237,10 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
   constructor(t, e, i, n, o) {
     this.scope = t, this.actionCtx = i, this.unitRef = o, this.status = "unstarted", this.state = {
       hasVideoPlayed: !1,
-      hasVideoCompleted: !1
+      hasVideoCompleted: !1,
+      // Explicit user unmute via the sound control; cleared if they mute again. Survives scroll/swipe
+      // re-entry so playIfAllowed does not force-mute after the user chose sound.
+      userUnmuted: !1
     }, this.lastClickAt = 0, this.suppressNextPausePlayButton = !1, w.instanceCount++, this.log = n.enter("VideoController#" + w.instanceCount), this.log.debug("constructor starting...", { hasActionCtx: !!i }), this.options = nt(e), this.log.debug("Options initialized:", this.options), this.scope = t || screen, this.elementManager = new ot(this.scope, this.options, this.log, this.actionCtx), this.safeframeHandler = new at(this.log), this.viewportObserver = new rt(
       this.elementManager,
       this.options,
@@ -1408,7 +1411,7 @@ const wt = "#fff", yt = "drop-shadow(0px 2px 2px rgba(0,0,0,0.85))", Ct = `
     this.log.debug("pause()"), this.celtraVideo.pauseAction(this.actionCtx, {}, t);
   }
   scriptedPause() {
-    this.log.debug("scriptedPause()"), this._videoElement?.paused ? this.suppressNextPausePlayButton = !1 : this.suppressPlayButtonOnNextPause(), this.elementManager.hidePlayButton(), this.pause(() => {
+    this.log.debug("scriptedPause()"), this.suppressPlayButtonOnNextPause(), this.elementManager.hidePlayButton(), this.pause(() => {
       this.playWhenAppearing();
     });
   }
