@@ -107,7 +107,7 @@ class C {
     }), this.rafId = requestAnimationFrame(() => this.tick()));
   }
 }
-const P = [
+const k = [
   "[id^=mobkoi]",
   "mbk-container",
   "#mobkoi-creative",
@@ -176,7 +176,7 @@ class d {
    * Resolve an ad/creative container element.
    * Prefers explicit selectors, then unitDiv, then common ad fallbacks, then document.body.
    */
-  static resolveContainerElement(e, t, n = P) {
+  static resolveContainerElement(e, t, n = k) {
     if (e) {
       const s = d.resolveElement(e);
       if (s)
@@ -189,7 +189,7 @@ class d {
     return i || (console.warn("Dom: No container found, using document.body"), document.body);
   }
 }
-class k {
+class P {
   constructor() {
     this.events = /* @__PURE__ */ new Map();
   }
@@ -210,7 +210,7 @@ class k {
     });
   }
 }
-class O extends k {
+class O extends P {
   constructor(e) {
     super(), this.element = e, this.values = {
       y: null,
@@ -426,7 +426,6 @@ class R {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
-    console.log("isCeltraNativeMode******", this.context.creative?.runtimeParams?.purpose);
     const e = this.resolveTargets();
     this.driver = new M(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
