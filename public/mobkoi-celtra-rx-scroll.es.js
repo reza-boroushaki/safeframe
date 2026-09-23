@@ -79,7 +79,7 @@ class y {
     return e.parent = this, e;
   }
 }
-const E = new y("MOBKOI"), w = E.enter("Celtra");
+const E = new y("MOBKOI"), S = E.enter("Celtra");
 class C {
   constructor() {
     this.callbacks = [], this.rafId = null, this.running = !1;
@@ -107,7 +107,7 @@ class C {
     }), this.rafId = requestAnimationFrame(() => this.tick()));
   }
 }
-const P = [
+const k = [
   "[id^=mobkoi]",
   "mbk-container",
   "#mobkoi-creative",
@@ -176,7 +176,7 @@ class d {
    * Resolve an ad/creative container element.
    * Prefers explicit selectors, then unitDiv, then common ad fallbacks, then document.body.
    */
-  static resolveContainerElement(e, t, n = P) {
+  static resolveContainerElement(e, t, n = k) {
     if (e) {
       const s = d.resolveElement(e);
       if (s)
@@ -189,7 +189,7 @@ class d {
     return i || (console.warn("Dom: No container found, using document.body"), document.body);
   }
 }
-class k {
+class P {
   constructor() {
     this.events = /* @__PURE__ */ new Map();
   }
@@ -210,7 +210,7 @@ class k {
     });
   }
 }
-class O extends k {
+class O extends P {
   constructor(e) {
     super(), this.element = e, this.values = {
       y: null,
@@ -307,12 +307,12 @@ class M {
       if (e.y < n && e.y > i) {
         const s = e.vh - this.options.scrollOptions.startPercent * e.vh, o = (1 - this.options.scrollOptions.endPercent) * e.vh;
         if (this.done && this.isEndSceneScrollMode()) {
-          const S = h.clamp(
+          const w = h.clamp(
             0,
             100,
             Math.round(h.map(o, i, 0, 100, e.y))
           );
-          this.content.endScene?.renderAtProgress?.(S), e.markClean();
+          this.content.endScene?.renderAtProgress?.(w), e.markClean();
           return;
         }
         const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(h.map(s, Number(o.toFixed(1)), 0, 100, c));
@@ -410,7 +410,7 @@ class F {
 }
 class R {
   constructor(e, t) {
-    this.context = e, this.options = t, this.started = !1, this.modeHandles = [], this.ticker = new C(), this.log = w.enter("RxScroll"), this.safeFrameUtil = new b(this.log);
+    this.context = e, this.options = t, this.started = !1, this.modeHandles = [], this.ticker = new C(), this.log = S.enter("RxScroll"), this.safeFrameUtil = new b(this.log);
   }
   start() {
     if (this.started) {
@@ -441,7 +441,7 @@ class R {
     t.passed ? this.modeHandles.push(this.startSafeFrameMode(this.driver, t.apiObject)) : !this.isCeltraNativeMode() && !n && this.modeHandles.push(this.startFallbackMode(this.driver));
   }
   isCeltraNativeMode() {
-    if (this.options.forceNativeMode && this.context.creative?.runtimeParams?.purpose !== "preview")
+    if (this.options.forceNativeMode)
       return !1;
     const e = this.context.unit;
     return !!(e && typeof e.getRxStateObject == "function" && e.getRxStateObject() !== null);
@@ -592,7 +592,7 @@ class j {
     });
   }
 }
-const B = new j();
+const D = new j();
 class f {
   static deepMerge(e, t) {
     const n = { ...e };
@@ -611,10 +611,10 @@ class f {
 }
 const p = class p {
   constructor() {
-    this.contextResolver = B;
+    this.contextResolver = D;
   }
   init(e) {
-    const t = w.enter(this.name), n = this.contextResolver.resolve(e), i = n.unit ?? n.screen, s = p.registry.get(i);
+    const t = S.enter(this.name), n = this.contextResolver.resolve(e), i = n.unit ?? n.screen, s = p.registry.get(i);
     if (s)
       return t.debug(`${this.name} already initialized`), s;
     const o = f.deepMerge(this.defaultConfig, e), c = this.create(n, o);
@@ -623,20 +623,20 @@ const p = class p {
 };
 p.registry = /* @__PURE__ */ new WeakMap();
 let m = p;
-class D extends m {
+class B extends m {
   constructor() {
     super(...arguments), this.name = "RxScroll", this.defaultConfig = x;
   }
   create(e, t) {
     const n = e.creative?.constructor?.name === "CrossScreenBanner";
-    return console.log("isUniBanner******", n), new R(e, {
+    return new R(e, {
       ...t,
       forceNativeMode: n,
       containerElement: n ? ["[id^=mobkoi]", "mbk-container"] : null
     });
   }
 }
-const U = (r) => new D().init(r);
+const V = (r) => new B().init(r);
 export {
-  U as setup
+  V as setup
 };
