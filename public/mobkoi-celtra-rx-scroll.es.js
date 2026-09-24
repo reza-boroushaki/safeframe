@@ -426,6 +426,7 @@ class R {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
+    console.log("init**", this.isCeltraNativeMode());
     const e = this.resolveTargets();
     this.driver = new M(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
@@ -441,8 +442,6 @@ class R {
     t.passed ? this.modeHandles.push(this.startSafeFrameMode(this.driver, t.apiObject)) : !this.isCeltraNativeMode() && !n && this.modeHandles.push(this.startFallbackMode(this.driver));
   }
   isCeltraNativeMode() {
-    if (this.options.forceNativeMode)
-      return !1;
     const e = this.context.unit;
     return !!(e && typeof e.getRxStateObject == "function" && e.getRxStateObject() !== null);
   }
