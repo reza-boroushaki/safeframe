@@ -167,7 +167,7 @@ class $ {
     this.scope = e.scope, this.userInitiated = e.userInitiated;
   }
 }
-class O extends $ {
+class R extends $ {
   constructor(e, t) {
     super(e), this.actionContext = t;
   }
@@ -177,7 +177,7 @@ class A {
     this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
   }
   static actionContextOf(e) {
-    return e instanceof O ? e.actionContext : void 0;
+    return e instanceof R ? e.actionContext : void 0;
   }
   emit(e, t) {
     if (!e.legacyEvent)
@@ -362,7 +362,7 @@ P.mapping = [
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
 let j = P;
-class R {
+class U {
   constructor(e, t, i) {
     this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(i);
   }
@@ -440,7 +440,7 @@ class K {
 }
 const h = class h {
   constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new b(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = h.now(), this.beacon = new X(this.config, this.log), this.pixel = new z(this.config, this.log), this.reporter = new K(this.config, this.log), this.coreLegacyEvents = new R(this.log, "core", j.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new b(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = h.now(), this.beacon = new X(this.config, this.log), this.pixel = new z(this.config, this.log), this.reporter = new K(this.config, this.log), this.coreLegacyEvents = new U(this.log, "core", j.mapping);
   }
   /** The one impression of this creative, created on first use. */
   static shared(e) {
@@ -552,7 +552,7 @@ h.storageKey = "mbkImpression", h.windowStorageKey = "__mbkTrackStorage";
 let w = h;
 class x {
   constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new R(this.log, t, []);
+    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new U(this.log, t, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -644,7 +644,7 @@ class y extends x {
    */
   context(e) {
     const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new O(e, t);
+    return new R(e, t);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(e, t) {
@@ -652,8 +652,8 @@ class y extends x {
   }
 }
 class G {
-  constructor(e, t, i, s = {}) {
-    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = i.enter("CpxExposureTracking"), this.track = y.shared(this, { initiator: e, ...s }), this.exposure = this.buildExposureContext(t);
+  constructor(e, t) {
+    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxExposureTracking"), this.track = y.shared(this, {}), this.exposure = this.buildExposureContext(e);
   }
   emitThreshold(e) {
     this.emitLegacy(e);
@@ -960,10 +960,10 @@ class W {
 function g(r) {
   return r && typeof r == "object" && Object.prototype.toString.call(r) !== "[object RegExp]" && Object.prototype.toString.call(r) !== "[object Date]";
 }
-function U(r, e) {
+function O(r, e) {
   if (!(!g(r) || !g(e)))
     for (const t in r)
-      Object.prototype.hasOwnProperty.call(r, t) && (g(e[t]) && g(r[t]) ? U(r[t], e[t]) : e[t] = r[t]);
+      Object.prototype.hasOwnProperty.call(r, t) && (g(e[t]) && g(r[t]) ? O(r[t], e[t]) : e[t] = r[t]);
 }
 const E = {
   fps: 10,
@@ -1153,7 +1153,7 @@ class Q {
    * @private
    */
   mergeObj(e, t) {
-    U(e, t);
+    O(e, t);
   }
   /**
    * Calculates viewability state from a raw value.
@@ -1219,11 +1219,7 @@ class f {
       this.creative = s.creative, this.unit = s.unit, this.screen = s.screen, s.ctx ? this.mbkCtx = s.ctx : console.warn("CPX: ctx not provided in context object. Tracking may not work correctly."), this.contextOrComponent = s.screen, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx);
     } else
       this.contextOrComponent = e, typeof creative < "u" && creative && (this.creative = creative), typeof unit < "u" && unit && (this.unit = unit), e && (this.screen = e), typeof mbkCtx < "u" && mbkCtx ? this.mbkCtx = mbkCtx : typeof ctx < "u" && ctx && (this.mbkCtx = ctx);
-    this.configuration = { ...t }, this.exposureTracking = new G(
-      this.screen || this.contextOrComponent,
-      this.mbkCtx,
-      this.log
-    ), this.stateHandler = this.createStateHandler(), this.supertimer = new W(
+    this.configuration = { ...t }, this.exposureTracking = new G(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.supertimer = new W(
       this.stateHandler.handle.bind(this.stateHandler),
       this.configuration.pollTime,
       this.log,
