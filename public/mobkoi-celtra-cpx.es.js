@@ -653,7 +653,7 @@ class y extends x {
 }
 class G {
   constructor(e, t) {
-    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxExposureTracking"), this.track = y.shared(this, {}), this.exposure = this.buildExposureContext(e);
+    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = y.shared(this, {}), this.exposure = this.buildExposureContext(e);
   }
   emitThreshold(e) {
     this.emitLegacy(e);
