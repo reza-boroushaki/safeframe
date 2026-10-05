@@ -1,8 +1,7 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const V = {
+const U = {
   pollTime: 200,
   events: [
-    { value: 3e3, label: "mbkBillingPoint" },
     { value: 1, label: "cpx-0s" },
     { value: 1e3, label: "cpx-1s" },
     { value: 3e3, label: "cpx-3s" },
@@ -15,7 +14,7 @@ const V = {
     large: 0.3
   }
 };
-class y {
+class x {
   static getTopAncestor() {
     try {
       const e = document.location.ancestorOrigins;
@@ -38,7 +37,7 @@ class y {
     }), e;
   }
 }
-class D {
+class j {
   static contextExists() {
     if (typeof window > "u")
       return !1;
@@ -50,7 +49,7 @@ class D {
     }
   }
 }
-class j {
+class R {
   constructor(e) {
     this.log = e.enter("SafeFrameUtil");
   }
@@ -89,7 +88,7 @@ class j {
     }
   }
 }
-class x {
+class b {
   constructor(e) {
     this.name = e;
   }
@@ -110,18 +109,18 @@ class x {
     console.error(this.prefix, ...e);
   }
   enter(e) {
-    return this.add(new x(e));
+    return this.add(new b(e));
   }
   add(e) {
     return e.parent = this, e;
   }
 }
-const B = new x("MOBKOI");
-function L() {
+const V = new b("MOBKOI");
+function D() {
   const r = /* @__PURE__ */ new Date();
   return `${r.getDate()}/${r.getMonth() + 1}/${r.getFullYear()}`;
 }
-class M {
+class B {
   /**
    * Creates a new failure data collector.
    * 
@@ -131,7 +130,7 @@ class M {
    * @param parentLog - Parent logger for scoped logging
    */
   constructor(e) {
-    this.logger = e.enter("FailureData"), this.safeFrameUtil = new j(this.logger);
+    this.logger = e.enter("FailureData"), this.safeFrameUtil = new R(this.logger);
     const t = creative.runtimeParams, i = creative.sdk;
     this.data = {
       celtraIds: {
@@ -150,21 +149,21 @@ class M {
         timestamp: t.clientTimestamp,
         timestampOffset: t.clientTimeZoneOffsetInMinutes,
         unixStamp: Date.now(),
-        unixDate: L()
+        unixDate: D()
       },
       env: {
         celAmpDetected: i.ampDetected,
         celSfDetected: i.safeFrameDetected,
         celAdapter: i.constructor.name,
-        ampContextExists: D.contextExists(),
+        ampContextExists: j.contextExists(),
         sfApiExists: this.safeFrameUtil.apiExists(),
         sf_CfgExists: this.safeFrameUtil.configExists()
       },
       location: {
-        topAncestor: y.getTopAncestor(),
+        topAncestor: x.getTopAncestor(),
         winHref: globalThis.window !== void 0 && globalThis.location?.href || "unknown",
-        referrer: y.getReferrer(),
-        ancestors: y.getAncestors()
+        referrer: x.getReferrer(),
+        ancestors: x.getAncestors()
       }
     };
   }
@@ -178,22 +177,22 @@ class M {
     this.logger.debug(this.data);
   }
 }
-class R {
+class $ {
   constructor(e) {
     this.scope = e.scope, this.userInitiated = e.userInitiated;
   }
 }
-class $ extends R {
+class F extends $ {
   constructor(e, t) {
     super(e), this.actionContext = t;
   }
 }
-class E {
+class T {
   constructor(e) {
     this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
   }
   static actionContextOf(e) {
-    return e instanceof $ ? e.actionContext : void 0;
+    return e instanceof F ? e.actionContext : void 0;
   }
   emit(e, t) {
     if (!e.legacyEvent)
@@ -201,14 +200,14 @@ class E {
     const i = typeof Creative < "u" ? Creative : void 0;
     if (typeof i?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", e.legacyEvent), !1;
-    const s = E.actionContextOf(t);
+    const s = T.actionContextOf(t);
     if (!s)
       return this.log.warn("No ActionContext on the cause of", e.legacyEvent), !1;
     const n = e.legacyEvent;
     return i.trackCustomEventAction(s, { name: n }, () => this.log.debug("Celtra event accepted:", n)), !0;
   }
 }
-class N {
+class L {
   constructor(e, t, i) {
     this.key = e, this.initiator = i, this.log = t.enter(`MbkCeltraContexts(${e})`);
   }
@@ -353,17 +352,17 @@ const l = class l {
 };
 l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
   pixelFallback: !0,
-  log: () => new x("mbk")
+  log: () => new b("mbk")
 };
-let g = l;
-class H {
+let m = l;
+class M {
   constructor(e, t) {
     this.config = e, this.name = "beacon", this.log = t.enter("MbkBeaconChannel");
   }
   emit(e) {
     const t = this.config.endpoint;
     if (!t)
-      return this.log.debug(`No ${g.endpointParam}, raw signal not sent`), !1;
+      return this.log.debug(`No ${m.endpointParam}, raw signal not sent`), !1;
     const i = globalThis.navigator?.sendBeacon;
     if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
@@ -371,14 +370,14 @@ class H {
     return this.log.debug(n ? "queued" : "refused", s), n;
   }
 }
-const I = class I {
+const k = class k {
 };
-I.mapping = [
+k.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let T = I;
-class F {
+let C = k;
+class O {
   constructor(e, t, i) {
     this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(i);
   }
@@ -416,7 +415,7 @@ class F {
       }
   }
 }
-class _ {
+class N {
   constructor(e, t) {
     this.config = e, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = t.enter("MbkPixelChannel");
   }
@@ -432,7 +431,7 @@ class _ {
     return s.onload = n, s.onerror = n, s.src = i, this.log.debug("sent", i), !0;
   }
 }
-class z {
+class H {
   constructor(e, t) {
     this.config = e, this.log = t.enter("MbkTrackErrorReporter");
   }
@@ -456,7 +455,7 @@ class z {
 }
 const c = class c {
   constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new g(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = c.now(), this.beacon = new H(this.config, this.log), this.pixel = new _(this.config, this.log), this.reporter = new z(this.config, this.log), this.coreLegacyEvents = new F(this.log, "core", T.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new m(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = c.now(), this.beacon = new M(this.config, this.log), this.pixel = new N(this.config, this.log), this.reporter = new H(this.config, this.log), this.coreLegacyEvents = new O(this.log, "core", C.mapping);
   }
   /** The one impression of this creative, created on first use. */
   static shared(e) {
@@ -565,10 +564,10 @@ const c = class c {
   }
 };
 c.storageKey = "mbkImpression", c.windowStorageKey = "__mbkTrackStorage";
-let v = c;
-class w {
+let g = c;
+class v {
   constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new F(this.log, t, []);
+    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new O(this.log, t, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -577,8 +576,8 @@ class w {
    * object.
    */
   static shared(e, t) {
-    const i = v.shared(t);
-    return i.track(e.trackingKey, () => new w(i, e.trackingKey), w).declare(e.legacyEventsMapping);
+    const i = g.shared(t);
+    return i.track(e.trackingKey, () => new v(i, e.trackingKey), v).declare(e.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(e) {
@@ -586,7 +585,7 @@ class w {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(e) {
-    return new R(e);
+    return new $(e);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(e, t) {
@@ -637,21 +636,21 @@ class w {
     return t || this.log.debug(`No resolver for ${o.of(e)}, raw signal only`), t;
   }
 }
-class b extends w {
+class w extends v {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(e, t) {
-    const i = v.shared(t);
+    const i = g.shared(t);
     return i.track(
       e.trackingKey,
-      () => new b(i, e.trackingKey, t.initiator),
-      b
+      () => new w(i, e.trackingKey, t.initiator),
+      w
     ).declare(e.legacyEventsMapping);
   }
   constructor(e, t, i) {
-    super(e, t), this.contexts = new N(t, this.log, i), this.celtra = new E(this.log);
+    super(e, t), this.contexts = new L(t, this.log, i), this.celtra = new T(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -660,16 +659,16 @@ class b extends w {
    */
   context(e) {
     const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new $(e, t);
+    return new F(e, t);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(e, t) {
     this.impression.send(this.celtra, e, t), super.emitChannels(e, t);
   }
 }
-class K {
+class _ {
   constructor(e, t) {
-    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = b.shared(this, {}), this.exposure = this.buildExposureContext(e);
+    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = w.shared(this, {}), this.exposure = this.buildExposureContext(e);
   }
   emitThreshold(e) {
     this.emitLegacy(e);
@@ -704,7 +703,7 @@ class d {
     return typeof e == "object" && e !== null && !Array.isArray(e) && Object.getPrototypeOf(e) === Object.prototype;
   }
 }
-class X {
+class z {
   /**
    * Creates a new time state tracker.
    * 
@@ -770,7 +769,7 @@ class X {
     return this.cache;
   }
 }
-class G {
+class K {
   /**
    * Creates a new SuperTimer.
    * 
@@ -956,28 +955,28 @@ class G {
     }
   }
 }
-function m(r) {
-  return r && typeof r == "object" && Object.prototype.toString.call(r) !== "[object RegExp]" && Object.prototype.toString.call(r) !== "[object Date]";
+class X {
+  static lerp(e, t, i) {
+    return e + (t - e) * i;
+  }
+  static map(e, t, i, s, n) {
+    return i + (s - i) * ((n - e) / (t - e));
+  }
+  static clamp(e, t, i) {
+    return Math.min(Math.max(i, e), t);
+  }
 }
-function P(r, e) {
-  if (!(!m(r) || !m(e)))
-    for (const t in r)
-      Object.prototype.hasOwnProperty.call(r, t) && (m(e[t]) && m(r[t]) ? P(r[t], e[t]) : e[t] = r[t]);
-}
-const C = {
+const A = {
   fps: 10,
   threshold: { standard: 0.5, large: 0.3 }
 };
-class q {
+class G {
   constructor(e, t, i) {
-    this.mode = null, this.threshold = null, this.state = null, this.previousState = !1, this.active = !1, this.config = C, this.hasInit = !1;
+    this.mode = null, this.threshold = null, this.state = null, this.previousState = !1, this.active = !1, this.config = A, this.hasInit = !1;
     const s = i === void 0, n = s ? {} : e, h = s ? e : t, u = s ? t : i;
-    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new j(this.log), this.config = {
-      ...C,
-      threshold: { ...C.threshold }
-    }, this.mergeObj(n, this.config), this.callbacks = Array.isArray(h) ? h : [h], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
-    const A = this.resolveUnit(), O = A?.currentVariant ?? A;
-    O?.on && O.on("resize", () => {
+    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new R(this.log), this.config = d.deepMerge(A, n), this.callbacks = Array.isArray(h) ? h : [h], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
+    const E = this.resolveUnit(), I = E?.currentVariant ?? E;
+    I?.on && I.on("resize", () => {
       this.threshold = this.calculateThreshold();
     });
   }
@@ -1142,19 +1141,6 @@ class q {
     return typeof t == "number" && typeof i == "number" ? t * i > 242500 ? this.config.threshold.large : this.config.threshold.standard : this.config.threshold.standard;
   }
   /**
-   * Merges configuration objects.
-   *
-   * Deep merges properties from source to target, preserving nested objects.
-   * Does not merge RegExp or Date objects.
-   *
-   * @param from - Source object with new values
-   * @param to - Target object to merge into
-   * @private
-   */
-  mergeObj(e, t) {
-    P(e, t);
-  }
-  /**
    * Calculates viewability state from a raw value.
    *
    * Handles different value formats based on detection mode:
@@ -1170,9 +1156,11 @@ class q {
     switch (this.mode) {
       case "webInView":
       case "safeFrame":
-      case "mraidExposureChange":
-        this.updateState(Math.max(Math.min(e > 1 ? e / 100 : e, 1), 0) >= (this.threshold || 0));
+      case "mraidExposureChange": {
+        const t = e > 1 ? e / 100 : e;
+        this.updateState(X.clamp(0, 1, t) >= (this.threshold || 0));
         break;
+      }
       case "mraidIsViewable":
         this.updateState(!!e);
         break;
@@ -1181,10 +1169,10 @@ class q {
     }
   }
 }
-const U = B.enter("Celtra");
-class W {
+const P = V.enter("Celtra");
+class q {
   constructor(e, t, i) {
-    this.context = e, this.options = t, this.scriptName = i, this.started = !1, this.log = U.enter(this.scriptName), this.creative = e.creative, this.unit = e.unit, this.screen = e.screen, this.mbkCtx = e.ctx, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx), this.exposureTracking = new K(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.supertimer = new G(
+    this.context = e, this.options = t, this.scriptName = i, this.started = !1, this.log = P.enter(this.scriptName), this.creative = e.creative, this.unit = e.unit, this.screen = e.screen, this.mbkCtx = e.ctx, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx), this.exposureTracking = new _(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.supertimer = new K(
       this.stateHandler.handle.bind(this.stateHandler),
       this.options.pollTime,
       this.log,
@@ -1195,7 +1183,7 @@ class W {
         },
         selfStart: !1
       }
-    ), this.viewableObserver = new q(
+    ), this.viewableObserver = new G(
       {
         onFailure: () => this.onViewableFailure(),
         onLegacyEvent: (s) => this.exposureTracking.emitLegacy(s),
@@ -1264,7 +1252,7 @@ class W {
     }, 0);
   }
   createStateHandler() {
-    return new X(
+    return new z(
       {
         interval: this.options.pollTime,
         countingMode: this.options.countingMode
@@ -1276,7 +1264,7 @@ class W {
     );
   }
   onViewableFailure() {
-    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new M(this.log);
+    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new B(this.log);
   }
   onViewableChange(e) {
     this.supertimer && (e && this.supertimer.isPaused() && this.supertimer.resume(), !e && !this.supertimer.isPaused() && this.supertimer.pause());
@@ -1285,13 +1273,13 @@ class W {
     return this.failData ? this.failData.data : null;
   }
 }
-function S(r) {
+function y(r) {
   return !!(r && typeof r.find == "function");
 }
 function f(r) {
   return globalThis[r];
 }
-class Q {
+class W {
   resolve(e = {}) {
     const t = this.resolveCreative(e.creative);
     if (!t)
@@ -1309,15 +1297,15 @@ class Q {
     return e ?? f("creative");
   }
   resolveScreen(e, t) {
-    if (S(t))
+    if (y(t))
       return t;
     if (typeof e?.getScreen == "function") {
       const s = e.getScreen();
-      if (S(s))
+      if (y(s))
         return s;
     }
     const i = f("screen");
-    return S(i) ? i : void 0;
+    return y(i) ? i : void 0;
   }
   resolveUnit(e, t, i) {
     return t ?? e?.getUnit?.() ?? i?.getUnit?.() ?? f("unit");
@@ -1330,12 +1318,12 @@ class Q {
     });
   }
 }
-const Y = new Q(), p = class p {
+const Q = new W(), p = class p {
   constructor() {
-    this.contextResolver = Y;
+    this.contextResolver = Q;
   }
   init(e) {
-    const t = U.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, n = p.registry.get(s);
+    const t = P.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, n = p.registry.get(s);
     if (n)
       return t.debug(`${this.name} already initialized`), n;
     const h = d.deepMerge(this.defaultConfig, e), u = this.create(i, h);
@@ -1343,16 +1331,16 @@ const Y = new Q(), p = class p {
   }
 };
 p.registry = /* @__PURE__ */ new WeakMap();
-let k = p;
-class Z extends k {
+let S = p;
+class Y extends S {
   constructor() {
-    super(...arguments), this.name = "CPX", this.defaultConfig = V;
+    super(...arguments), this.name = "CPX", this.defaultConfig = U;
   }
   create(e, t) {
-    return new W(e, t, this.name);
+    return new q(e, t, this.name);
   }
 }
-const J = (r) => new Z().init(r);
+const Z = (r) => new Y().init(r);
 export {
-  J as setup
+  Z as setup
 };
