@@ -1,6 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const U = {
-  pollTime: 200,
+const j = {
   events: [
     { value: 1, label: "cpx-0s" },
     { value: 1e3, label: "cpx-1s" },
@@ -37,7 +36,7 @@ class x {
     }), e;
   }
 }
-class j {
+class P {
   static contextExists() {
     if (typeof window > "u")
       return !1;
@@ -49,7 +48,7 @@ class j {
     }
   }
 }
-class R {
+class $ {
   constructor(e) {
     this.log = e.enter("SafeFrameUtil");
   }
@@ -115,12 +114,12 @@ class b {
     return e.parent = this, e;
   }
 }
-const V = new b("MOBKOI");
-function D() {
+const D = new b("MOBKOI");
+function V() {
   const r = /* @__PURE__ */ new Date();
   return `${r.getDate()}/${r.getMonth() + 1}/${r.getFullYear()}`;
 }
-class B {
+class M {
   /**
    * Creates a new failure data collector.
    * 
@@ -130,7 +129,7 @@ class B {
    * @param parentLog - Parent logger for scoped logging
    */
   constructor(e) {
-    this.logger = e.enter("FailureData"), this.safeFrameUtil = new R(this.logger);
+    this.logger = e.enter("FailureData"), this.safeFrameUtil = new $(this.logger);
     const t = creative.runtimeParams, i = creative.sdk;
     this.data = {
       celtraIds: {
@@ -149,13 +148,13 @@ class B {
         timestamp: t.clientTimestamp,
         timestampOffset: t.clientTimeZoneOffsetInMinutes,
         unixStamp: Date.now(),
-        unixDate: D()
+        unixDate: V()
       },
       env: {
         celAmpDetected: i.ampDetected,
         celSfDetected: i.safeFrameDetected,
         celAdapter: i.constructor.name,
-        ampContextExists: j.contextExists(),
+        ampContextExists: P.contextExists(),
         sfApiExists: this.safeFrameUtil.apiExists(),
         sf_CfgExists: this.safeFrameUtil.configExists()
       },
@@ -177,22 +176,22 @@ class B {
     this.logger.debug(this.data);
   }
 }
-class $ {
+class F {
   constructor(e) {
     this.scope = e.scope, this.userInitiated = e.userInitiated;
   }
 }
-class F extends $ {
+class R extends F {
   constructor(e, t) {
     super(e), this.actionContext = t;
   }
 }
-class T {
+class I {
   constructor(e) {
     this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
   }
   static actionContextOf(e) {
-    return e instanceof F ? e.actionContext : void 0;
+    return e instanceof R ? e.actionContext : void 0;
   }
   emit(e, t) {
     if (!e.legacyEvent)
@@ -200,14 +199,14 @@ class T {
     const i = typeof Creative < "u" ? Creative : void 0;
     if (typeof i?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", e.legacyEvent), !1;
-    const s = T.actionContextOf(t);
+    const s = I.actionContextOf(t);
     if (!s)
       return this.log.warn("No ActionContext on the cause of", e.legacyEvent), !1;
     const n = e.legacyEvent;
     return i.trackCustomEventAction(s, { name: n }, () => this.log.debug("Celtra event accepted:", n)), !0;
   }
 }
-class L {
+class B {
   constructor(e, t, i) {
     this.key = e, this.initiator = i, this.log = t.enter(`MbkCeltraContexts(${e})`);
   }
@@ -242,7 +241,7 @@ class L {
     return t.mbkCtx ?? t.ctx;
   }
 }
-class o {
+class a {
   /** Dictionary key of a kind, by value: `"view:panel"`. */
   static of(e) {
     return `${e.verb}:${e.role}`;
@@ -260,9 +259,9 @@ class o {
    */
   static signature(e) {
     return [
-      o.of(e),
-      o.instance(e),
-      o.path(e.scope),
+      a.of(e),
+      a.instance(e),
+      a.path(e.scope),
       e.percent,
       e.from,
       e.to,
@@ -279,7 +278,7 @@ class o {
    * by a `pause` is one subject changing rather than two things happening.
    */
   static subject(e) {
-    return [e.role, o.instance(e), o.path(e.scope)].join("|");
+    return [e.role, a.instance(e), a.path(e.scope)].join("|");
   }
   /** `"2"`, `"vidPlayer1"`, or `""` for a singleton such as the unit. */
   static instance(e) {
@@ -289,17 +288,17 @@ class o {
   static path(e) {
     const t = [];
     for (let i = e; i; i = i.scope) {
-      const s = o.instance(i);
+      const s = a.instance(i);
       t.unshift(s ? `${i.role}:${s}` : i.role);
     }
     return t.join(">");
   }
 }
-class a {
+class o {
   /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
   static of(e, t) {
     const i = { k: e.verb, vs1: e.role };
-    return a.set(i, "vs2", e.legacyEvent), a.set(i, "vs3", e.name), a.set(i, "vs4", o.path(e.scope) || void 0), a.set(i, "vs5", e.mode), a.set(i, "vi1", e.index), a.set(i, "vi2", e.ms), a.set(i, "vi3", e.from), a.set(i, "vi4", e.to), a.set(i, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), a.set(i, "vf1", e.percent), a.set(i, "vf2", e.modeMs), a.set(i, "iid", t), i;
+    return o.set(i, "vs2", e.legacyEvent), o.set(i, "vs3", e.name), o.set(i, "vs4", a.path(e.scope) || void 0), o.set(i, "vs5", e.mode), o.set(i, "vi1", e.index), o.set(i, "vi2", e.ms), o.set(i, "vi3", e.from), o.set(i, "vi4", e.to), o.set(i, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), o.set(i, "vf1", e.percent), o.set(i, "vf2", e.modeMs), o.set(i, "iid", t), i;
   }
   static toQueryString(e) {
     return Object.keys(e).map((t) => `${encodeURIComponent(t)}=${encodeURIComponent(String(e[t]))}`).join("&");
@@ -312,7 +311,7 @@ class a {
    */
   static url(e, t, i) {
     const s = e.includes("{{event}}") ? e.replace("{{event}}", encodeURIComponent(t.legacyEvent ?? t.verb)) : e, n = s.includes("?") ? "&" : "?";
-    return `${s}${n}${a.toQueryString(a.of(t, i))}`;
+    return `${s}${n}${o.toQueryString(o.of(t, i))}`;
   }
   static set(e, t, i) {
     i != null && i !== "" && (e[t] = i);
@@ -354,19 +353,19 @@ l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalCl
   pixelFallback: !0,
   log: () => new b("mbk")
 };
-let m = l;
-class M {
+let p = l;
+class L {
   constructor(e, t) {
     this.config = e, this.name = "beacon", this.log = t.enter("MbkBeaconChannel");
   }
   emit(e) {
     const t = this.config.endpoint;
     if (!t)
-      return this.log.debug(`No ${m.endpointParam}, raw signal not sent`), !1;
+      return this.log.debug(`No ${p.endpointParam}, raw signal not sent`), !1;
     const i = globalThis.navigator?.sendBeacon;
     if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
-    const s = a.url(t, e, this.config.impressionId), n = i.call(globalThis.navigator, s);
+    const s = o.url(t, e, this.config.impressionId), n = i.call(globalThis.navigator, s);
     return this.log.debug(n ? "queued" : "refused", s), n;
   }
 }
@@ -376,8 +375,8 @@ k.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let C = k;
-class O {
+let y = k;
+class U {
   constructor(e, t, i) {
     this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(i);
   }
@@ -388,29 +387,29 @@ class O {
         this.log.warn("Ignoring malformed legacy mapping", t);
         continue;
       }
-      this.resolvers.set(o.of(t.kind), t.legacyEvent);
+      this.resolvers.set(a.of(t.kind), t.legacyEvent);
     }
     return this;
   }
   has(e) {
-    return this.resolvers.has(o.of(e));
+    return this.resolvers.has(a.of(e));
   }
   /**
    * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
    *   for its kind or when the registered one threw.
    */
   resolve(e) {
-    const t = this.resolvers.get(o.of(e));
+    const t = this.resolvers.get(a.of(e));
     if (t)
       try {
         const { legacyEvent: i, ...s } = e, n = t(s);
         if (typeof n != "string" || !n) {
-          this.log.warn(`Resolver for ${o.of(e)} produced no name`, n);
+          this.log.warn(`Resolver for ${a.of(e)} produced no name`, n);
           return;
         }
         return n;
       } catch (i) {
-        this.log.warn(`Resolver for ${o.of(e)} failed, no Celtra event emitted`, i);
+        this.log.warn(`Resolver for ${a.of(e)} failed, no Celtra event emitted`, i);
         return;
       }
   }
@@ -425,7 +424,7 @@ class N {
       return !1;
     if (typeof Image != "function")
       return this.log.debug("Image unavailable"), !1;
-    const i = a.url(t, e, this.config.impressionId), s = new Image();
+    const i = o.url(t, e, this.config.impressionId), s = new Image();
     this.pending.add(s);
     const n = () => this.pending.delete(s);
     return s.onload = n, s.onerror = n, s.src = i, this.log.debug("sent", i), !0;
@@ -436,7 +435,7 @@ class H {
     this.config = e, this.log = t.enter("MbkTrackErrorReporter");
   }
   report(e, t, i) {
-    this.log.warn(`Channel "${e}" failed for ${o.of(t)}`, i);
+    this.log.warn(`Channel "${e}" failed for ${a.of(t)}`, i);
     const s = this.config.errorEndpoint;
     if (s)
       try {
@@ -455,7 +454,7 @@ class H {
 }
 const c = class c {
   constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new m(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = c.now(), this.beacon = new M(this.config, this.log), this.pixel = new N(this.config, this.log), this.reporter = new H(this.config, this.log), this.coreLegacyEvents = new O(this.log, "core", C.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new p(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = c.now(), this.beacon = new L(this.config, this.log), this.pixel = new N(this.config, this.log), this.reporter = new H(this.config, this.log), this.coreLegacyEvents = new U(this.log, "core", y.mapping);
   }
   /** The one impression of this creative, created on first use. */
   static shared(e) {
@@ -538,14 +537,14 @@ const c = class c {
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
   admits(e, t) {
-    const i = o.signature(e);
+    const i = a.signature(e);
     switch (t) {
       case "repeated":
         return !0;
       case "once":
         return this.emitted.has(i) ? (this.log.debug("Already emitted, skipping", i), !1) : (this.emitted.add(i), !0);
       case "state": {
-        const s = o.subject(e);
+        const s = a.subject(e);
         return this.states.get(s) === i ? (this.log.debug("Unchanged, skipping", i), !1) : (this.states.set(s, i), !0);
       }
     }
@@ -564,10 +563,10 @@ const c = class c {
   }
 };
 c.storageKey = "mbkImpression", c.windowStorageKey = "__mbkTrackStorage";
-let g = c;
+let m = c;
 class v {
   constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new O(this.log, t, []);
+    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new U(this.log, t, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -576,7 +575,7 @@ class v {
    * object.
    */
   static shared(e, t) {
-    const i = g.shared(t);
+    const i = m.shared(t);
     return i.track(e.trackingKey, () => new v(i, e.trackingKey), v).declare(e.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
@@ -585,7 +584,7 @@ class v {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(e) {
-    return new $(e);
+    return new F(e);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(e, t) {
@@ -633,7 +632,7 @@ class v {
       return;
     }
     const t = this.legacyEvents.resolve(e) ?? this.impression.coreLegacyEvents.resolve(e);
-    return t || this.log.debug(`No resolver for ${o.of(e)}, raw signal only`), t;
+    return t || this.log.debug(`No resolver for ${a.of(e)}, raw signal only`), t;
   }
 }
 class w extends v {
@@ -642,7 +641,7 @@ class w extends v {
    *   {@link MbkImpression.track}.
    */
   static shared(e, t) {
-    const i = g.shared(t);
+    const i = m.shared(t);
     return i.track(
       e.trackingKey,
       () => new w(i, e.trackingKey, t.initiator),
@@ -650,7 +649,7 @@ class w extends v {
     ).declare(e.legacyEventsMapping);
   }
   constructor(e, t, i) {
-    super(e, t), this.contexts = new L(t, this.log, i), this.celtra = new T(this.log);
+    super(e, t), this.contexts = new B(t, this.log, i), this.celtra = new I(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -659,14 +658,14 @@ class w extends v {
    */
   context(e) {
     const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new F(e, t);
+    return new R(e, t);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(e, t) {
     this.impression.send(this.celtra, e, t), super.emitChannels(e, t);
   }
 }
-class _ {
+class z {
   constructor(e, t) {
     this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = w.shared(this, {}), this.exposure = this.buildExposureContext(e);
   }
@@ -703,256 +702,105 @@ class d {
     return typeof e == "object" && e !== null && !Array.isArray(e) && Object.getPrototypeOf(e) === Object.prototype;
   }
 }
-class z {
-  /**
-   * Creates a new time state tracker.
-   * 
-   * @param options - Configuration options
-   * @param options.interval - Polling interval in milliseconds (default: 200)
-   * @param options.countingMode - "cumulative" or "continuous" (default: "cumulative")
-   * @param evs - Array of CPX events with time thresholds and labels
-   * @param parentLogger - Parent logger instance for scoped logging
-   * @param exposure - CPX exposure emitter (MbkCeltraTrack)
-   * @param onComplete - Optional callback fired when all segments completed
-   */
+class K {
   constructor(e = {}, t, i, s, n) {
-    this.evs = t, this.exposure = s, this.segments = [], this.canRun = !0, this.hasInit = !1, this.log = i.enter("MbkTimeStateTracker"), this.config = d.deepMerge({ countingMode: "cumulative", interval: 200 }, e), this.cache = {
-      intervalTime: this.config.interval,
+    this.evs = t, this.exposure = s, this.segments = [], this.canRun = !0, this.hasInit = !1, this.timerId = null, this.runningSince = null, this.log = i.enter("MbkTimeStateTracker"), this.config = d.deepMerge(
+      { countingMode: "cumulative" },
+      e
+    ), this.cache = {
       currentPeriodTime: 0,
       sumOfPassedSegments: 0,
       currentSegmentIndex: 0,
       state: !1,
       lastState: !1,
       currentSegment: null
-    }, this.canRun = !0, this.onComplete = n, this.update = this.update.bind(this), this.handle = this.handle.bind(this);
+    }, this.canRun = !0, this.onComplete = n, this.update = this.update.bind(this);
   }
   /**
    * Updates the viewability state.
-   * 
-   * Called by viewability observer when state changes. If not viewable,
-   * resets lastState to prevent time accumulation until viewable again.
-   * 
+   *
+   * Starts or pauses the wall-clock deadline timer so time only accumulates
+   * while the ad is viewable.
+   *
    * @param s - True if currently viewable, false otherwise
    */
   update(e) {
-    this.cache.state = e, e ? e && !this.cache.lastState && (this.cache.lastState = !0) : this.cache.lastState = !1;
-  }
-  /**
-   * Handles a single poll tick for time accumulation.
-   */
-  handle() {
-    if (this.cache.currentSegment === null || !this.canRun)
-      return null;
-    this.cache.state && this.cache.lastState ? this.cache.currentPeriodTime += this.cache.intervalTime : this.config.countingMode === "continuous" && (this.cache.currentPeriodTime = 0), this.cache.currentSegment !== null && this.cache.currentSegment !== void 0 && this.cache.currentPeriodTime >= this.cache.currentSegment.duration && (this.log.debug("CPX: Firing event", this.cache.currentSegment.label, {
-      currentPeriodTime: this.cache.currentPeriodTime,
-      segmentDuration: this.cache.currentSegment.duration,
-      state: this.cache.state,
-      lastState: this.cache.lastState
-    }), this.exposure.emitThreshold(this.cache.currentSegment.label), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - this.cache.currentSegment.duration, 0), this.cache.sumOfPassedSegments += this.cache.currentSegment.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments && this.segments[this.cache.currentSegmentIndex] || null), this.cache.currentSegment === null && (this.canRun = !1, this.onComplete && typeof this.onComplete == "function" && this.onComplete()), this.cache.lastState = this.cache.state;
+    if (this.cache.state = e, !e) {
+      this.cache.lastState = !1, this.pauseActive();
+      return;
+    }
+    this.cache.lastState = !0, this.resumeActive();
   }
   stop() {
-    this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
+    this.clearTimer(), this.runningSince = null, this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
   }
   init() {
     if (!this.hasInit) {
-      const t = (this.evs || this.segments || []).sort((i, s) => i.value - s.value);
+      const t = [...this.evs || []].sort((i, s) => i.value - s.value);
       this.segments = t.map((i, s, n) => ({
         duration: s === 0 ? i.value : i.value - n[s - 1].value,
         start: s === 0 ? 0 : n[s - 1].value,
         end: i.value,
         label: i.label
-      })), this.cache.currentSegment = this.segments[0];
+      })), this.cache.currentSegment = this.segments[0] ?? null;
     }
-    this.hasInit = !0;
+    this.hasInit = !0, this.cache.state && this.resumeActive();
   }
   readCache() {
     return this.cache;
   }
-}
-class K {
-  /**
-   * Creates a new SuperTimer.
-   * 
-   * @param fn - Function to execute (becomes onTick for interval, onEnd for timeout)
-   * @param countdown - Time in milliseconds before execution
-   * @param parentLog - Parent logger for scoped logging
-   * @param options - Timer configuration options
-   */
-  constructor(e, t, i, s) {
-    this.id = null, this.log = i.enter("SuperTimer");
-    const n = {
-      type: "timeout",
-      onEnd: () => {
-      },
-      onTick: () => {
-      },
-      time: t,
-      selfStart: !0
-    };
-    s && typeof s == "object" && Object.keys(s).map((h) => {
-      n[h] = s[h];
-    }), n.type === "interval" ? n.onTick = e : n.onEnd = e, this._c = {
-      type: n.type,
-      onEnd: n.onEnd,
-      onTick: n.onTick,
-      time: n.time,
-      selfStart: n.selfStart,
-      paused: !1,
-      complete: !1,
-      hasRun: !1,
-      resumed: !1,
-      startTime: null,
-      nextTime: n.time
-    }, this.cancel = this.cancel.bind(this), this.done = this.done.bind(this), this.pause = this.pause.bind(this), this.resume = this.resume.bind(this), this.reset = this.reset.bind(this), this.read = this.read.bind(this), this.isPaused = this.isPaused.bind(this), this.isComplete = this.isComplete.bind(this), this.hasRun = this.hasRun.bind(this), this.settings = this.settings.bind(this), this.init = this.init.bind(this), this._c.selfStart && this.init();
+  now() {
+    return Date.now();
   }
-  /**
-   * Cancels the timer without calling callbacks.
-   * 
-   * Clears the underlying timeout/interval. Safe to call multiple times.
-   * Does nothing if timer is already complete.
-   * 
-   * @returns null if already complete
-   */
-  cancel() {
-    if (this._c.complete)
-      return null;
-    this._c.type === "timeout" || this._c.resumed ? clearTimeout(this.id) : clearInterval(this.id);
+  clearTimer() {
+    this.timerId != null && (clearTimeout(this.timerId), this.timerId = null);
   }
-  /**
-   * Marks the timer as complete and fires onEnd callback.
-   * 
-   * Clears the underlying timeout/interval, marks as complete, and
-   * calls the onEnd callback. Used to manually complete tracking.
-   * 
-   * @returns null if already complete
-   */
-  done() {
-    if (this._c.complete)
-      return null;
-    this._c.type === "timeout" || this._c.resumed ? clearTimeout(this.id) : clearInterval(this.id), this._c.complete = !0, this._c.onEnd();
-  }
-  /**
-   * Pauses the timer.
-   * 
-   * Stops the timer and records remaining time. Can be resumed later
-   * to continue from where it left off. Essential for CPX tracking
-   * when ad becomes not viewable.
-   * 
-   * @param resumeIn - Optional: auto-resume after this many milliseconds
-   * @returns Remaining time in milliseconds, or null if already paused/complete
-   * 
-   * @example
-   * timer.pause() // Pause indefinitely
-   * timer.pause(5000) // Pause for 5 seconds, then auto-resume
-   */
-  pause(e) {
-    return this._c.complete || this._c.paused ? null : (this._c.type === "timeout" ? clearTimeout(this.id) : clearInterval(this.id), this._c.paused = !0, e && setTimeout(this.resume, e), this._c.nextTime -= Date.now() - (this._c.startTime || 0), this._c.nextTime);
-  }
-  /**
-   * Resumes a paused timer.
-   * 
-   * Continues from where the timer was paused, preserving remaining time.
-   * Used when ad becomes viewable again.
-   * 
-   * @param pauseIn - Optional: auto-pause after this many milliseconds
-   * @returns null if not paused or already complete
-   * 
-   * @example
-   * timer.resume() // Resume indefinitely
-   * timer.resume(3000) // Resume for 3 seconds, then auto-pause
-   */
-  resume(e) {
-    if (this._c.complete || !this._c.paused)
-      return null;
-    this._c.paused = !1, this._c.resumed = !0, this._c.startTime = Date.now(), e && setTimeout(this.pause, e), this.id = setTimeout(() => this.wrapper(), this._c.nextTime);
-  }
-  /**
-   * Resets the timer to initial state.
-   * 
-   * Pauses, cancels, and reinitializes the timer. Optionally runs
-   * a preset function before reinitialization.
-   * 
-   * @param preset - Optional function to run before reinitializing
-   */
-  reset(e) {
-    this.pause(), this.cancel(), this._c.paused = !1, this._c.complete = !1, this._c.resumed = !1, this._c.startTime = null, this._c.nextTime = this._c.time, typeof e == "function" && e(), this.init();
-  }
-  /**
-   * Gets the remaining time until next execution.
-   * 
-   * Accounts for paused state - returns exact remaining time whether
-   * timer is running or paused.
-   * 
-   * @returns Remaining time in milliseconds, or 0 if complete
-   */
-  read() {
-    return this._c.complete ? 0 : this._c.nextTime - (this._c.paused ? 0 : Date.now() - (this._c.startTime || 0));
-  }
-  /**
-   * Checks if timer is currently paused.
-   * 
-   * @returns True if paused, false if running or complete
-   */
-  isPaused() {
-    return this._c.paused;
-  }
-  /**
-   * Checks if timer has completed execution.
-   * 
-   * @returns True if done() was called, false otherwise
-   */
-  isComplete() {
-    return this._c.complete;
-  }
-  /**
-   * Checks if init() has been called.
-   * 
-   * @returns True if timer was initialized, false otherwise
-   */
-  hasRun() {
-    return this._c.hasRun;
-  }
-  /**
-   * Gets a copy of the timer's internal configuration.
-   * 
-   * @returns Shallow copy of timer settings and state
-   */
-  settings() {
-    return Object.assign({}, this._c);
-  }
-  /**
-   * Initializes and starts the timer.
-   * 
-   * Sets up the underlying setTimeout or setInterval based on type.
-   * Can only be called once - subsequent calls are ignored.
-   * 
-   * @throws {Error} If type is not "timeout" or "interval"
-   */
-  init() {
-    if (this._c.hasRun)
-      return this.log.warn("supertimer already init()"), null;
-    if (this._c.type === "timeout")
-      this._c.startTime = Date.now(), this.id = setTimeout(() => this.wrapper(), this._c.time), this._c.hasRun = !0;
-    else if (this._c.type === "interval")
-      this._c.startTime = Date.now(), this.id = setInterval(() => this.wrapper(), this._c.time), this._c.hasRun = !0;
-    else
-      throw new Error('Type must be "timeout" or "interval"');
-  }
-  /**
-   * Internal wrapper function executed on each tick/timeout.
-   * 
-   * Updates timing state, calls appropriate callback (onTick/onEnd),
-   * and manages interval continuity after resume.
-   * 
-   * @private
-   */
-  wrapper() {
-    this._c.startTime = Date.now(), this._c.nextTime = this._c.time;
-    try {
-      this._c.type === "interval" ? this._c.onTick() : this._c.onEnd(), this._c.type === "timeout" ? this.done() : this._c.resumed && (this._c.resumed = !1, this.id = setInterval(() => this.wrapper(), this._c.time));
-    } catch (e) {
-      this.log.error("wrapper failed", e);
+  pauseActive() {
+    if (this.clearTimer(), this.runningSince == null) {
+      this.config.countingMode === "continuous" && (this.cache.currentPeriodTime = 0);
+      return;
     }
+    const e = this.now() - this.runningSince;
+    if (this.runningSince = null, this.config.countingMode === "continuous") {
+      this.cache.currentPeriodTime = 0;
+      return;
+    }
+    this.cache.currentPeriodTime += Math.max(e, 0);
+  }
+  resumeActive() {
+    !this.hasInit || !this.canRun || this.cache.currentSegment == null || this.runningSince == null && (this.runningSince = this.now(), this.scheduleDeadline());
+  }
+  scheduleDeadline() {
+    if (this.clearTimer(), !this.canRun || this.cache.currentSegment == null || !this.cache.state || this.runningSince == null)
+      return;
+    const e = this.cache.currentSegment.duration - this.cache.currentPeriodTime;
+    if (e <= 0) {
+      this.commitActiveAndAdvance();
+      return;
+    }
+    this.timerId = setTimeout(() => this.onDeadline(), e);
+  }
+  onDeadline() {
+    this.timerId = null, !(!this.canRun || this.cache.currentSegment == null || !this.cache.state) && this.commitActiveAndAdvance();
+  }
+  /**
+   * Commits the active run into period time, fires any due segments, and
+   * reschedules when more viewable time is still needed.
+   */
+  commitActiveAndAdvance() {
+    this.runningSince != null && (this.cache.currentPeriodTime += Math.max(this.now() - this.runningSince, 0), this.runningSince = null), this.advanceDueSegments(), !(!this.canRun || this.cache.currentSegment == null || !this.cache.state) && (this.runningSince = this.now(), this.scheduleDeadline());
+  }
+  advanceDueSegments() {
+    for (; this.canRun && this.cache.currentSegment != null && this.cache.currentPeriodTime >= this.cache.currentSegment.duration; ) {
+      const e = this.cache.currentSegment;
+      this.log.debug("CPX: Firing event", e.label, {
+        currentPeriodTime: this.cache.currentPeriodTime,
+        segmentDuration: e.duration,
+        state: this.cache.state,
+        lastState: this.cache.lastState
+      }), this.exposure.emitThreshold(e.label), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - e.duration, 0), this.cache.sumOfPassedSegments += e.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments[this.cache.currentSegmentIndex] ?? null;
+    }
+    this.cache.currentSegment == null && (this.canRun = !1, this.clearTimer(), this.runningSince = null, this.onComplete && typeof this.onComplete == "function" && this.onComplete());
   }
 }
 class X {
@@ -974,9 +822,9 @@ class G {
   constructor(e, t, i) {
     this.mode = null, this.threshold = null, this.state = null, this.previousState = !1, this.active = !1, this.config = A, this.hasInit = !1;
     const s = i === void 0, n = s ? {} : e, h = s ? e : t, u = s ? t : i;
-    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new R(this.log), this.config = d.deepMerge(A, n), this.callbacks = Array.isArray(h) ? h : [h], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
-    const E = this.resolveUnit(), I = E?.currentVariant ?? E;
-    I?.on && I.on("resize", () => {
+    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new $(this.log), this.config = d.deepMerge(A, n), this.callbacks = Array.isArray(h) ? h : [h], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
+    const E = this.resolveUnit(), T = E?.currentVariant ?? E;
+    T?.on && T.on("resize", () => {
       this.threshold = this.calculateThreshold();
     });
   }
@@ -1169,21 +1017,10 @@ class G {
     }
   }
 }
-const P = V.enter("Celtra");
+const O = D.enter("Celtra");
 class q {
   constructor(e, t, i) {
-    this.context = e, this.options = t, this.scriptName = i, this.started = !1, this.log = P.enter(this.scriptName), this.creative = e.creative, this.unit = e.unit, this.screen = e.screen, this.mbkCtx = e.ctx, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx), this.exposureTracking = new _(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.supertimer = new K(
-      this.stateHandler.handle.bind(this.stateHandler),
-      this.options.pollTime,
-      this.log,
-      {
-        type: "interval",
-        onEnd: () => {
-          this.viewableObserver.stop(), this.stateHandler.stop();
-        },
-        selfStart: !1
-      }
-    ), this.viewableObserver = new G(
+    this.context = e, this.options = t, this.scriptName = i, this.started = !1, this.log = O.enter(this.scriptName), this.creative = e.creative, this.unit = e.unit, this.screen = e.screen, this.mbkCtx = e.ctx, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx), this.exposureTracking = new z(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.viewableObserver = new G(
       {
         onFailure: () => this.onViewableFailure(),
         onLegacyEvent: (s) => this.exposureTracking.emitLegacy(s),
@@ -1193,10 +1030,7 @@ class q {
         },
         unit: this.unit
       },
-      [
-        this.stateHandler.update.bind(this.stateHandler),
-        (s) => this.onViewableChange(s)
-      ],
+      [this.stateHandler.update.bind(this.stateHandler)],
       this.log
     ), typeof window < "u" && (window.mbkStateHandler = this.stateHandler);
   }
@@ -1221,7 +1055,7 @@ class q {
     t.once("appeared", () => this.initialize());
   }
   /**
-   * Initializes tracker components (time segments, timer, viewability).
+   * Initializes tracker components (time segments, viewability).
    * Called automatically from {@link start} when the unit appears.
    */
   initialize() {
@@ -1229,11 +1063,7 @@ class q {
       this.log.debug("CPX: Already completed tracking, skipping initialization");
       return;
     }
-    if (this.stateHandler.hasInit) {
-      this.supertimer.hasRun() && this.supertimer.isPaused() ? this.supertimer.resume() : this.supertimer.hasRun() || this.supertimer.init();
-      return;
-    }
-    this.stateHandler.init(), this.supertimer.hasRun() || this.supertimer.init(), this.viewableObserver.init().start(), this.viewableObserver.mode === "detectionFailed" && this.viewableObserver.state === !0 && (this.supertimer.isPaused() ? this.supertimer.resume() : this.supertimer.hasRun() || this.supertimer.init()), setTimeout(() => {
+    this.stateHandler.hasInit || (this.stateHandler.init(), this.viewableObserver.init().start(), setTimeout(() => {
       if (this.mbkCtx) {
         this.exposureTracking.updateActionContext(this.mbkCtx);
         return;
@@ -1249,31 +1079,30 @@ class q {
         }
       else
         this.log.warn("CPX: No screen or ActionContext available for exposure tracking");
-    }, 0);
+    }, 0));
   }
   createStateHandler() {
-    return new z(
+    return new K(
       {
-        interval: this.options.pollTime,
         countingMode: this.options.countingMode
       },
       this.options.events,
       this.log,
       this.exposureTracking,
-      () => this.supertimer.done()
+      () => this.onTrackingComplete()
     );
   }
-  onViewableFailure() {
-    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new B(this.log);
+  onTrackingComplete() {
+    this.viewableObserver.stop(), this.stateHandler.stop();
   }
-  onViewableChange(e) {
-    this.supertimer && (e && this.supertimer.isPaused() && this.supertimer.resume(), !e && !this.supertimer.isPaused() && this.supertimer.pause());
+  onViewableFailure() {
+    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new M(this.log);
   }
   readFailure() {
     return this.failData ? this.failData.data : null;
   }
 }
-function y(r) {
+function C(r) {
   return !!(r && typeof r.find == "function");
 }
 function f(r) {
@@ -1297,15 +1126,15 @@ class W {
     return e ?? f("creative");
   }
   resolveScreen(e, t) {
-    if (y(t))
+    if (C(t))
       return t;
     if (typeof e?.getScreen == "function") {
       const s = e.getScreen();
-      if (y(s))
+      if (C(s))
         return s;
     }
     const i = f("screen");
-    return y(i) ? i : void 0;
+    return C(i) ? i : void 0;
   }
   resolveUnit(e, t, i) {
     return t ?? e?.getUnit?.() ?? i?.getUnit?.() ?? f("unit");
@@ -1318,23 +1147,23 @@ class W {
     });
   }
 }
-const Q = new W(), p = class p {
+const Q = new W(), g = class g {
   constructor() {
     this.contextResolver = Q;
   }
   init(e) {
-    const t = P.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, n = p.registry.get(s);
+    const t = O.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, n = g.registry.get(s);
     if (n)
       return t.debug(`${this.name} already initialized`), n;
     const h = d.deepMerge(this.defaultConfig, e), u = this.create(i, h);
-    return p.registry.set(s, u), u.start(), u;
+    return g.registry.set(s, u), u.start(), u;
   }
 };
-p.registry = /* @__PURE__ */ new WeakMap();
-let S = p;
+g.registry = /* @__PURE__ */ new WeakMap();
+let S = g;
 class Y extends S {
   constructor() {
-    super(...arguments), this.name = "CPX", this.defaultConfig = U;
+    super(...arguments), this.name = "CPX", this.defaultConfig = j;
   }
   create(e, t) {
     return new q(e, t, this.name);
