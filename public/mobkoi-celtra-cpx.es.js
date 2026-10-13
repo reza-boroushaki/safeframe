@@ -1,20 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const U = {
-  pollTime: 200,
-  events: [
-    { value: 1, label: "cpx-0s" },
-    { value: 1e3, label: "cpx-1s" },
-    { value: 3e3, label: "cpx-3s" },
-    { value: 5e3, label: "cpx-5s" },
-    { value: 1e4, label: "cpx-10s" }
-  ],
-  countingMode: "cumulative",
-  threshold: {
-    standard: 0.5,
-    large: 0.3
-  }
-};
-class x {
+class I {
   static getTopAncestor() {
     try {
       const e = document.location.ancestorOrigins;
@@ -37,7 +22,7 @@ class x {
     }), e;
   }
 }
-class j {
+class B {
   static contextExists() {
     if (typeof window > "u")
       return !1;
@@ -49,7 +34,7 @@ class j {
     }
   }
 }
-class R {
+class F {
   constructor(e) {
     this.log = e.enter("SafeFrameUtil");
   }
@@ -88,7 +73,7 @@ class R {
     }
   }
 }
-class b {
+class C {
   constructor(e) {
     this.name = e;
   }
@@ -109,18 +94,28 @@ class b {
     console.error(this.prefix, ...e);
   }
   enter(e) {
-    return this.add(new b(e));
+    return this.add(new C(e));
   }
   add(e) {
     return e.parent = this, e;
   }
 }
-const V = new b("MOBKOI");
-function D() {
+const N = new C("MOBKOI");
+class k extends Error {
+  constructor(e, t = void 0) {
+    super(e), this.name = new.target.name, this.cause = typeof t == "string" ? new k(t, void 0) : t;
+  }
+  toString() {
+    return super.toString() + (this.cause ? `
+	because of:
+` + this.cause.toString() : "");
+  }
+}
+function X() {
   const r = /* @__PURE__ */ new Date();
   return `${r.getDate()}/${r.getMonth() + 1}/${r.getFullYear()}`;
 }
-class B {
+class _ {
   /**
    * Creates a new failure data collector.
    * 
@@ -130,7 +125,7 @@ class B {
    * @param parentLog - Parent logger for scoped logging
    */
   constructor(e) {
-    this.logger = e.enter("FailureData"), this.safeFrameUtil = new R(this.logger);
+    this.logger = e.enter("FailureData"), this.safeFrameUtil = new F(this.logger);
     const t = creative.runtimeParams, i = creative.sdk;
     this.data = {
       celtraIds: {
@@ -149,21 +144,21 @@ class B {
         timestamp: t.clientTimestamp,
         timestampOffset: t.clientTimeZoneOffsetInMinutes,
         unixStamp: Date.now(),
-        unixDate: D()
+        unixDate: X()
       },
       env: {
         celAmpDetected: i.ampDetected,
         celSfDetected: i.safeFrameDetected,
         celAdapter: i.constructor.name,
-        ampContextExists: j.contextExists(),
+        ampContextExists: B.contextExists(),
         sfApiExists: this.safeFrameUtil.apiExists(),
         sf_CfgExists: this.safeFrameUtil.configExists()
       },
       location: {
-        topAncestor: x.getTopAncestor(),
+        topAncestor: I.getTopAncestor(),
         winHref: globalThis.window !== void 0 && globalThis.location?.href || "unknown",
-        referrer: x.getReferrer(),
-        ancestors: x.getAncestors()
+        referrer: I.getReferrer(),
+        ancestors: I.getAncestors()
       }
     };
   }
@@ -177,22 +172,22 @@ class B {
     this.logger.debug(this.data);
   }
 }
-class $ {
+class V {
   constructor(e) {
     this.scope = e.scope, this.userInitiated = e.userInitiated;
   }
 }
-class F extends $ {
+class O extends V {
   constructor(e, t) {
     super(e), this.actionContext = t;
   }
 }
-class T {
+class A {
   constructor(e) {
     this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
   }
   static actionContextOf(e) {
-    return e instanceof F ? e.actionContext : void 0;
+    return e instanceof O ? e.actionContext : void 0;
   }
   emit(e, t) {
     if (!e.legacyEvent)
@@ -200,14 +195,14 @@ class T {
     const i = typeof Creative < "u" ? Creative : void 0;
     if (typeof i?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", e.legacyEvent), !1;
-    const s = T.actionContextOf(t);
+    const s = A.actionContextOf(t);
     if (!s)
       return this.log.warn("No ActionContext on the cause of", e.legacyEvent), !1;
     const n = e.legacyEvent;
     return i.trackCustomEventAction(s, { name: n }, () => this.log.debug("Celtra event accepted:", n)), !0;
   }
 }
-class L {
+class z {
   constructor(e, t, i) {
     this.key = e, this.initiator = i, this.log = t.enter(`MbkCeltraContexts(${e})`);
   }
@@ -242,7 +237,7 @@ class L {
     return t.mbkCtx ?? t.ctx;
   }
 }
-class o {
+class h {
   /** Dictionary key of a kind, by value: `"view:panel"`. */
   static of(e) {
     return `${e.verb}:${e.role}`;
@@ -260,9 +255,9 @@ class o {
    */
   static signature(e) {
     return [
-      o.of(e),
-      o.instance(e),
-      o.path(e.scope),
+      h.of(e),
+      h.instance(e),
+      h.path(e.scope),
       e.percent,
       e.from,
       e.to,
@@ -279,7 +274,7 @@ class o {
    * by a `pause` is one subject changing rather than two things happening.
    */
   static subject(e) {
-    return [e.role, o.instance(e), o.path(e.scope)].join("|");
+    return [e.role, h.instance(e), h.path(e.scope)].join("|");
   }
   /** `"2"`, `"vidPlayer1"`, or `""` for a singleton such as the unit. */
   static instance(e) {
@@ -289,17 +284,17 @@ class o {
   static path(e) {
     const t = [];
     for (let i = e; i; i = i.scope) {
-      const s = o.instance(i);
+      const s = h.instance(i);
       t.unshift(s ? `${i.role}:${s}` : i.role);
     }
     return t.join(">");
   }
 }
-class a {
+class c {
   /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
   static of(e, t) {
     const i = { k: e.verb, vs1: e.role };
-    return a.set(i, "vs2", e.legacyEvent), a.set(i, "vs3", e.name), a.set(i, "vs4", o.path(e.scope) || void 0), a.set(i, "vs5", e.mode), a.set(i, "vi1", e.index), a.set(i, "vi2", e.ms), a.set(i, "vi3", e.from), a.set(i, "vi4", e.to), a.set(i, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), a.set(i, "vf1", e.percent), a.set(i, "vf2", e.modeMs), a.set(i, "iid", t), i;
+    return c.set(i, "vs2", e.legacyEvent), c.set(i, "vs3", e.name), c.set(i, "vs4", h.path(e.scope) || void 0), c.set(i, "vs5", e.mode), c.set(i, "vi1", e.index), c.set(i, "vi2", e.ms), c.set(i, "vi3", e.from), c.set(i, "vi4", e.to), c.set(i, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), c.set(i, "vf1", e.percent), c.set(i, "vf2", e.modeMs), c.set(i, "iid", t), i;
   }
   static toQueryString(e) {
     return Object.keys(e).map((t) => `${encodeURIComponent(t)}=${encodeURIComponent(String(e[t]))}`).join("&");
@@ -312,7 +307,7 @@ class a {
    */
   static url(e, t, i) {
     const s = e.includes("{{event}}") ? e.replace("{{event}}", encodeURIComponent(t.legacyEvent ?? t.verb)) : e, n = s.includes("?") ? "&" : "?";
-    return `${s}${n}${a.toQueryString(a.of(t, i))}`;
+    return `${s}${n}${c.toQueryString(c.of(t, i))}`;
   }
   static set(e, t, i) {
     i != null && i !== "" && (e[t] = i);
@@ -323,7 +318,7 @@ const l = class l {
     this.options = e;
   }
   get endpoint() {
-    return this.options.endpoint ?? this.runtimeParam(l.endpointParam);
+    return this.options.endpoint ?? this.runtimeParam(l.endpointParam) ?? l.defaults.endpoint;
   }
   get errorEndpoint() {
     return this.options.errorEndpoint ?? this.runtimeParam(l.errorEndpointParam);
@@ -351,33 +346,34 @@ const l = class l {
   }
 };
 l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
+  endpoint: "https://events.mobkoi.com/track/engagement/",
   pixelFallback: !0,
-  log: () => new b("mbk")
+  log: () => new C("mbk")
 };
-let m = l;
-class M {
+let v = l;
+class K {
   constructor(e, t) {
     this.config = e, this.name = "beacon", this.log = t.enter("MbkBeaconChannel");
   }
   emit(e) {
     const t = this.config.endpoint;
     if (!t)
-      return this.log.debug(`No ${m.endpointParam}, raw signal not sent`), !1;
+      return this.log.debug(`No ${v.endpointParam}, raw signal not sent`), !1;
     const i = globalThis.navigator?.sendBeacon;
     if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
-    const s = a.url(t, e, this.config.impressionId), n = i.call(globalThis.navigator, s);
+    const s = c.url(t, e, this.config.impressionId), n = i.call(globalThis.navigator, s);
     return this.log.debug(n ? "queued" : "refused", s), n;
   }
 }
-const k = class k {
+const $ = class $ {
 };
-k.mapping = [
+$.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let C = k;
-class O {
+let P = $;
+class R {
   constructor(e, t, i) {
     this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(i);
   }
@@ -388,34 +384,34 @@ class O {
         this.log.warn("Ignoring malformed legacy mapping", t);
         continue;
       }
-      this.resolvers.set(o.of(t.kind), t.legacyEvent);
+      this.resolvers.set(h.of(t.kind), t.legacyEvent);
     }
     return this;
   }
   has(e) {
-    return this.resolvers.has(o.of(e));
+    return this.resolvers.has(h.of(e));
   }
   /**
    * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
    *   for its kind or when the registered one threw.
    */
   resolve(e) {
-    const t = this.resolvers.get(o.of(e));
+    const t = this.resolvers.get(h.of(e));
     if (t)
       try {
         const { legacyEvent: i, ...s } = e, n = t(s);
         if (typeof n != "string" || !n) {
-          this.log.warn(`Resolver for ${o.of(e)} produced no name`, n);
+          this.log.warn(`Resolver for ${h.of(e)} produced no name`, n);
           return;
         }
         return n;
       } catch (i) {
-        this.log.warn(`Resolver for ${o.of(e)} failed, no Celtra event emitted`, i);
+        this.log.warn(`Resolver for ${h.of(e)} failed, no Celtra event emitted`, i);
         return;
       }
   }
 }
-class N {
+class G {
   constructor(e, t) {
     this.config = e, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = t.enter("MbkPixelChannel");
   }
@@ -425,18 +421,18 @@ class N {
       return !1;
     if (typeof Image != "function")
       return this.log.debug("Image unavailable"), !1;
-    const i = a.url(t, e, this.config.impressionId), s = new Image();
+    const i = c.url(t, e, this.config.impressionId), s = new Image();
     this.pending.add(s);
     const n = () => this.pending.delete(s);
     return s.onload = n, s.onerror = n, s.src = i, this.log.debug("sent", i), !0;
   }
 }
-class H {
+class q {
   constructor(e, t) {
     this.config = e, this.log = t.enter("MbkTrackErrorReporter");
   }
   report(e, t, i) {
-    this.log.warn(`Channel "${e}" failed for ${o.of(t)}`, i);
+    this.log.warn(`Channel "${e}" failed for ${h.of(t)}`, i);
     const s = this.config.errorEndpoint;
     if (s)
       try {
@@ -444,8 +440,8 @@ class H {
           `error=${encodeURIComponent(`mbkTrack:${e}`)}`,
           `reason=${encodeURIComponent(String(i?.message ?? i))}`,
           `k=${encodeURIComponent(t.verb)}`
-        ], h = this.config.impressionId;
-        h && n.push(`iid=${encodeURIComponent(h)}`);
+        ], a = this.config.impressionId;
+        a && n.push(`iid=${encodeURIComponent(a)}`);
         const u = `${s}${s.includes("?") ? "&" : "?"}${n.join("&")}`;
         globalThis.navigator?.sendBeacon?.(u);
       } catch (n) {
@@ -453,29 +449,99 @@ class H {
       }
   }
 }
-const c = class c {
+class U extends k {
+}
+class W {
+  constructor(e, t, i) {
+    this.impression = e, this.document = t, this.flushables = /* @__PURE__ */ new Set(), this.flushed = /* @__PURE__ */ new Set(), this.hidden = !1, this.started = !1, this.onVisibilityChange = () => {
+      this.document.visibilityState === "hidden" ? this.hide("visibilitychange") : this.show("visibilitychange");
+    }, this.onPageHide = () => {
+      this.hide("pagehide");
+    }, this.onPageShow = (s) => {
+      s.persisted && this.document.visibilityState === "visible" && this.show("pageshow");
+    }, this.log = i.enter("MbkVisibilityLifecycle");
+  }
+  /**
+   * Flushes that segment on every transition to hidden from now on, and resumes it on every return.
+   *
+   * Starts listening on the first registration, so a creative with no open segment pays for nothing.
+   * A segment registered while the page is already hidden is flushed at once, so that it does not
+   * count hidden time until the next return to visible. Registering the same segment again does
+   * nothing.
+   */
+  register(e) {
+    if (this.start(), this.flushables.has(e)) {
+      this.log.debug("Segment already registered");
+      return;
+    }
+    this.flushables.add(e), this.hidden && this.flush(e, this.impression.elapsedMs(), "register");
+  }
+  /** Stops flushing and resuming that segment. Its current state is the script's to close. */
+  unregister(e) {
+    this.flushables.delete(e), this.flushed.delete(e);
+  }
+  /** Listens to the page lifecycle. Does nothing when already listening. */
+  start() {
+    this.started || (this.started = !0, this.hidden = this.document.visibilityState === "hidden", this.document.addEventListener("visibilitychange", this.onVisibilityChange), this.document.defaultView?.addEventListener("pagehide", this.onPageHide), this.document.defaultView?.addEventListener("pageshow", this.onPageShow), this.log.debug("Listening to the page lifecycle", this.hidden ? "hidden" : "visible"));
+  }
+  /** Stops listening. The segments stay registered, and a later {@link start} picks them up again. */
+  stop() {
+    this.started && (this.document.removeEventListener("visibilitychange", this.onVisibilityChange), this.document.defaultView?.removeEventListener("pagehide", this.onPageHide), this.document.defaultView?.removeEventListener("pageshow", this.onPageShow), this.started = !1, this.log.debug("Stopped listening to the page lifecycle"));
+  }
+  /** The first transition to hidden flushes every open segment, all at one instant. */
+  hide(e) {
+    this.hidden = !0;
+    const t = this.impression.elapsedMs();
+    for (const i of [...this.flushables])
+      this.flush(i, t, e);
+  }
+  /** The return to visible resumes every segment a flush closed, all at one instant. */
+  show(e) {
+    this.hidden = !1;
+    const t = this.impression.elapsedMs();
+    for (const i of [...this.flushed])
+      this.flushed.delete(i), this.log.debug(`${e}: resuming a segment at ${t}ms`), this.invoke(i, "resume", t);
+  }
+  flush(e, t, i) {
+    if (this.flushed.has(e)) {
+      this.log.debug(`${i}: segment already flushed, skipping`);
+      return;
+    }
+    this.flushed.add(e), this.log.debug(`${i}: flushing a segment at ${t}ms`), this.invoke(e, "flush", t);
+  }
+  /** One script's hook, isolated: it can fail without keeping the others from closing theirs. */
+  invoke(e, t, i) {
+    try {
+      e[t](i);
+    } catch (s) {
+      this.log.error(new U(`Segment ${t} hook failed at ${i}ms`, s));
+    }
+  }
+}
+const o = class o {
   constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new m(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = c.now(), this.beacon = new M(this.config, this.log), this.pixel = new N(this.config, this.log), this.reporter = new H(this.config, this.log), this.coreLegacyEvents = new O(this.log, "core", C.mapping);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new v(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = o.now(), this.beacon = new K(this.config, this.log), this.pixel = new G(this.config, this.log), this.reporter = new q(this.config, this.log), this.coreLegacyEvents = new R(this.log, "core", P.mapping), this.visibility = new W(this, globalThis.document, this.log);
   }
   /** The one impression of this creative, created on first use. */
   static shared(e) {
-    const t = c.storage(), i = t[c.storageKey];
+    const t = o.storage(), i = t[o.storageKey];
     if (i)
       return i.configure(e), i;
-    const s = new c(e);
-    return t[c.storageKey] = s, s;
+    const s = new o(e);
+    return t[o.storageKey] = s, s;
   }
-  /** Drops it. For tests, and for a creative that reloads its scripts. */
+  /** Releases and drops it. For tests, and for a creative that reloads its scripts. */
   static reset() {
-    delete c.storage()[c.storageKey];
+    const e = o.storage();
+    e[o.storageKey]?.release(), delete e[o.storageKey];
   }
   /**
    * Stash on `unit` when available, else on the window, following the precedent set by
-   * `CreativeScript` / `setup()` is the precedent for a per-creative singleton.
+   * `CpxTracker.getStorageObject()`.
    */
   static storage() {
     const e = globalThis;
-    return e.unit ? e.unit : (e[c.windowStorageKey] || (e[c.windowStorageKey] = {}), e[c.windowStorageKey]);
+    return e.unit ? e.unit : (e[o.windowStorageKey] || (e[o.windowStorageKey] = {}), e[o.windowStorageKey]);
   }
   static now() {
     const e = globalThis.performance;
@@ -484,6 +550,18 @@ const c = class c {
   /** Completes the configuration. Later values win. */
   configure(e) {
     this.config.update(e);
+  }
+  /** Flushes that open segment whenever the creative stops being observed, and resumes it after. */
+  register(e) {
+    this.visibility.register(e);
+  }
+  /** Stops flushing and resuming that segment. */
+  unregister(e) {
+    this.visibility.unregister(e);
+  }
+  /** Stops listening to the page lifecycle, so a dropped impression leaves nothing behind. */
+  release() {
+    this.visibility.stop();
   }
   /**
    * The track of one script, created on first use.
@@ -498,8 +576,8 @@ const c = class c {
     const s = this.tracks.get(e);
     if (s) {
       if (!(s instanceof i))
-        throw new Error(
-          `MbkTrack: script "${e}" is already tracked as a ${s.constructor.name}, not a ${i.name}. Every instance of one script must pick the same specialisation.`
+        throw new U(
+          `"${e}" is already tracked as a ${s.constructor.name}, not a ${i.name}. Every instance of one script must pick the same specialisation.`
         );
       return s;
     }
@@ -514,11 +592,11 @@ const c = class c {
    * cannot move under data already sent.
    */
   markStart() {
-    return this.emitted.size > 0 || this.states.size > 0 ? (this.log.debug("Impression start not moved: signals were already emitted"), !1) : (this.startedAt = c.now(), !0);
+    return this.emitted.size > 0 || this.states.size > 0 ? (this.log.debug("Impression start not moved: signals were already emitted"), !1) : (this.startedAt = o.now(), !0);
   }
   /** Milliseconds since the start of the impression. */
   elapsedMs() {
-    return Math.round(c.now() - this.startedAt);
+    return Math.round(o.now() - this.startedAt);
   }
   /**
    * Clears deduplication for one media player so a new DOM instance can re-emit quartiles and
@@ -538,14 +616,14 @@ const c = class c {
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
   admits(e, t) {
-    const i = o.signature(e);
+    const i = h.signature(e);
     switch (t) {
       case "repeated":
         return !0;
       case "once":
         return this.emitted.has(i) ? (this.log.debug("Already emitted, skipping", i), !1) : (this.emitted.add(i), !0);
       case "state": {
-        const s = o.subject(e);
+        const s = h.subject(e);
         return this.states.get(s) === i ? (this.log.debug("Unchanged, skipping", i), !1) : (this.states.set(s, i), !0);
       }
     }
@@ -563,11 +641,11 @@ const c = class c {
     }
   }
 };
-c.storageKey = "mbkImpression", c.windowStorageKey = "__mbkTrackStorage";
-let g = c;
-class v {
+o.storageKey = "mbkImpression", o.windowStorageKey = "__mbkTrackStorage";
+let w = o;
+class x {
   constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new O(this.log, t, []);
+    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new R(this.log, t, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -576,16 +654,31 @@ class v {
    * object.
    */
   static shared(e, t) {
-    const i = g.shared(t);
-    return i.track(e.trackingKey, () => new v(i, e.trackingKey), v).declare(e.legacyEventsMapping);
+    const i = w.shared(t);
+    return i.track(e.trackingKey, () => new x(i, e.trackingKey), x).declare(e.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(e) {
     return this.legacyEvents.declare(e), this;
   }
+  /**
+   * Closes that open segment whenever the creative stops being observed, and reopens it after.
+   *
+   * This is the whole of what a script does about the tab being hidden, the app backgrounded or the
+   * page left: the impression holds the one listener, and calls every registered segment at the same
+   * instant of its clock. The segment emits its own closing, through this track, from
+   * {@link MbkFlushable.flush}.
+   */
+  register(e) {
+    this.impression.register(e);
+  }
+  /** Stops closing and reopening that segment, when the script ends it for good. */
+  unregister(e) {
+    this.impression.unregister(e);
+  }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(e) {
-    return new $(e);
+    return new V(e);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(e, t) {
@@ -633,24 +726,24 @@ class v {
       return;
     }
     const t = this.legacyEvents.resolve(e) ?? this.impression.coreLegacyEvents.resolve(e);
-    return t || this.log.debug(`No resolver for ${o.of(e)}, raw signal only`), t;
+    return t || this.log.debug(`No resolver for ${h.of(e)}, raw signal only`), t;
   }
 }
-class w extends v {
+class y extends x {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(e, t) {
-    const i = g.shared(t);
-    return i.track(
+    const i = w.shared(t), s = i.track(
       e.trackingKey,
-      () => new w(i, e.trackingKey, t.initiator),
-      w
-    ).declare(e.legacyEventsMapping);
+      () => new y(i, e.trackingKey, t.initiator),
+      y
+    );
+    return s.contexts.useInitiator(t.initiator), s.declare(e.legacyEventsMapping);
   }
   constructor(e, t, i) {
-    super(e, t), this.contexts = new L(t, this.log, i), this.celtra = new T(this.log);
+    super(e, t), this.contexts = new z(t, this.log, i), this.celtra = new A(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -659,25 +752,48 @@ class w extends v {
    */
   context(e) {
     const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new F(e, t);
+    return new O(e, t);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(e, t) {
     this.impression.send(this.celtra, e, t), super.emitChannels(e, t);
   }
 }
-class _ {
+class Q {
   constructor(e, t) {
-    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = w.shared(this, {}), this.exposure = this.buildExposureContext(e);
+    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = y.shared(this, {}), this.exposure = this.buildExposureContext(e), this.openedAt = this.track.impression.elapsedMs(), this.track.register(this);
+  }
+  /**
+   * Hooks the page-lifecycle flush into CPX timer pause/resume.
+   * Call after the SuperTimer exists.
+   */
+  bindPageLifecycle(e) {
+    this.onPageHidden = e.onHidden, this.onPageVisible = e.onVisible;
   }
   emitThreshold(e) {
     this.emitLegacy(e);
   }
   emitLegacy(e) {
-    this.track.once({ ...this.unitLegacy, legacyEvent: e }, this.exposure);
+    this.log.debug("emit", e), this.track.once({ ...this.unitLegacy, legacyEvent: e }, this.exposure);
   }
   updateActionContext(e) {
     this.exposure = this.buildExposureContext(e);
+  }
+  /** Tab/app hidden or page left: close the open exposure segment and queue a beacon. */
+  flush(e) {
+    const t = Math.max(e - this.openedAt, 0);
+    this.log.debug("flush", { ms: e, modeMs: t }), this.onPageHidden?.(), this.track.repeated(
+      { ...this.unitLegacy, legacyEvent: "cpx-flush", modeMs: t },
+      this.exposure
+    );
+  }
+  /** Page observed again: open a new exposure segment. */
+  resume(e) {
+    this.log.debug("resume", e), this.openedAt = e, this.onPageVisible?.();
+  }
+  /** Stops page-lifecycle flush when exposure tracking is finished for good. */
+  release() {
+    this.track.unregister(this);
   }
   buildExposureContext(e) {
     return this.track.context({
@@ -687,23 +803,40 @@ class _ {
     });
   }
 }
-class d {
-  static deepMerge(e, t) {
-    const i = { ...e };
-    for (const s of Object.keys(t)) {
-      const n = t[s], h = e[s];
-      n !== void 0 && (d.isPlainObject(h) && d.isPlainObject(n) ? i[s] = d.deepMerge(
-        h,
-        n
-      ) : i[s] = n);
+class b {
+  /**
+   * Deep merges properties from source object into target object.
+   * 
+   * Recursively merges nested objects. Does not merge RegExp or Date objects.
+   * Modifies the target object in place.
+   * 
+   * @param from - Source object with properties to merge
+   * @param to - Target object to merge into (modified in place)
+   * 
+   * @example
+   * const target = { a: 1, b: { x: 10 } }
+   * const source = { b: { y: 20 }, c: 3 }
+   * ObjectUtil.mergeObj(source, target)
+   * // target is now { a: 1, b: { x: 10, y: 20 }, c: 3 }
+   */
+  static mergeObj(e, t) {
+    function i(s) {
+      return s && typeof s == "object" && Object.prototype.toString.call(
+        s
+      ) !== "[object RegExp]" && Object.prototype.toString.call(s) !== "[object Date]";
     }
-    return i;
-  }
-  static isPlainObject(e) {
-    return typeof e == "object" && e !== null && !Array.isArray(e) && Object.getPrototypeOf(e) === Object.prototype;
+    if (typeof e == "object" && e !== void 0) {
+      for (const s in e)
+        if (Object.prototype.hasOwnProperty.call(e, s))
+          if (i(t[s]) && i(e[s]))
+            for (const n in e[s])
+              Object.prototype.hasOwnProperty.call(e[s], n) && (t[s][n] = e[s][n]);
+          else
+            t[s] = e[s];
+    }
   }
 }
-class z {
+class Y {
   /**
    * Creates a new time state tracker.
    * 
@@ -716,7 +849,7 @@ class z {
    * @param onComplete - Optional callback fired when all segments completed
    */
   constructor(e = {}, t, i, s, n) {
-    this.evs = t, this.exposure = s, this.segments = [], this.canRun = !0, this.hasInit = !1, this.log = i.enter("MbkTimeStateTracker"), this.config = d.deepMerge({ countingMode: "cumulative", interval: 200 }, e), this.cache = {
+    this.evs = t, this.exposure = s, this.segments = [], this.canRun = !0, this.hasInit = !1, this.log = i.enter("MbkTimeStateTracker"), this.config = { countingMode: "cumulative", interval: 200 }, b.mergeObj(e, this.config), this.cache = {
       intervalTime: this.config.interval,
       currentPeriodTime: 0,
       sumOfPassedSegments: 0,
@@ -739,6 +872,24 @@ class z {
   }
   /**
    * Handles a single poll tick for time accumulation.
+   * 
+   * Called on each interval (e.g., every 200ms). Logic:
+   * 
+   * 1. If state is viewable AND last state was viewable:
+   *    - Accumulate interval time to current period time
+   * 
+   * 2. If continuous mode AND state changed:
+   *    - Reset current period time to 0 (requires uninterrupted viewability)
+   * 
+   * 3. If current period time >= segment duration:
+   *    - Fire tracking event
+   *    - Move to next segment
+   *    - Carry over any excess time
+   * 
+   * 4. If no more segments:
+   *    - Stop tracking and call onComplete callback
+   * 
+   * @returns null if tracking stopped or no current segment
    */
   handle() {
     if (this.cache.currentSegment === null || !this.canRun)
@@ -750,9 +901,32 @@ class z {
       lastState: this.cache.lastState
     }), this.exposure.emitThreshold(this.cache.currentSegment.label), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - this.cache.currentSegment.duration, 0), this.cache.sumOfPassedSegments += this.cache.currentSegment.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments && this.segments[this.cache.currentSegmentIndex] || null), this.cache.currentSegment === null && (this.canRun = !1, this.onComplete && typeof this.onComplete == "function" && this.onComplete()), this.cache.lastState = this.cache.state;
   }
+  /**
+   * Stops the time tracker.
+   * 
+   * Clears current segment and sets canRun to false to prevent further
+   * time accumulation. Called when tracking should be terminated
+   * (e.g., viewability detection failed).
+   */
   stop() {
     this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
   }
+  /**
+   * Initializes the time tracker segments.
+   * 
+   * Converts the event configuration into time segments:
+   * 1. Sorts events by time value (ascending)
+   * 2. Calculates duration for each segment (time since previous event)
+   * 3. Sets the first segment as current
+   * 
+   * Only runs once - subsequent calls are ignored.
+   * 
+   * @example
+   * // Events: [{ value: 1000, label: "cpx-1s" }, { value: 3000, label: "cpx-3s" }]
+   * // Creates segments:
+   * // Segment 0: duration=1000ms (0-1000ms), label="cpx-1s"
+   * // Segment 1: duration=2000ms (1000-3000ms), label="cpx-3s"
+   */
   init() {
     if (!this.hasInit) {
       const t = (this.evs || this.segments || []).sort((i, s) => i.value - s.value);
@@ -765,11 +939,18 @@ class z {
     }
     this.hasInit = !0;
   }
+  /**
+   * Returns current cache state.
+   */
   readCache() {
     return this.cache;
   }
 }
-class K {
+class Z extends k {
+}
+class J extends Z {
+}
+class ee {
   /**
    * Creates a new SuperTimer.
    * 
@@ -789,8 +970,8 @@ class K {
       time: t,
       selfStart: !0
     };
-    s && typeof s == "object" && Object.keys(s).map((h) => {
-      n[h] = s[h];
+    s && typeof s == "object" && Object.keys(s).map((a) => {
+      n[a] = s[a];
     }), n.type === "interval" ? n.onTick = e : n.onEnd = e, this._c = {
       type: n.type,
       onEnd: n.onEnd,
@@ -926,7 +1107,7 @@ class K {
    * Sets up the underlying setTimeout or setInterval based on type.
    * Can only be called once - subsequent calls are ignored.
    * 
-   * @throws {Error} If type is not "timeout" or "interval"
+   * @throws {CpxError} If type is not "timeout" or "interval"
    */
   init() {
     if (this._c.hasRun)
@@ -936,7 +1117,7 @@ class K {
     else if (this._c.type === "interval")
       this._c.startTime = Date.now(), this.id = setInterval(() => this.wrapper(), this._c.time), this._c.hasRun = !0;
     else
-      throw new Error('Type must be "timeout" or "interval"');
+      throw new J('Type must be "timeout" or "interval"');
   }
   /**
    * Internal wrapper function executed on each tick/timeout.
@@ -955,34 +1136,34 @@ class K {
     }
   }
 }
-class X {
-  static lerp(e, t, i) {
-    return e + (t - e) * i;
-  }
-  static map(e, t, i, s, n) {
-    return i + (s - i) * ((n - e) / (t - e));
-  }
-  static clamp(e, t, i) {
-    return Math.min(Math.max(i, e), t);
-  }
+function g(r) {
+  return r && typeof r == "object" && Object.prototype.toString.call(r) !== "[object RegExp]" && Object.prototype.toString.call(r) !== "[object Date]";
 }
-const A = {
+function L(r, e) {
+  if (!(!g(r) || !g(e)))
+    for (const t in r)
+      Object.prototype.hasOwnProperty.call(r, t) && (g(e[t]) && g(r[t]) ? L(r[t], e[t]) : e[t] = r[t]);
+}
+const j = {
   fps: 10,
   threshold: { standard: 0.5, large: 0.3 }
 };
-class G {
+class te {
   constructor(e, t, i) {
-    this.mode = null, this.threshold = null, this.state = null, this.previousState = !1, this.active = !1, this.config = A, this.hasInit = !1;
-    const s = i === void 0, n = s ? {} : e, h = s ? e : t, u = s ? t : i;
-    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new R(this.log), this.config = d.deepMerge(A, n), this.callbacks = Array.isArray(h) ? h : [h], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
-    const E = this.resolveUnit(), I = E?.currentVariant ?? E;
-    I?.on && I.on("resize", () => {
+    this.mode = null, this.threshold = null, this.state = null, this.previousState = !1, this.active = !1, this.config = j, this.hasInit = !1;
+    const s = i === void 0, n = s ? {} : e, a = s ? e : t, u = s ? t : i;
+    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new F(this.log), this.config = {
+      ...j,
+      threshold: { ...j.threshold }
+    }, this.mergeObj(n, this.config), this.callbacks = Array.isArray(a) ? a : [a], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
+    const p = this.resolveUnit(), d = p?.currentVariant ?? p;
+    d?.on && d.on("resize", () => {
       this.threshold = this.calculateThreshold();
     });
   }
   /**
    * Resolves the CreativeUnit for viewability detection.
-   * Prefers config.unit (passed from Cpx.setup) over globalThis.unit
+   * Prefers config.unit (passed from CpxTracker.setup) over globalThis.unit
    */
   resolveUnit() {
     return this.config.unit ?? globalThis.unit;
@@ -1141,6 +1322,19 @@ class G {
     return typeof t == "number" && typeof i == "number" ? t * i > 242500 ? this.config.threshold.large : this.config.threshold.standard : this.config.threshold.standard;
   }
   /**
+   * Merges configuration objects.
+   *
+   * Deep merges properties from source to target, preserving nested objects.
+   * Does not merge RegExp or Date objects.
+   *
+   * @param from - Source object with new values
+   * @param to - Target object to merge into
+   * @private
+   */
+  mergeObj(e, t) {
+    L(e, t);
+  }
+  /**
    * Calculates viewability state from a raw value.
    *
    * Handles different value formats based on detection mode:
@@ -1156,11 +1350,9 @@ class G {
     switch (this.mode) {
       case "webInView":
       case "safeFrame":
-      case "mraidExposureChange": {
-        const t = e > 1 ? e / 100 : e;
-        this.updateState(X.clamp(0, 1, t) >= (this.threshold || 0));
+      case "mraidExposureChange":
+        this.updateState(Math.max(Math.min(e > 1 ? e / 100 : e, 1), 0) >= (this.threshold || 0));
         break;
-      }
       case "mraidIsViewable":
         this.updateState(!!e);
         break;
@@ -1169,27 +1361,68 @@ class G {
     }
   }
 }
-const P = V.enter("Celtra");
-class q {
-  constructor(e, t, i) {
-    this.context = e, this.options = t, this.scriptName = i, this.started = !1, this.log = P.enter(this.scriptName), this.creative = e.creative, this.unit = e.unit, this.screen = e.screen, this.mbkCtx = e.ctx, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx), this.exposureTracking = new _(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.supertimer = new K(
+const ie = N.enter("Celtra");
+function se() {
+  return typeof unit < "u" && unit ? unit : typeof window < "u" ? (window.__mbkCpxStorage || (window.__mbkCpxStorage = {}), window.__mbkCpxStorage) : {};
+}
+const m = {
+  pollTime: 200,
+  // timepoint for each trackingevent
+  events: [
+    { value: 3e3, label: "mbkBillingPoint" },
+    // BILLING POINT EVENT - DISABLED FOR MEASUREMENT ONLY
+    { value: 1, label: "cpx-0s" },
+    { value: 1e3, label: "cpx-1s" },
+    { value: 3e3, label: "cpx-3s" },
+    { value: 5e3, label: "cpx-5s" },
+    { value: 1e4, label: "cpx-10s" }
+  ],
+  countingMode: "cumulative",
+  threshold: {
+    standard: 0.5,
+    large: 0.3
+  }
+};
+class f {
+  /**
+   * Creates a new CPX tracker instance.
+   * 
+   * Note: Use getInstance() instead of calling constructor directly to ensure singleton behavior.
+   * 
+   * @param contextOrComponent - Either a CpxContext object { creative, unit, screen } or a component/screen (backward compatible)
+   * @param configuration - CPX configuration options (polling interval, events, thresholds, etc.)
+   */
+  constructor(e, t) {
+    if (this.contextOrComponent = e, this.configuration = t, this.log = ie.enter("CpxTracker"), e && typeof e == "object" && "creative" in e && "unit" in e && "screen" in e) {
+      const s = e;
+      this.creative = s.creative, this.unit = s.unit, this.screen = s.screen, s.ctx ? this.mbkCtx = s.ctx : console.warn("CPX: ctx not provided in context object. Tracking may not work correctly."), this.contextOrComponent = s.screen, typeof window < "u" && this.mbkCtx && (window.mbkCtx = this.mbkCtx);
+    } else
+      this.contextOrComponent = e, typeof creative < "u" && creative && (this.creative = creative), typeof unit < "u" && unit && (this.unit = unit), e && (this.screen = e), typeof mbkCtx < "u" && mbkCtx ? this.mbkCtx = mbkCtx : typeof ctx < "u" && ctx && (this.mbkCtx = ctx);
+    this.configuration = { ...t }, this.exposureTracking = new Q(this.mbkCtx, this.log), this.stateHandler = this.createStateHandler(), this.supertimer = new ee(
       this.stateHandler.handle.bind(this.stateHandler),
-      this.options.pollTime,
+      this.configuration.pollTime,
       this.log,
       {
         type: "interval",
         onEnd: () => {
-          this.viewableObserver.stop(), this.stateHandler.stop();
+          this.viewableObserver.stop(), this.stateHandler.stop(), this.exposureTracking.release();
         },
         selfStart: !1
       }
-    ), this.viewableObserver = new G(
+    ), this.exposureTracking.bindPageLifecycle({
+      onHidden: () => {
+        this.supertimer.isPaused() || this.supertimer.pause();
+      },
+      onVisible: () => {
+        this.viewableObserver.state && this.supertimer.isPaused() && this.supertimer.resume();
+      }
+    }), this.viewableObserver = new te(
       {
         onFailure: () => this.onViewableFailure(),
         onLegacyEvent: (s) => this.exposureTracking.emitLegacy(s),
         threshold: {
-          standard: this.options.threshold.standard,
-          large: this.options.threshold.large
+          standard: this.configuration.threshold.standard,
+          large: this.configuration.threshold.large
         },
         unit: this.unit
       },
@@ -1198,31 +1431,152 @@ class q {
         (s) => this.onViewableChange(s)
       ],
       this.log
-    ), typeof window < "u" && (window.mbkStateHandler = this.stateHandler);
-  }
-  /** Starts tracking once the unit/screen has appeared. */
-  start() {
-    if (this.started)
-      return;
-    this.started = !0;
-    const { unit: e, screen: t } = this.context;
-    if (e?.hasAppearedAtLeastOnce) {
-      this.initialize();
-      return;
-    }
-    if (e && typeof e.once == "function") {
-      e.once("appeared", () => this.initialize());
-      return;
-    }
-    if (t.hasAppearedAtLeastOnce || typeof t.once != "function") {
-      this.initialize();
-      return;
-    }
-    t.once("appeared", () => this.initialize());
+    ), typeof window < "u" && (window.mbkStateHandler = this.stateHandler), e && !("creative" in e) && typeof unit < "u" && unit && unit.hasAppearedAtLeastOnce && (this.log.debug("CPX: Legacy auto-init detected"), this.initialize());
   }
   /**
-   * Initializes tracker components (time segments, timer, viewability).
-   * Called automatically from {@link start} when the unit appears.
+   * Automatically sets up the CPX tracker by scanning the environment for Celtra globals.
+   * This is the recommended entry point for external loading scenarios.
+   * 
+   * It will:
+   * 1. Prefer explicitly passed `creative`, `unit`, `screen` (recommended for reliability).
+   * 2. Fall back to detecting `creative`, `unit`, `screen`, and `ctx` from the global scope.
+   * 3. Merge provided config with defaults.
+   * 4. Create a valid `ActionContext` if missing.
+   * 5. Initialize the tracker singleton.
+   * 
+   * @param options - Configuration options. For best reliability, pass `creative`, `unit`, and `screen`
+   *                  explicitly in options. If not provided, the function will attempt to find them
+   *                  in the global scope as a fallback.
+   * @returns The initialized CpxTracker instance
+   * 
+   * @example
+   * // Recommended: Explicit passing (most reliable)
+   * CpxTracker.setup({
+   *   creative: creative,
+   *   unit: unit,
+   *   screen: screen,
+   *   countingMode: "continuous"
+   * });
+   * 
+   * @example
+   * // Fallback: Auto-discovery from globals (less reliable)
+   * CpxTracker.setup({ countingMode: "continuous" });
+   */
+  static setup(e = {}) {
+    const t = { ...m }, { creative: i, unit: s, screen: n, ctx: a, ...u } = e;
+    u.events && Array.isArray(u.events) && (t.events = u.events);
+    const p = { ...u };
+    delete p.events, b.mergeObj(p, t);
+    const d = typeof window < "u" ? window : void 0, S = i || d?.creative, D = s || d?.unit, T = n || d?.screen, M = a || d?.ctx || d?.mbkCtx;
+    console.debug(!!(i || s || n) ? "CPX: Using explicitly passed globals (recommended)" : "CPX: Falling back to global scope discovery"), S && (S.config = t);
+    const E = {
+      creative: S,
+      unit: D,
+      screen: T,
+      ctx: M
+      // ctx is optional - setup will work without it (ActionContext will be created if available)
+    };
+    if (T && !E.ctx && typeof ActionContext < "u")
+      try {
+        E.ctx = new ActionContext(T, {
+          certainlyNotCausedByUserBehavior: !1,
+          consideredUserInitiatedByBrowser: !1
+        }), console.debug("CPX: Auto-created ActionContext in setup()");
+      } catch (H) {
+        console.warn("CPX: Failed to auto-create ActionContext in setup()", H);
+      }
+    return f.getInstance(E, t);
+  }
+  /**
+   * Gets or creates the singleton CPX tracker instance for the current ad unit.
+   * 
+   * Ensures only one tracker exists per ad unit. If a tracker already exists,
+   * it returns the existing instance and ignores the provided configuration.
+   * 
+   * Accepts either:
+   * - A CpxContext object: { creative, unit, screen } (recommended for external loads)
+   * - A component/screen object (backward compatible)
+   * 
+   * Special case: If the existing instance was created with an undefined component
+   * (e.g., when loaded externally), and a valid component/context is now provided, it will
+   * update the instance with the new values.
+   * 
+   * @param contextOrComponent - Either a CpxContext object { creative, unit, screen } or a component/screen (backward compatible)
+   * @param configuration - CPX configuration (only used on first call). Default: defaultCpxConfig
+   * @returns The CPX tracker instance, or the existing instance if already created
+   * 
+   * @example
+   * // Using context object (recommended)
+   * const tracker1 = CpxTracker.getInstance({ creative, unit, screen: screenRef }, config)
+   * 
+   * @example
+   * // Backward compatible: component only
+   * const tracker2 = CpxTracker.getInstance(this)
+   * 
+   * @example
+   * // Subsequent calls return same instance (config ignored)
+   * const tracker3 = CpxTracker.getInstance({ creative, unit, screen }, customConfig) // tracker3 === tracker1
+   */
+  static getInstance(e, t = m) {
+    const i = se(), s = i.mbkCpxTracker;
+    if (s) {
+      const n = e && typeof e == "object" && "creative" in e;
+      if (!s.contextOrComponent && e) {
+        if (t && t !== m && (b.mergeObj(t, s.configuration), s.stateHandler = s.createStateHandler()), n) {
+          const a = e;
+          s.creative = a.creative, s.unit = a.unit, s.screen = a.screen, a.ctx && (s.mbkCtx = a.ctx, typeof window < "u" && (window.mbkCtx = a.ctx), s.exposureTracking.updateActionContext(a.ctx)), s.contextOrComponent = a.screen;
+        } else
+          s.contextOrComponent = e, s.screen = e;
+        console.debug("CPX: Updated context/component for existing instance"), f.tryInitialize(s, e);
+      } else if (n) {
+        const a = e;
+        t && t !== m && (b.mergeObj(t, s.configuration), s.stateHandler = s.createStateHandler(), console.debug("CPX: Updated configuration for existing instance")), a.ctx && (s.mbkCtx = a.ctx, typeof window < "u" && (window.mbkCtx = a.ctx), s.exposureTracking.updateActionContext(a.ctx), console.debug("CPX: Updated mbkCtx for existing instance")), console.warn("CPX already instantiated");
+      } else
+        console.warn("CPX already instantiated");
+    } else
+      i.mbkCpxTracker = new f(e, t), f.tryInitialize(i.mbkCpxTracker, e);
+    return i.mbkCpxTracker;
+  }
+  /**
+   * Attempts to initialize the tracker based on unit or component state.
+   * Handles both normal Celtra context (with unit) and external loads (without unit).
+   * 
+   * @private
+   */
+  static tryInitialize(e, t) {
+    let i = e.unit, s = e.screen;
+    if (t && typeof t == "object" && "unit" in t) {
+      const n = t;
+      i = n.unit, s = n.screen;
+    } else t && !i && (i = typeof unit < "u" ? unit : void 0, s = t);
+    if (i) {
+      i.hasAppearedAtLeastOnce ? e.initialize() : i.once("appeared", () => e.initialize());
+      return;
+    }
+    if (s) {
+      if (s.hasAppearedAtLeastOnce === !0) {
+        e.initialize();
+        return;
+      }
+      if (typeof s.once == "function") {
+        s.once("appeared", () => e.initialize());
+        return;
+      }
+      console.debug("CPX: Unit not available, initializing immediately with screen"), e.initialize();
+    }
+  }
+  /**
+   * Initializes the CPX tracker components.
+   * 
+   * Called automatically when the ad unit appears. Sets up:
+   * - State handler for time tracking
+   * - SuperTimer for polling
+   * - Viewability observer
+   * - ActionContext for passive tracking
+   * 
+   * Can be called manually when unit is not available (external loads).
+   * 
+   * @public
    */
   initialize() {
     if (this.stateHandler.hasInit && this.stateHandler.readCache().currentSegment === null && this.stateHandler.segments.length > 0) {
@@ -1238,109 +1592,66 @@ class q {
         this.exposureTracking.updateActionContext(this.mbkCtx);
         return;
       }
-      if (this.screen && typeof ActionContext < "u")
+      const e = this.screen || this.contextOrComponent;
+      if (e && typeof ActionContext < "u")
         try {
-          this.exposureTracking.updateActionContext(new ActionContext(this.screen, {
+          this.exposureTracking.updateActionContext(new ActionContext(e, {
             certainlyNotCausedByUserBehavior: !1,
             consideredUserInitiatedByBrowser: !1
           }));
         } catch {
-          this.log.warn("CPX: Failed to create ActionContext for exposure tracking. ctx should be provided.");
+          console.warn("CPX: Failed to create ActionContext for exposure tracking. mbkCtx should be provided in context object.");
         }
       else
-        this.log.warn("CPX: No screen or ActionContext available for exposure tracking");
+        console.warn("CPX: No component or ActionContext available for exposure tracking");
     }, 0);
   }
   createStateHandler() {
-    return new z(
+    return new Y(
       {
-        interval: this.options.pollTime,
-        countingMode: this.options.countingMode
+        interval: this.configuration.pollTime,
+        countingMode: this.configuration.countingMode
       },
-      this.options.events,
+      this.configuration.events,
       this.log,
       this.exposureTracking,
       () => this.supertimer.done()
     );
   }
+  /**
+   * Handles viewability detection failure.
+   * 
+   * Called when no valid viewability detection method is found.
+   * Stops tracking, collects diagnostic data, and attempts to cancel timers.
+   * 
+   * @private
+   */
   onViewableFailure() {
-    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new B(this.log);
+    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new _(this.log);
   }
+  /**
+   * Handles changes in viewability state.
+   * 
+   * Pauses the timer when ad is not viewable, resumes when viewable.
+   * This enables cumulative time tracking while preventing time accumulation
+   * when the ad is not visible.
+   * 
+   * @param viewable - True if ad is currently viewable, false otherwise
+   * @private
+   */
   onViewableChange(e) {
     this.supertimer && (e && this.supertimer.isPaused() && this.supertimer.resume(), !e && !this.supertimer.isPaused() && this.supertimer.pause());
   }
+  /**
+   * Returns failure data if viewability detection failed.
+   */
   readFailure() {
     return this.failData ? this.failData.data : null;
   }
 }
-function y(r) {
-  return !!(r && typeof r.find == "function");
-}
-function f(r) {
-  return globalThis[r];
-}
-class W {
-  resolve(e = {}) {
-    const t = this.resolveCreative(e.creative);
-    if (!t)
-      throw new Error('Celtra context: "creative" not found');
-    const i = this.resolveScreen(t, e.screen);
-    if (!i)
-      throw new Error('Celtra context: "screen" is missing or not a Celtra screen');
-    const s = this.resolveUnit(t, e.unit, i);
-    if (!s)
-      throw new Error('Celtra context: "unit" not found');
-    const n = this.resolveCtx(e.ctx, i);
-    return { creative: t, unit: s, screen: i, ctx: n };
-  }
-  resolveCreative(e) {
-    return e ?? f("creative");
-  }
-  resolveScreen(e, t) {
-    if (y(t))
-      return t;
-    if (typeof e?.getScreen == "function") {
-      const s = e.getScreen();
-      if (y(s))
-        return s;
-    }
-    const i = f("screen");
-    return y(i) ? i : void 0;
-  }
-  resolveUnit(e, t, i) {
-    return t ?? e?.getUnit?.() ?? i?.getUnit?.() ?? f("unit");
-  }
-  resolveCtx(e, t) {
-    const i = e ?? f("ctx") ?? f("mbkCtx");
-    return i || !t || typeof ActionContext > "u" ? i : new ActionContext(t, {
-      certainlyNotCausedByUserBehavior: !1,
-      consideredUserInitiatedByBrowser: !1
-    });
-  }
-}
-const Q = new W(), p = class p {
-  constructor() {
-    this.contextResolver = Q;
-  }
-  init(e) {
-    const t = P.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, n = p.registry.get(s);
-    if (n)
-      return t.debug(`${this.name} already initialized`), n;
-    const h = d.deepMerge(this.defaultConfig, e), u = this.create(i, h);
-    return p.registry.set(s, u), u.start(), u;
-  }
-};
-p.registry = /* @__PURE__ */ new WeakMap();
-let S = p;
-class Y extends S {
-  constructor() {
-    super(...arguments), this.name = "CPX", this.defaultConfig = U;
-  }
-  create(e, t) {
-    return new q(e, t, this.name);
-  }
-}
-const Z = (r) => new Y().init(r);
+const re = f.setup.bind(f);
+typeof window < "u" && (window.CpxTracker = f);
 export {
-  Z as setup
+  f as CpxTracker,
+  re as setup
 };
