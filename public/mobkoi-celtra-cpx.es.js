@@ -115,7 +115,7 @@ function X() {
   const r = /* @__PURE__ */ new Date();
   return `${r.getDate()}/${r.getMonth() + 1}/${r.getFullYear()}`;
 }
-class _ {
+class z {
   /**
    * Creates a new failure data collector.
    * 
@@ -202,7 +202,7 @@ class A {
     return i.trackCustomEventAction(s, { name: n }, () => this.log.debug("Celtra event accepted:", n)), !0;
   }
 }
-class z {
+class _ {
   constructor(e, t, i) {
     this.key = e, this.initiator = i, this.log = t.enter(`MbkCeltraContexts(${e})`);
   }
@@ -526,7 +526,10 @@ const o = class o {
   static shared(e) {
     const t = o.storage(), i = t[o.storageKey];
     if (i)
-      return i.configure(e), i;
+      if (typeof i.register != "function")
+        i.release?.(), delete t[o.storageKey];
+      else
+        return i.configure(e), i;
     const s = new o(e);
     return t[o.storageKey] = s, s;
   }
@@ -643,7 +646,7 @@ const o = class o {
 };
 o.storageKey = "mbkImpression", o.windowStorageKey = "__mbkTrackStorage";
 let w = o;
-class x {
+class y {
   constructor(e, t) {
     this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new R(this.log, t, []);
   }
@@ -655,7 +658,7 @@ class x {
    */
   static shared(e, t) {
     const i = w.shared(t);
-    return i.track(e.trackingKey, () => new x(i, e.trackingKey), x).declare(e.legacyEventsMapping);
+    return i.track(e.trackingKey, () => new y(i, e.trackingKey), y).declare(e.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(e) {
@@ -729,7 +732,7 @@ class x {
     return t || this.log.debug(`No resolver for ${h.of(e)}, raw signal only`), t;
   }
 }
-class y extends x {
+class x extends y {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
@@ -737,13 +740,13 @@ class y extends x {
   static shared(e, t) {
     const i = w.shared(t), s = i.track(
       e.trackingKey,
-      () => new y(i, e.trackingKey, t.initiator),
-      y
+      () => new x(i, e.trackingKey, t.initiator),
+      x
     );
     return s.contexts.useInitiator(t.initiator), s.declare(e.legacyEventsMapping);
   }
   constructor(e, t, i) {
-    super(e, t), this.contexts = new z(t, this.log, i), this.celtra = new A(this.log);
+    super(e, t), this.contexts = new _(t, this.log, i), this.celtra = new A(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -761,7 +764,7 @@ class y extends x {
 }
 class Q {
   constructor(e, t) {
-    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = y.shared(this, {}), this.exposure = this.buildExposureContext(e), this.openedAt = this.track.impression.elapsedMs(), this.track.register(this);
+    this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = x.shared(this, {}), this.exposure = this.buildExposureContext(e), this.openedAt = this.track.impression.elapsedMs(), this.track.register(this);
   }
   /**
    * Hooks the page-lifecycle flush into CPX timer pause/resume.
@@ -1627,7 +1630,7 @@ class f {
    * @private
    */
   onViewableFailure() {
-    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new _(this.log);
+    this.log.warn("CPX: Viewability detection failed. Falling back to assumed viewability."), this.failData = new z(this.log);
   }
   /**
    * Handles changes in viewability state.
