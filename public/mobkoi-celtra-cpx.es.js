@@ -1,5 +1,5 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const j = {
+const P = {
   events: [
     { value: 1, label: "cpx-0s" },
     { value: 1e3, label: "cpx-1s" },
@@ -36,7 +36,7 @@ class b {
     }), e;
   }
 }
-class P {
+class j {
   static contextExists() {
     if (typeof window > "u")
       return !1;
@@ -154,7 +154,7 @@ class M {
         celAmpDetected: i.ampDetected,
         celSfDetected: i.safeFrameDetected,
         celAdapter: i.constructor.name,
-        ampContextExists: P.contextExists(),
+        ampContextExists: j.contextExists(),
         sfApiExists: this.safeFrameUtil.apiExists(),
         sf_CfgExists: this.safeFrameUtil.configExists()
       },
@@ -669,10 +669,17 @@ class z {
   constructor(e, t) {
     this.trackingKey = "cpx", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.log = t.enter("CpxTracking"), this.track = w.shared(this, {}), this.exposure = this.buildExposureContext(e);
   }
-  emitThreshold(e) {
-    this.emitLegacy(e);
+  /**
+   * Fires a viewability threshold.
+   *
+   * @param viewableMs Actual cumulated viewable time at fire (may exceed the nominal threshold).
+   */
+  emitThreshold(e, t) {
+    this.track.once(
+      { ...this.unitLegacy, legacyEvent: e, modeMs: t },
+      this.exposure
+    );
   }
-  /** Milliseconds since impression start, from the shared monotonic clock. */
   elapsedMs() {
     return this.track.impression.elapsedMs();
   }
@@ -797,13 +804,14 @@ class K {
   }
   advanceDueSegments() {
     for (; this.canRun && this.cache.currentSegment != null && this.cache.currentPeriodTime >= this.cache.currentSegment.duration; ) {
-      const e = this.cache.currentSegment;
+      const e = this.cache.currentSegment, t = this.cache.sumOfPassedSegments + this.cache.currentPeriodTime;
       this.log.debug("CPX: Firing event", e.label, {
         currentPeriodTime: this.cache.currentPeriodTime,
         segmentDuration: e.duration,
+        viewableMs: t,
         state: this.cache.state,
         lastState: this.cache.lastState
-      }), this.exposure.emitThreshold(e.label), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - e.duration, 0), this.cache.sumOfPassedSegments += e.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments[this.cache.currentSegmentIndex] ?? null;
+      }), this.exposure.emitThreshold(e.label, t), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - e.duration, 0), this.cache.sumOfPassedSegments += e.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments[this.cache.currentSegmentIndex] ?? null;
     }
     this.cache.currentSegment == null && (this.canRun = !1, this.clearTimer(), this.runningSince = null, this.onComplete && typeof this.onComplete == "function" && this.onComplete());
   }
@@ -1168,7 +1176,7 @@ g.registry = /* @__PURE__ */ new WeakMap();
 let S = g;
 class Y extends S {
   constructor() {
-    super(...arguments), this.name = "CPX", this.defaultConfig = j;
+    super(...arguments), this.name = "CPX", this.defaultConfig = P;
   }
   create(e, t) {
     return new q(e, t, this.name);
