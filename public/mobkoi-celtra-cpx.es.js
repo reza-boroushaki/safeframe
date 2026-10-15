@@ -875,18 +875,14 @@ class X {
    * {@link resume}.
    */
   flush(e) {
-    if (this.suspended = !0, this.segmentSince != null) {
-      const t = Math.max(e - this.segmentSince, 0);
-      this.log.debug("Flushing open viewable segment", { viewableMs: t }), this.exposure.emitSegment(t);
-    }
-    this.pauseActive();
+    this.suspended = !0, this.pauseActive();
   }
   /** The page is observed again: a new segment opens if the ad is still viewable. */
   resume(e) {
     this.suspended = !1, this.cache.state && this.resumeActive();
   }
   stop() {
-    this.exposure.unregister(this), this.clearTimer(), this.runningSince = null, this.segmentSince = null, this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
+    this.exposure.unregister(this), this.clearTimer(), this.closeSegment(), this.runningSince = null, this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
   }
   init() {
     if (!this.hasInit) {
@@ -910,8 +906,15 @@ class X {
   clearTimer() {
     this.timerId != null && (clearTimeout(this.timerId), this.timerId = null);
   }
+  /** Ends the open viewable segment, emitting its duration. Does nothing when none is open. */
+  closeSegment() {
+    if (this.segmentSince != null) {
+      const e = Math.max(this.now() - this.segmentSince, 0);
+      this.segmentSince = null, this.log.debug("Closing viewable segment", { viewableMs: e }), this.exposure.emitSegment(e);
+    }
+  }
   pauseActive() {
-    if (this.clearTimer(), this.segmentSince = null, this.runningSince == null) {
+    if (this.clearTimer(), this.closeSegment(), this.runningSince == null) {
       this.config.countingMode === "continuous" && (this.cache.currentPeriodTime = 0);
       return;
     }
@@ -956,7 +959,7 @@ class X {
         lastState: this.cache.lastState
       }), this.exposure.emitThreshold(e.label, t), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - e.duration, 0), this.cache.sumOfPassedSegments += e.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments[this.cache.currentSegmentIndex] ?? null;
     }
-    this.cache.currentSegment == null && (this.canRun = !1, this.clearTimer(), this.runningSince = null, this.segmentSince = null, this.exposure.unregister(this), this.onComplete && typeof this.onComplete == "function" && this.onComplete());
+    this.cache.currentSegment == null && (this.canRun = !1, this.clearTimer(), this.closeSegment(), this.runningSince = null, this.exposure.unregister(this), this.onComplete && typeof this.onComplete == "function" && this.onComplete());
   }
 }
 class Q {
