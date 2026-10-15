@@ -882,7 +882,7 @@ class X {
     this.suspended = !1, this.cache.state && this.resumeActive();
   }
   stop() {
-    this.exposure.unregister(this), this.clearTimer(), this.closeSegment(), this.runningSince = null, this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
+    this.exposure.unregister(this), this.clearTimer(), this.runningSince = null, this.segmentSince = null, this.cache.currentSegment !== null && (this.cache.currentSegment = null), this.canRun && (this.canRun = !1);
   }
   init() {
     if (!this.hasInit) {
@@ -959,7 +959,7 @@ class X {
         lastState: this.cache.lastState
       }), this.exposure.emitThreshold(e.label, t), this.cache.currentPeriodTime = Math.max(this.cache.currentPeriodTime - e.duration, 0), this.cache.sumOfPassedSegments += e.duration, this.cache.currentSegmentIndex++, this.cache.currentSegment = this.segments[this.cache.currentSegmentIndex] ?? null;
     }
-    this.cache.currentSegment == null && (this.canRun = !1, this.clearTimer(), this.closeSegment(), this.runningSince = null, this.exposure.unregister(this), this.onComplete && typeof this.onComplete == "function" && this.onComplete());
+    this.cache.currentSegment == null && (this.canRun = !1, this.clearTimer(), this.runningSince = null, this.segmentSince = null, this.exposure.unregister(this), this.onComplete && typeof this.onComplete == "function" && this.onComplete());
   }
 }
 class Q {
