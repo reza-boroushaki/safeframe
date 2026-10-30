@@ -360,7 +360,7 @@ const l = class l {
   }
 };
 l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
-  endpoint: "https://events.mobkoi.com/track/engagement/",
+  endpoint: "https://events.mobkoi.com/engagement",
   pixelFallback: !0,
   log: () => new b("mbk")
 };
@@ -1313,7 +1313,7 @@ const _ = new J(), g = class g {
     this.contextResolver = _;
   }
   init(e) {
-    const t = P.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, n = g.registry.get(s);
+    const t = P.enter(this.name), i = this.contextResolver.resolve(e), s = i.screen, n = g.registry.get(s);
     if (n)
       return t.debug("already initialized"), n;
     const h = d.deepMerge(this.defaultConfig, e), u = this.create(i, h);
