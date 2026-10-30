@@ -266,8 +266,8 @@ class M extends T {
     for (const s of Object.keys(n)) {
       const i = n[s];
       if (this.values[s] !== i) {
-        const r = this.values[s];
-        this.values[s] = i, this.dirty[s] = !0, this.isDirtyFlag = !0, this.emit(`change:${s}`, i, r);
+        const o = this.values[s];
+        this.values[s] = i, this.dirty[s] = !0, this.isDirtyFlag = !0, this.emit(`change:${s}`, i, o);
       }
     }
   }
@@ -282,8 +282,8 @@ class M extends T {
     this.dirty = {}, this.isDirtyFlag = !1;
   }
 }
-function F(o) {
-  return o ? o.ownerDocument.defaultView ?? window : window;
+function F(r) {
+  return r ? r.ownerDocument.defaultView ?? window : window;
 }
 class d {
   static lerp(e, t, n) {
@@ -316,23 +316,23 @@ class j {
       }
       const n = d.lerp(e.vh, -e.vh, 0), s = d.lerp(e.vh, -e.vh, 1);
       if (e.y < n && e.y > s) {
-        const i = e.vh - this.options.scrollOptions.startPercent * e.vh, r = (1 - this.options.scrollOptions.endPercent) * e.vh;
+        const i = e.vh - this.options.scrollOptions.startPercent * e.vh, o = (1 - this.options.scrollOptions.endPercent) * e.vh;
         if (this.done && this.isEndSceneScrollMode()) {
           const E = d.clamp(
             0,
             100,
-            Math.round(d.map(r, s, 0, 100, e.y))
+            Math.round(d.map(o, s, 0, 100, e.y))
           );
           this.content.endScene?.renderAtProgress?.(E), e.markClean();
           return;
         }
-        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(d.map(i, Number(r.toFixed(1)), 0, 100, c));
+        const c = this.options.loop ? Math.abs(e.y) : e.y, a = Math.round(d.map(i, Number(o.toFixed(1)), 0, 100, c));
         let l = a;
         this.options.singleDirection && a < this.lastValue && (l = this.lastValue);
         const m = d.clamp(0, 100, l);
         this.content.apply(m), this.content.overlayScene?.renderAtProgress?.(m), this.context.creative?.userParams?.debug === "true" && this.log.debug(
           `scrub percent = ${m}
-	=> map(${i}, ${r}, 0, 100, ${c})`
+	=> map(${i}, ${o}, 0, 100, ${c})`
         ), a >= 100 && !this.done && (this.done = !0, this.handleCompletion()), this.lastValue = l;
       }
       e.markClean();
@@ -441,7 +441,6 @@ class V {
     return this.modeHandles.at(-1)?.mode ?? null;
   }
   init() {
-    console.log("hello***");
     const e = this.resolveTargets();
     this.driver = new j(this.context, this.options, e, this.log);
     const t = this.safeFrameUtil.check();
@@ -475,10 +474,10 @@ class V {
   startNativeBrowserMode(e) {
     const t = this.context.unit, n = h.resolveContainerElement(this.options.containerElement, t?.unitDiv);
     this.log.debug("Using native browser mode", n);
-    const s = new M(n), i = e.createCallback(s), r = () => {
+    const s = new M(n), i = e.createCallback(s), o = () => {
       s.update(), i();
     };
-    this.ticker.add(r);
+    this.ticker.add(o);
     const c = F(n), a = () => s.update();
     c.addEventListener("scroll", a, { passive: !0 }), c.addEventListener("resize", a, { passive: !0 });
     let l = !1;
@@ -487,7 +486,7 @@ class V {
       handle: {
         mode: "native-browser",
         stop: () => {
-          this.ticker.remove(r), c.removeEventListener("scroll", a), c.removeEventListener("resize", a), l && window.removeEventListener("scroll", a);
+          this.ticker.remove(o), c.removeEventListener("scroll", a), c.removeEventListener("resize", a), l && window.removeEventListener("scroll", a);
         }
       }
     };
@@ -497,8 +496,8 @@ class V {
     const n = e.scene;
     let s = !1;
     const i = setInterval(() => {
-      const r = t?.ext?.inViewPercentage?.();
-      typeof r != "number" || r <= this.options.safeFramePlayValue * 100 || e.playSceneOnEnd(() => {
+      const o = t?.ext?.inViewPercentage?.();
+      typeof o != "number" || o <= this.options.safeFramePlayValue * 100 || e.playSceneOnEnd(() => {
         s || (s = !0, clearInterval(i), n && this.options.nextPage?.active && e.schedulePageTransitionAfterPlayerEnd(n), n && this.options.onEndScene?.active && e.scheduleEndSceneAfterPlayerEnd(n));
       });
     }, 200);
@@ -543,15 +542,15 @@ class V {
     const n = e.find(t);
     if (!n)
       throw new g(`Scene "${t}" not found`);
-    const { nextPageScene: s, endScene: i, overlayScene: r } = this.resolveOptionalScenes();
-    return new D(e, n, s, i, r);
+    const { nextPageScene: s, endScene: i, overlayScene: o } = this.resolveOptionalScenes();
+    return new D(e, n, s, i, o);
   }
   resolveVideoContent() {
     const { screen: e } = this.context, t = this.options.video, n = e.find(t);
     if (!n)
       throw new g(`Video "${t}" not found`);
-    const { nextPageScene: s, endScene: i, overlayScene: r } = this.resolveOptionalScenes();
-    return new B(e, n, s, i, r);
+    const { nextPageScene: s, endScene: i, overlayScene: o } = this.resolveOptionalScenes();
+    return new B(e, n, s, i, o);
   }
   /** Shared by scene + video: optional nextPage / onEndScene / overlayScene targets. */
   resolveOptionalScenes() {
@@ -563,11 +562,11 @@ class V {
     };
   }
 }
-function y(o) {
-  return !!(o && typeof o.find == "function");
+function y(r) {
+  return !!(r && typeof r.find == "function");
 }
-function u(o) {
-  return globalThis[o];
+function u(r) {
+  return globalThis[r];
 }
 class U {
   resolve(e = {}) {
@@ -613,9 +612,9 @@ class f {
   static deepMerge(e, t) {
     const n = { ...e };
     for (const s of Object.keys(t)) {
-      const i = t[s], r = e[s];
-      i !== void 0 && (f.isPlainObject(r) && f.isPlainObject(i) ? n[s] = f.deepMerge(
-        r,
+      const i = t[s], o = e[s];
+      i !== void 0 && (f.isPlainObject(o) && f.isPlainObject(i) ? n[s] = f.deepMerge(
+        o,
         i
       ) : n[s] = i);
     }
@@ -630,10 +629,10 @@ const p = class p {
     this.contextResolver = L;
   }
   init(e) {
-    const t = b.enter(this.name), n = this.contextResolver.resolve(e), s = n.unit ?? n.screen, i = p.registry.get(s);
+    const t = b.enter(this.name), n = this.contextResolver.resolve(e), s = n.screen, i = p.registry.get(s);
     if (i)
       return t.debug("already initialized"), i;
-    const r = f.deepMerge(this.defaultConfig, e), c = this.create(n, r);
+    const o = f.deepMerge(this.defaultConfig, e), c = this.create(n, o);
     return p.registry.set(s, c), c.start(), c;
   }
 };
@@ -652,7 +651,7 @@ class N extends w {
     }, this.name);
   }
 }
-const $ = (o) => new N().init(o);
+const $ = (r) => new N().init(r);
 export {
   $ as setup
 };
