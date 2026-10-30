@@ -1,24 +1,23 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const $ = {
+const E = {
   viewableOnce: !1
-}, z = {
+}, B = {
   conditions: {
     mode: "all",
     items: [{ type: "viewed", phase: "phase-1", operator: "gte", value: 1 }]
   }
-}, H = {
+}, F = {
   conditions: {
     mode: "all",
     items: [{ type: "viewed", phase: "phase-2", operator: "gte", value: 1 }]
   }
-}, W = {
+}, M = {
   debug: !0,
   tagservice: null,
   progression: "forward-only",
   fallbackPhaseId: "phase-1",
   storage: {
     mode: "local",
-    key: "",
     allowed: !0,
     ttlDays: 45
   },
@@ -39,25 +38,25 @@ const $ = {
       order: 1,
       target: { pageName: "p1" },
       activation: null,
-      behaviour: $
+      behaviour: E
     },
     {
       id: "phase-2",
       order: 2,
       target: { pageName: "p2" },
-      activation: z,
-      behaviour: $
+      activation: B,
+      behaviour: E
     },
     {
       id: "phase-3",
       order: 3,
       target: { pageName: "p3" },
-      activation: H,
-      behaviour: $
+      activation: F,
+      behaviour: E
     }
   ]
 };
-class S {
+class x {
   constructor(e) {
     this.name = e;
   }
@@ -78,16 +77,16 @@ class S {
     console.error(this.prefix, ...e);
   }
   enter(e) {
-    return this.add(new S(e));
+    return this.add(new x(e));
   }
   add(e) {
     return e.parent = this, e;
   }
 }
-const X = new S("MOBKOI");
-class V extends Error {
+const D = new x("MOBKOI");
+class k extends Error {
   constructor(e, t = void 0) {
-    super(e), this.name = new.target.name, this.cause = typeof t == "string" ? new V(t, void 0) : t;
+    super(e), this.name = new.target.name, this.cause = typeof t == "string" ? new k(t, void 0) : t;
   }
   toString() {
     return super.toString() + (this.cause ? `
@@ -95,61 +94,61 @@ class V extends Error {
 ` + this.cause.toString() : "");
   }
 }
-const M = X.enter("Celtra");
-class P extends V {
+const j = D.enter("Celtra");
+class m extends k {
 }
-function j(o) {
-  return !!(o && typeof o.find == "function");
+function P(n) {
+  return !!(n && typeof n.find == "function");
 }
-function y(o) {
-  return globalThis[o];
+function g(n) {
+  return globalThis[n];
 }
-class J {
+class K {
   resolve(e = {}) {
     const t = this.resolveCreative(e.creative);
     if (!t)
-      throw new P('Celtra context: "creative" not found');
+      throw new m('Celtra context: "creative" not found');
     const s = this.resolveScreen(t, e.screen);
     if (!s)
-      throw new P('Celtra context: "screen" is missing or not a Celtra screen');
+      throw new m('Celtra context: "screen" is missing or not a Celtra screen');
     const i = this.resolveUnit(t, e.unit, s);
     if (!i)
-      throw new P('Celtra context: "unit" not found');
+      throw new m('Celtra context: "unit" not found');
     const r = this.resolveCtx(e.ctx, s);
     return { creative: t, unit: i, screen: s, ctx: r };
   }
   resolveCreative(e) {
-    return e ?? y("creative");
+    return e ?? g("creative");
   }
   resolveScreen(e, t) {
-    if (j(t))
+    if (P(t))
       return t;
     if (typeof e?.getScreen == "function") {
       const i = e.getScreen();
-      if (j(i))
+      if (P(i))
         return i;
     }
-    const s = y("screen");
-    return j(s) ? s : void 0;
+    const s = g("screen");
+    return P(s) ? s : void 0;
   }
   resolveUnit(e, t, s) {
-    return t ?? e?.getUnit?.() ?? s?.getUnit?.() ?? y("unit");
+    return t ?? e?.getUnit?.() ?? s?.getUnit?.() ?? g("unit");
   }
   resolveCtx(e, t) {
-    const s = e ?? y("ctx") ?? y("mbkCtx");
+    const s = e ?? g("ctx") ?? g("mbkCtx");
     return s || !t || typeof ActionContext > "u" ? s : new ActionContext(t, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
   }
 }
-const Z = new J(), d = class d {
+const q = new K(), h = class h {
   static deepMerge(e, t) {
     const s = { ...e };
     for (const i of Object.keys(t)) {
-      const r = t[i], n = e[i];
-      r !== void 0 && (d.isPlainObject(n) && d.isPlainObject(r) ? s[i] = d.deepMerge(
-        n,
+      const r = t[i], d = e[i];
+      r !== void 0 && (h.isPlainObject(d) && h.isPlainObject(r) ? s[i] = h.deepMerge(
+        d,
         r
       ) : s[i] = r);
     }
@@ -164,7 +163,7 @@ const Z = new J(), d = class d {
       return null;
     const t = e.split(".");
     for (const s of t)
-      if (s.length === 0 || d.forbiddenPathSegment(s) || !/^[A-Za-z0-9_$-]+$/.test(s))
+      if (s.length === 0 || h.forbiddenPathSegment(s) || !/^[A-Za-z0-9_$-]+$/.test(s))
         return null;
     return t;
   }
@@ -172,8 +171,8 @@ const Z = new J(), d = class d {
   static readPath(e, t) {
     let s = e;
     for (const i of t) {
-      if (d.forbiddenPathSegment(i) || s === null || typeof s != "object" && typeof s != "function" || !Object.prototype.hasOwnProperty.call(s, i))
-        return d.missing;
+      if (h.forbiddenPathSegment(i) || s === null || typeof s != "object" && typeof s != "function" || !Object.prototype.hasOwnProperty.call(s, i))
+        return h.missing;
       s = s[i];
     }
     return s;
@@ -185,251 +184,68 @@ const Z = new J(), d = class d {
     return e === "__proto__" || e === "prototype" || e === "constructor";
   }
 };
-d.missing = /* @__PURE__ */ Symbol("missing");
-let f = d;
-const w = class w {
+h.missing = /* @__PURE__ */ Symbol("missing");
+let I = h;
+const p = class p {
   constructor() {
-    this.contextResolver = Z;
+    this.contextResolver = q;
   }
   init(e) {
-    const t = M.enter(this.name), s = this.contextResolver.resolve(e), i = s.unit ?? s.screen, r = w.registry.get(i);
+    const t = j.enter(this.name), s = this.contextResolver.resolve(e), i = s.unit ?? s.screen, r = p.registry.get(i);
     if (r)
       return t.debug("already initialized"), r;
-    const n = f.deepMerge(this.defaultConfig, e), u = this.create(s, n);
-    return w.registry.set(i, u), u.start(), u;
+    const d = I.deepMerge(this.defaultConfig, e), f = this.create(s, d);
+    return p.registry.set(i, f), f.start(), f;
   }
 };
-w.registry = /* @__PURE__ */ new WeakMap();
-let N = w;
-class Y {
-  constructor() {
-    this.paths = /* @__PURE__ */ new Map();
-  }
+p.registry = /* @__PURE__ */ new WeakMap();
+let A = p;
+class Q {
   evaluateGroup(e, t) {
-    const s = e.items.map((r) => this.evaluate(r, t));
-    return { passed: e.mode === "all" ? s.every((r) => r.passed) : s.some((r) => r.passed), results: s };
+    return e.items.every((s) => this.passed(s, t));
   }
-  evaluate(e, t) {
-    const s = this.readActual(e, t), i = this.applyOperator(e.operator, s, e.value);
-    if (!t.debug)
-      return { passed: i, reason: "" };
-    const r = e.operator === "exists" || e.operator === "not-exists" ? "" : ` ${this.describe(e.value)}`;
-    return {
-      passed: i,
-      reason: `${this.label(e)} = ${this.describe(s)} ${e.operator}${r} -> ${i ? "pass" : "fail"}`
-    };
-  }
-  readActual(e, t) {
-    if (e.type === "state") {
-      const s = this.segmentsFor(e.path);
-      return s === null ? f.missing : f.readPath(t.state.values, s);
-    }
-    if (e.type === "event-count")
-      return t.state.eventCounts[e.event] ?? 0;
-    if (e.type === "query") {
-      const s = t.getQueryValue(e.key);
-      return s === void 0 ? f.missing : this.coerceScalar(s);
-    }
-    if (e.type === "storage") {
-      const s = t.getStoredValue(e.key);
-      return s === void 0 ? f.missing : this.coerceScalar(s);
-    }
-    if (e.type === "external") {
-      const s = t.getExternalValue(e.name);
-      return s === void 0 ? f.missing : s;
-    }
-    if (e.phase === null) {
-      let s = 0;
-      for (const i of Object.values(t.state.views))
-        s += i.count;
-      return s;
-    }
-    return t.state.views[e.phase]?.count ?? 0;
-  }
-  applyOperator(e, t, s) {
-    const i = t !== f.missing && t !== void 0;
-    if (e === "exists")
-      return i && t !== null;
-    if (e === "not-exists")
-      return !i || t === null;
-    if (e === "eq")
-      return i && this.looseEquals(t, s);
-    if (e === "neq")
-      return !i || !this.looseEquals(t, s);
-    if (e === "gt" || e === "gte" || e === "lt" || e === "lte") {
-      if (!i)
-        return !1;
-      const r = this.toNumber(t), n = typeof s == "number" ? s : Number.NaN;
-      return !Number.isFinite(r) || !Number.isFinite(n) ? !1 : e === "gt" ? r > n : e === "gte" ? r >= n : e === "lt" ? r < n : r <= n;
-    }
-    return e === "in" ? i && Array.isArray(s) && s.some((r) => this.looseEquals(t, r)) : !i || !(Array.isArray(s) && s.some((r) => this.looseEquals(t, r)));
-  }
-  looseEquals(e, t) {
-    if (e === t)
-      return !0;
-    if (e === null || t === null || typeof e == "object" || typeof t == "object")
-      return !1;
-    const s = this.asPrimitive(e), i = this.asPrimitive(t);
-    if (s === void 0 || i === void 0)
-      return !1;
-    const r = typeof s == "string" ? this.coerceScalar(s) : s, n = typeof i == "string" ? this.coerceScalar(i) : i;
-    return r === n;
-  }
-  asPrimitive(e) {
-    if (typeof e == "string" || typeof e == "number" || typeof e == "boolean")
-      return e;
-  }
-  coerceScalar(e) {
-    return e === "true" ? !0 : e === "false" ? !1 : e.trim() !== "" && Number.isFinite(Number(e)) ? Number(e) : e;
-  }
-  toNumber(e) {
-    return typeof e == "number" ? e : typeof e == "boolean" ? e ? 1 : 0 : typeof e == "string" ? Number(e) : Number.NaN;
-  }
-  describe(e) {
-    return e === f.missing ? "<missing>" : e === null ? "null" : typeof e == "string" ? `"${e}"` : typeof e == "number" || typeof e == "boolean" ? String(e) : "<object>";
-  }
-  label(e) {
-    return e.type === "state" ? `state(${e.path})` : e.type === "event-count" ? `event-count(${e.event})` : e.type === "query" ? `query(${e.key})` : e.type === "storage" ? `storage(${e.key})` : e.type === "external" ? `external(${e.name})` : `viewed(${e.phase ?? "*"})`;
-  }
-  segmentsFor(e) {
-    const t = this.paths.get(e);
-    if (t !== void 0)
-      return t;
-    const s = f.parsePath(e);
-    return this.paths.set(e, s), s;
+  passed(e, t) {
+    return (t.views[e.phase]?.count ?? 0) >= e.value;
   }
 }
-const E = {
-  willChange: "mobkoi:phase:will-change",
-  change: "mobkoi:phase:change",
-  unchanged: "mobkoi:phase:unchanged",
-  event: "mobkoi:event"
-};
-class _ {
-  constructor(e, t) {
-    this.target = e, this.onDispatchError = t;
-  }
-  willChange(e, t) {
-    return this.dispatch(E.willChange, this.detail(e, t), !0);
-  }
-  change(e, t) {
-    this.dispatch(E.change, this.detail(e, t), !1);
-  }
-  unchanged(e, t) {
-    this.dispatch(E.unchanged, this.detail(e, t), !1);
-  }
-  engagement(e) {
-    this.dispatch(E.event, e, !1);
-  }
-  detail(e, t) {
-    return {
-      creativeId: t.creativeId,
-      phaseId: e?.id ?? null,
-      previousPhaseId: t.previousPhase?.id ?? null,
-      pageName: e?.target.pageName ?? null,
-      reason: t.reason,
-      timestamp: t.timestamp
-    };
-  }
-  dispatch(e, t, s) {
-    if (this.target === null || typeof CustomEvent > "u")
-      return !0;
-    try {
-      return this.target.dispatchEvent(new CustomEvent(e, { detail: t, bubbles: !0, cancelable: s }));
-    } catch (i) {
-      return this.onDispatchError(i), !0;
-    }
-  }
+class C extends m {
 }
-class b extends P {
-}
-const ee = 2147483647, te = 2e9;
-class se {
-  constructor(e) {
-    this.now = e, this.handle = null, this.target = null, this.callback = null;
-  }
-  scheduleAt(e, t) {
-    this.cancel(), this.target = e, this.callback = t, e !== null && this.arm();
-  }
-  cancel() {
-    this.handle !== null && (clearTimeout(this.handle), this.handle = null), this.target = null, this.callback = null;
-  }
-  arm() {
-    const e = this.callback;
-    if (this.target === null || e === null)
-      return;
-    const t = this.target - this.now();
-    if (t <= 0) {
-      this.handle = setTimeout(() => {
-        this.handle = null, this.target = null, e();
-      }, 0);
-      return;
-    }
-    if (t > ee) {
-      this.handle = setTimeout(() => {
-        this.handle = null, this.arm();
-      }, te);
-      return;
-    }
-    this.handle = setTimeout(() => {
-      this.handle = null, this.target = null, e();
-    }, t);
-  }
-}
-class ie {
+class z {
   constructor(e) {
     this.conditions = e;
   }
   select(e) {
-    const t = [], s = [];
-    for (const i of e.config.phases) {
-      let r = null, n = [];
-      const u = i.activation?.conditions ?? null;
-      if (u !== null) {
-        const v = this.conditions.evaluateGroup(u, e.context);
-        r = v.passed, n = v.results;
-      }
-      const x = r !== !1, p = e.config.progression === "forward-only" && i.order < e.maxEnteredOrder && e.activePhase?.id !== i.id, m = x && !p;
-      m && s.push(i), t.push({
-        phaseId: i.id,
-        eligible: m,
-        dateGate: null,
-        conditionGate: r,
-        blockedByProgression: p,
-        reason: e.context.debug ? this.explain(i, r, m, p) : "",
-        conditions: n
-      });
-    }
-    if (s.length > 0)
-      return { selectedPhase: s.slice().sort((r, n) => this.compare(r, n, e.config.phases))[0] ?? null, candidates: t, usedFallback: !1 };
+    const t = [];
+    for (const s of e.config.phases)
+      this.isEligible(s, e) && t.push(s);
+    if (t.length > 0)
+      return { selectedPhase: t.slice().sort((i, r) => this.compare(i, r, e.config.phases))[0] ?? null, usedFallback: !1 };
     if (e.config.fallbackPhaseId !== null) {
-      const i = e.config.phases.find((n) => n.id === e.config.fallbackPhaseId), r = i !== void 0 && e.config.progression === "forward-only" && i.order < e.maxEnteredOrder;
-      if (i !== void 0 && !r)
-        return { selectedPhase: i, candidates: t, usedFallback: !0 };
+      const s = e.config.phases.find((r) => r.id === e.config.fallbackPhaseId), i = s !== void 0 && e.config.progression === "forward-only" && s.order < e.maxEnteredOrder;
+      if (s !== void 0 && !i)
+        return { selectedPhase: s, usedFallback: !0 };
     }
-    return { selectedPhase: e.activePhase, candidates: t, usedFallback: !1 };
+    return { selectedPhase: e.activePhase, usedFallback: !1 };
+  }
+  isEligible(e, t) {
+    const s = e.activation?.conditions ?? null, i = s === null || this.conditions.evaluateGroup(s, t.state), r = t.config.progression === "forward-only" && e.order < t.maxEnteredOrder && t.activePhase?.id !== e.id;
+    return i && !r;
   }
   compare(e, t, s) {
     return e.order !== t.order ? t.order - e.order : s.indexOf(e) - s.indexOf(t);
   }
-  explain(e, t, s, i) {
-    const r = [
-      `order=${e.order}`,
-      `conditions=${t === null ? "n/a" : t ? "pass" : "fail"}`
-    ];
-    return i && r.push("blocked=forward-only"), r.push(`eligible=${s ? "yes" : "no"}`), r.join(" ");
-  }
 }
-const U = 10, O = class O {
-  constructor(e, t, s) {
-    this.options = e, this.now = t, this.log = s, this.memory = null, this.reportedUnavailable = !1, this.consent = e.consent, this.knownPhaseIds = new Set(e.phases.map((i) => i.id));
+const R = 10;
+class G {
+  constructor(e, t, s, i) {
+    this.options = e, this.now = t, this.log = s, this.key = i, this.memory = null, this.reportedUnavailable = !1, this.knownPhaseIds = new Set(e.phases.map((r) => r.id));
   }
   load() {
     const e = this.backend();
     if (e === null)
       return this.memory;
     try {
-      const t = e.getItem(this.options.storage.key);
+      const t = e.getItem(this.key);
       if (t === null)
         return this.memory;
       const s = JSON.parse(t), i = this.readRecord(s);
@@ -443,7 +259,7 @@ const U = 10, O = class O {
     const t = this.backend();
     if (t !== null)
       try {
-        t.setItem(this.options.storage.key, JSON.stringify(e));
+        t.setItem(this.key, JSON.stringify(e));
       } catch (s) {
         this.log.warn(s);
       }
@@ -453,32 +269,17 @@ const U = 10, O = class O {
     const e = this.backend();
     if (e !== null)
       try {
-        e.removeItem(this.options.storage.key);
+        e.removeItem(this.key);
       } catch (t) {
         this.log.debug("stored progression could not be cleared", t);
       }
-  }
-  getItem(e) {
-    if (e === O.previousPhaseKey)
-      return this.load()?.previousPhaseId ?? void 0;
-    const t = this.backend();
-    if (t !== null)
-      try {
-        return t.getItem(e) ?? void 0;
-      } catch (s) {
-        this.log.debug("storage read failed", s);
-        return;
-      }
-  }
-  setConsent(e) {
-    this.consent = e, this.reportedUnavailable = !1;
   }
   isExpired(e) {
     const t = this.options.storage.ttlDays;
     return t === null ? !1 : this.now() - e.createdAt > t * 24 * 60 * 60 * 1e3;
   }
   permitted() {
-    return this.options.storage.mode !== "memory" && this.options.storage.allowed && this.consent.storage;
+    return this.options.storage.mode !== "memory" && this.options.storage.allowed && this.options.consent.storage;
   }
   backend() {
     if (!this.permitted())
@@ -509,7 +310,7 @@ const U = 10, O = class O {
     const i = t.createdAt;
     return i !== void 0 && (typeof i != "number" || !Number.isFinite(i)) ? null : {
       maxEnteredOrder: t.maxEnteredOrder,
-      enteredPhaseIds: t.enteredPhaseIds.slice(0, U),
+      enteredPhaseIds: t.enteredPhaseIds.slice(0, R),
       previousPhaseId: t.previousPhaseId,
       views: this.sanitiseViews(s ?? {}),
       createdAt: typeof i == "number" ? i : this.now()
@@ -519,7 +320,7 @@ const U = 10, O = class O {
     const t = {};
     let s = 0;
     for (const [i, r] of Object.entries(e))
-      s >= U || !this.knownPhaseIds.has(i) || !this.isViewRecord(r) || (t[i] = {
+      s >= R || !this.knownPhaseIds.has(i) || !this.isViewRecord(r) || (t[i] = {
         count: Math.min(Math.floor(r.count), Number.MAX_SAFE_INTEGER),
         lastAt: r.lastAt
       }, s += 1);
@@ -531,25 +332,23 @@ const U = 10, O = class O {
     const t = e;
     return typeof t.count == "number" && Number.isFinite(t.count) && t.count >= 0 && typeof t.lastAt == "number" && Number.isFinite(t.lastAt);
   }
-};
-O.previousPhaseKey = "previous_phase";
-let L = O;
-class B {
+}
+class N {
   constructor(e) {
     this.scope = e.scope, this.userInitiated = e.userInitiated;
   }
 }
-class K extends B {
+class T extends N {
   constructor(e, t) {
     super(e), this.actionContext = t;
   }
 }
-class F {
+class S {
   constructor(e) {
     this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
   }
   static actionContextOf(e) {
-    return e instanceof K ? e.actionContext : void 0;
+    return e instanceof T ? e.actionContext : void 0;
   }
   emit(e, t) {
     if (!e.legacyEvent)
@@ -557,14 +356,14 @@ class F {
     const s = typeof Creative < "u" ? Creative : void 0;
     if (typeof s?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", e.legacyEvent), !1;
-    const i = F.actionContextOf(t);
+    const i = S.actionContextOf(t);
     if (!i)
       return this.log.warn("No ActionContext on the cause of", e.legacyEvent), !1;
     const r = e.legacyEvent;
     return s.trackCustomEventAction(i, { name: r }, () => this.log.debug("Celtra event accepted:", r)), !0;
   }
 }
-class re {
+class H {
   constructor(e, t, s) {
     this.key = e, this.initiator = s, this.log = t.enter(`MbkCeltraContexts(${e})`);
   }
@@ -599,7 +398,7 @@ class re {
     return t.mbkCtx ?? t.ctx;
   }
 }
-class h {
+class c {
   /** Dictionary key of a kind, by value: `"view:panel"`. */
   static of(e) {
     return `${e.verb}:${e.role}`;
@@ -617,9 +416,9 @@ class h {
    */
   static signature(e) {
     return [
-      h.of(e),
-      h.instance(e),
-      h.path(e.scope),
+      c.of(e),
+      c.instance(e),
+      c.path(e.scope),
       e.percent,
       e.from,
       e.to,
@@ -636,7 +435,7 @@ class h {
    * by a `pause` is one subject changing rather than two things happening.
    */
   static subject(e) {
-    return [e.role, h.instance(e), h.path(e.scope)].join("|");
+    return [e.role, c.instance(e), c.path(e.scope)].join("|");
   }
   /** `"2"`, `"vidPlayer1"`, or `""` for a singleton such as the unit. */
   static instance(e) {
@@ -646,17 +445,17 @@ class h {
   static path(e) {
     const t = [];
     for (let s = e; s; s = s.scope) {
-      const i = h.instance(s);
+      const i = c.instance(s);
       t.unshift(i ? `${s.role}:${i}` : s.role);
     }
     return t.join(">");
   }
 }
-class l {
+class a {
   /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
   static of(e, t) {
     const s = { k: e.verb, vs1: e.role };
-    return l.set(s, "vs2", e.legacyEvent), l.set(s, "vs3", e.name), l.set(s, "vs4", h.path(e.scope) || void 0), l.set(s, "vs5", e.mode), l.set(s, "vi1", e.index), l.set(s, "vi2", e.ms), l.set(s, "vi3", e.from), l.set(s, "vi4", e.to), l.set(s, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), l.set(s, "vf1", e.percent), l.set(s, "vf2", e.modeMs), l.set(s, "iid", t), s;
+    return a.set(s, "vs2", e.legacyEvent), a.set(s, "vs3", e.name), a.set(s, "vs4", c.path(e.scope) || void 0), a.set(s, "vs5", e.mode), a.set(s, "vi1", e.index), a.set(s, "vi2", e.ms), a.set(s, "vi3", e.from), a.set(s, "vi4", e.to), a.set(s, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), a.set(s, "vf1", e.percent), a.set(s, "vf2", e.modeMs), a.set(s, "iid", t), s;
   }
   static toQueryString(e) {
     return Object.keys(e).map((t) => `${encodeURIComponent(t)}=${encodeURIComponent(String(e[t]))}`).join("&");
@@ -669,30 +468,30 @@ class l {
    */
   static url(e, t, s) {
     const i = e.includes("{{event}}") ? e.replace("{{event}}", encodeURIComponent(t.legacyEvent ?? t.verb)) : e, r = i.includes("?") ? "&" : "?";
-    return `${i}${r}${l.toQueryString(l.of(t, s))}`;
+    return `${i}${r}${a.toQueryString(a.of(t, s))}`;
   }
   static set(e, t, s) {
     s != null && s !== "" && (e[t] = s);
   }
 }
-const g = class g {
+const l = class l {
   constructor(e) {
     this.options = e;
   }
   get endpoint() {
-    return this.options.endpoint ?? this.runtimeParam(g.endpointParam) ?? g.defaults.endpoint;
+    return this.options.endpoint ?? this.runtimeParam(l.endpointParam) ?? l.defaults.endpoint;
   }
   get errorEndpoint() {
-    return this.options.errorEndpoint ?? this.runtimeParam(g.errorEndpointParam);
+    return this.options.errorEndpoint ?? this.runtimeParam(l.errorEndpointParam);
   }
   get impressionId() {
     return this.options.impressionId ? this.options.impressionId : (typeof creative < "u" ? creative : void 0)?.sessionId;
   }
   get pixelFallback() {
-    return this.options.pixelFallback ?? g.defaults.pixelFallback;
+    return this.options.pixelFallback ?? l.defaults.pixelFallback;
   }
   get log() {
-    return this.options.log ?? g.defaults.log();
+    return this.options.log ?? l.defaults.log();
   }
   /** Completes the configuration in place. Later values win, undefined ones leave the current one. */
   update(e) {
@@ -707,35 +506,35 @@ const g = class g {
     return typeof s == "string" && s ? s : void 0;
   }
 };
-g.endpointParam = "externalSignalTrackerURI", g.errorEndpointParam = "externalClientErrorURI", g.defaults = {
+l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
   endpoint: "https://events.mobkoi.com/engagement",
   pixelFallback: !0,
-  log: () => new S("mbk")
+  log: () => new x("mbk")
 };
-let k = g;
-class ne {
+let v = l;
+class W {
   constructor(e, t) {
     this.config = e, this.name = "beacon", this.log = t.enter("MbkBeaconChannel");
   }
   emit(e) {
     const t = this.config.endpoint;
     if (!t)
-      return this.log.debug(`No ${k.endpointParam}, raw signal not sent`), !1;
+      return this.log.debug(`No ${v.endpointParam}, raw signal not sent`), !1;
     const s = globalThis.navigator?.sendBeacon;
     if (typeof s != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
-    const i = l.url(t, e, this.config.impressionId), r = s.call(globalThis.navigator, i);
+    const i = a.url(t, e, this.config.impressionId), r = s.call(globalThis.navigator, i);
     return this.log.debug(r ? "queued" : "refused", i), r;
   }
 }
-const D = class D {
+const $ = class $ {
 };
-D.mapping = [
+$.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let T = D;
-class Q {
+let O = $;
+class L {
   constructor(e, t, s) {
     this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(s);
   }
@@ -746,34 +545,34 @@ class Q {
         this.log.warn("Ignoring malformed legacy mapping", t);
         continue;
       }
-      this.resolvers.set(h.of(t.kind), t.legacyEvent);
+      this.resolvers.set(c.of(t.kind), t.legacyEvent);
     }
     return this;
   }
   has(e) {
-    return this.resolvers.has(h.of(e));
+    return this.resolvers.has(c.of(e));
   }
   /**
    * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
    *   for its kind or when the registered one threw.
    */
   resolve(e) {
-    const t = this.resolvers.get(h.of(e));
+    const t = this.resolvers.get(c.of(e));
     if (t)
       try {
         const { legacyEvent: s, ...i } = e, r = t(i);
         if (typeof r != "string" || !r) {
-          this.log.warn(`Resolver for ${h.of(e)} produced no name`, r);
+          this.log.warn(`Resolver for ${c.of(e)} produced no name`, r);
           return;
         }
         return r;
       } catch (s) {
-        this.log.warn(`Resolver for ${h.of(e)} failed, no Celtra event emitted`, s);
+        this.log.warn(`Resolver for ${c.of(e)} failed, no Celtra event emitted`, s);
         return;
       }
   }
 }
-class oe {
+class J {
   constructor(e, t) {
     this.config = e, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = t.enter("MbkPixelChannel");
   }
@@ -783,18 +582,18 @@ class oe {
       return !1;
     if (typeof Image != "function")
       return this.log.debug("Image unavailable"), !1;
-    const s = l.url(t, e, this.config.impressionId), i = new Image();
+    const s = a.url(t, e, this.config.impressionId), i = new Image();
     this.pending.add(i);
     const r = () => this.pending.delete(i);
     return i.onload = r, i.onerror = r, i.src = s, this.log.debug("sent", s), !0;
   }
 }
-class ae {
+class X {
   constructor(e, t) {
     this.config = e, this.log = t.enter("MbkTrackErrorReporter");
   }
   report(e, t, s) {
-    this.log.warn(`Channel "${e}" failed for ${h.of(t)}`, s);
+    this.log.warn(`Channel "${e}" failed for ${c.of(t)}`, s);
     const i = this.config.errorEndpoint;
     if (i)
       try {
@@ -802,18 +601,18 @@ class ae {
           `error=${encodeURIComponent(`mbkTrack:${e}`)}`,
           `reason=${encodeURIComponent(String(s?.message ?? s))}`,
           `k=${encodeURIComponent(t.verb)}`
-        ], n = this.config.impressionId;
-        n && r.push(`iid=${encodeURIComponent(n)}`);
-        const u = `${i}${i.includes("?") ? "&" : "?"}${r.join("&")}`;
-        globalThis.navigator?.sendBeacon?.(u);
+        ], d = this.config.impressionId;
+        d && r.push(`iid=${encodeURIComponent(d)}`);
+        const f = `${i}${i.includes("?") ? "&" : "?"}${r.join("&")}`;
+        globalThis.navigator?.sendBeacon?.(f);
       } catch (r) {
         this.log.debug("Could not report the channel failure", r);
       }
   }
 }
-class G extends V {
+class U extends k {
 }
-class le {
+class Z {
   constructor(e, t, s) {
     this.impression = e, this.document = t, this.flushables = /* @__PURE__ */ new Set(), this.flushed = /* @__PURE__ */ new Set(), this.hidden = !1, this.started = !1, this.onVisibilityChange = () => {
       this.document.visibilityState === "hidden" ? this.hide("visibilitychange") : this.show("visibilitychange");
@@ -876,26 +675,26 @@ class le {
     try {
       e[t](s);
     } catch (i) {
-      this.log.error(new G(`Segment ${t} hook failed at ${s}ms`, i));
+      this.log.error(new U(`Segment ${t} hook failed at ${s}ms`, i));
     }
   }
 }
-const a = class a {
+const o = class o {
   constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new k(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = a.now(), this.beacon = new ne(this.config, this.log), this.pixel = new oe(this.config, this.log), this.reporter = new ae(this.config, this.log), this.coreLegacyEvents = new Q(this.log, "core", T.mapping), this.visibility = new le(this, globalThis.document, this.log);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new v(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = o.now(), this.beacon = new W(this.config, this.log), this.pixel = new J(this.config, this.log), this.reporter = new X(this.config, this.log), this.coreLegacyEvents = new L(this.log, "core", O.mapping), this.visibility = new Z(this, globalThis.document, this.log);
   }
   /** The one impression of this creative, created on first use. */
   static shared(e) {
-    const t = a.storage(), s = t[a.storageKey];
+    const t = o.storage(), s = t[o.storageKey];
     if (s)
       return s.configure(e), s;
-    const i = new a(e);
-    return t[a.storageKey] = i, i;
+    const i = new o(e);
+    return t[o.storageKey] = i, i;
   }
   /** Releases and drops it. For tests, and for a creative that reloads its scripts. */
   static reset() {
-    const e = a.storage();
-    e[a.storageKey]?.release(), delete e[a.storageKey];
+    const e = o.storage();
+    e[o.storageKey]?.release(), delete e[o.storageKey];
   }
   /**
    * Stash on `unit` when available, else on the window, following the precedent set by
@@ -903,7 +702,7 @@ const a = class a {
    */
   static storage() {
     const e = globalThis;
-    return e.unit ? e.unit : (e[a.windowStorageKey] || (e[a.windowStorageKey] = {}), e[a.windowStorageKey]);
+    return e.unit ? e.unit : (e[o.windowStorageKey] || (e[o.windowStorageKey] = {}), e[o.windowStorageKey]);
   }
   static now() {
     const e = globalThis.performance;
@@ -938,7 +737,7 @@ const a = class a {
     const i = this.tracks.get(e);
     if (i) {
       if (!(i instanceof s))
-        throw new G(
+        throw new U(
           `"${e}" is already tracked as a ${i.constructor.name}, not a ${s.name}. Every instance of one script must pick the same specialisation.`
         );
       return i;
@@ -954,11 +753,11 @@ const a = class a {
    * cannot move under data already sent.
    */
   markStart() {
-    return this.emitted.size > 0 || this.states.size > 0 ? (this.log.debug("Impression start not moved: signals were already emitted"), !1) : (this.startedAt = a.now(), !0);
+    return this.emitted.size > 0 || this.states.size > 0 ? (this.log.debug("Impression start not moved: signals were already emitted"), !1) : (this.startedAt = o.now(), !0);
   }
   /** Milliseconds since the start of the impression. */
   elapsedMs() {
-    return Math.round(a.now() - this.startedAt);
+    return Math.round(o.now() - this.startedAt);
   }
   /**
    * Clears deduplication for one media player so a new DOM instance can re-emit quartiles and
@@ -978,14 +777,14 @@ const a = class a {
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
   admits(e, t) {
-    const s = h.signature(e);
+    const s = c.signature(e);
     switch (t) {
       case "repeated":
         return !0;
       case "once":
         return this.emitted.has(s) ? (this.log.debug("Already emitted, skipping", s), !1) : (this.emitted.add(s), !0);
       case "state": {
-        const i = h.subject(e);
+        const i = c.subject(e);
         return this.states.get(i) === s ? (this.log.debug("Unchanged, skipping", s), !1) : (this.states.set(i, s), !0);
       }
     }
@@ -1003,11 +802,11 @@ const a = class a {
     }
   }
 };
-a.storageKey = "mbkImpression", a.windowStorageKey = "__mbkTrackStorage";
-let C = a;
-class A {
+o.storageKey = "mbkImpression", o.windowStorageKey = "__mbkTrackStorage";
+let b = o;
+class y {
   constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new Q(this.log, t, []);
+    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new L(this.log, t, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -1016,8 +815,8 @@ class A {
    * object.
    */
   static shared(e, t) {
-    const s = C.shared(t);
-    return s.track(e.trackingKey, () => new A(s, e.trackingKey), A).declare(e.legacyEventsMapping);
+    const s = b.shared(t);
+    return s.track(e.trackingKey, () => new y(s, e.trackingKey), y).declare(e.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(e) {
@@ -1040,7 +839,7 @@ class A {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(e) {
-    return new B(e);
+    return new N(e);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(e, t) {
@@ -1088,24 +887,24 @@ class A {
       return;
     }
     const t = this.legacyEvents.resolve(e) ?? this.impression.coreLegacyEvents.resolve(e);
-    return t || this.log.debug(`No resolver for ${h.of(e)}, raw signal only`), t;
+    return t || this.log.debug(`No resolver for ${c.of(e)}, raw signal only`), t;
   }
 }
-class I extends A {
+class w extends y {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(e, t) {
-    const s = C.shared(t), i = s.track(
+    const s = b.shared(t), i = s.track(
       e.trackingKey,
-      () => new I(s, e.trackingKey, t.initiator),
-      I
+      () => new w(s, e.trackingKey, t.initiator),
+      w
     );
     return i.contexts.useInitiator(t.initiator), i.declare(e.legacyEventsMapping);
   }
   constructor(e, t, s) {
-    super(e, t), this.contexts = new re(t, this.log, s), this.celtra = new F(this.log);
+    super(e, t), this.contexts = new H(t, this.log, s), this.celtra = new S(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -1114,16 +913,16 @@ class I extends A {
    */
   context(e) {
     const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new K(e, t);
+    return new T(e, t);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(e, t) {
     this.impression.send(this.celtra, e, t), super.emitChannels(e, t);
   }
 }
-class he {
+class Y {
   constructor(e, t) {
-    this.trackingKey = "phase", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.track = I.shared(this, {}), this.log = t.enter("PhaseTracking"), this.impression = this.track.context({
+    this.trackingKey = "phase", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.track = w.shared(this, {}), this.log = t.enter("PhaseTracking"), this.impression = this.track.context({
       scope: void 0,
       userInitiated: !1,
       actionContext: e
@@ -1142,7 +941,7 @@ class he {
     return e.replace(/[^a-zA-Z0-9]+/g, "_");
   }
 }
-class ce {
+class _ {
   constructor(e, t, s, i, r) {
     this.root = e, this.minRatio = t, this.minDurationMs = s, this.onQualified = i, this.documentRef = r, this.observer = null, this.timer = null, this.lastRatio = 0, this.onVisibility = () => this.syncVisibility();
   }
@@ -1179,24 +978,14 @@ class ce {
     this.timer !== null && (clearTimeout(this.timer), this.timer = null);
   }
 }
-const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c = class c {
+const u = class u {
   constructor(e, t, s) {
-    this.context = e, this.options = t, this.scriptName = s, this.log = M.enter(this.scriptName), this.now = () => Date.now(), this.consent = {
-      measurement: !0,
-      personalisation: !1,
-      storage: !0
-    }, this.state = this.freshState(), this.activePhase = null, this.lastDecision = null, this.createdAt = null, this.started = !1, this.destroyed = !1, this.listenersAttached = !1, this.countOnDisplay = !1, this.reportedViewability = !1, this.transitionSequence = 0, this.query = null, this.viewability = null, this.onVisibility = () => {
-      document.visibilityState === "visible" && this.evaluate("visibility");
-    }, this.onFocus = () => {
-      this.evaluate("focus");
-    }, this.events = new _(
-      typeof document > "u" ? null : document,
-      (i) => this.log.warn(i)
-    ), this.options.storage.key.length === 0 && (this.options.storage.key = `mobkoi-phase:${this.creativeId}`), this.selector = new ie(new Y()), this.scheduler = new se(this.now), this.storage = new L(this.options, this.now, this.log), this.tracking = new he(this.context.ctx, this.log), this.consent = {
-      measurement: this.options.consent.measurement,
-      personalisation: this.options.consent.personalisation,
-      storage: this.options.consent.storage
-    }, this.restore();
+    this.context = e, this.options = t, this.scriptName = s, this.log = j.enter(this.scriptName), this.now = () => Date.now(), this.selector = new z(new Q()), this.storage = new G(
+      this.options,
+      this.now,
+      this.log,
+      `mobkoi-phase:${this.creativeId}`
+    ), this.tracking = new Y(this.context.ctx, this.log), this.state = this.freshState(), this.activePhase = null, this.createdAt = null, this.started = !1, this.destroyed = !1, this.countOnDisplay = !1, this.reportedViewability = !1, this.transitionSequence = 0, this.viewability = null, this.restore();
   }
   start() {
     if (this.destroyed || this.started)
@@ -1225,13 +1014,13 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
     this.destroyed || this.started && this.begin();
   }
   begin() {
-    this.attachListeners(), this.options.debug && this.log.debug("tagservice", this.tagservice), this.evaluate("start");
+    this.options.debug && this.log.debug("tagservice", this.tagservice), this.evaluate("start");
   }
   stop() {
-    this.started && (this.started = !1, this.scheduler.cancel(), this.detachListeners(), this.viewability?.stop());
+    this.started && (this.started = !1, this.viewability?.stop());
   }
   destroy() {
-    this.destroyed || (this.stop(), this.destroyed = !0, this.scheduler.cancel(), this.detachListeners(), this.viewability?.stop(), this.activePhase = null, this.lastDecision = null, this.state = this.freshState(), this.query = null);
+    this.destroyed || (this.stop(), this.destroyed = !0, this.viewability?.stop(), this.activePhase = null, this.state = this.freshState());
   }
   get creativeId() {
     return this.context.creative.id || "mobkoi-creative";
@@ -1239,115 +1028,43 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
   get tagservice() {
     return typeof this.options.tagservice == "boolean" ? this.options.tagservice : this.context.creative.runtimeParams?.isTagservice === !0;
   }
-  evaluate(e = "manual") {
-    return this.runEvaluation(e);
-  }
-  getActivePhase() {
-    return this.activePhase;
-  }
-  getState() {
-    const e = {};
-    for (const [t, s] of Object.entries(this.state.views))
-      e[t] = { count: s.count, lastAt: s.lastAt };
-    return {
-      values: { ...this.state.values },
-      eventCounts: { ...this.state.eventCounts },
-      lastEvents: { ...this.state.lastEvents },
-      maxEnteredOrder: this.state.maxEnteredOrder,
-      enteredPhaseIds: [...this.state.enteredPhaseIds],
-      views: e
-    };
-  }
-  setState(e, t = null) {
-    if (!this.destroyed) {
-      if (typeof e != "object" || e === null || Array.isArray(e))
-        throw new b("setState() requires a plain object.");
-      this.mergeValues(this.state.values, e), (t === null || t.evaluate) && this.evaluate("state");
-    }
-  }
-  emit(e, t = null) {
+  evaluate(e) {
     if (this.destroyed)
       return;
-    if (e.length === 0)
-      throw new b("emit() requires a non-empty event name.");
-    if (!Object.prototype.hasOwnProperty.call(this.state.eventCounts, e) && Object.keys(this.state.eventCounts).length >= c.maxEventNames) {
-      this.log.warn("Event name limit reached; event ignored.");
-      return;
-    }
-    this.state.eventCounts[e] = (this.state.eventCounts[e] ?? 0) + 1, t !== null && (this.state.lastEvents[e] = this.boundPayload(t)), this.events.engagement({
-      creativeId: this.creativeId,
-      eventName: e,
-      count: this.state.eventCounts[e] ?? 0,
-      phaseId: this.activePhase?.id ?? null,
-      timestamp: this.now()
-    }), this.evaluate("event");
-  }
-  setConsent(e) {
-    if (this.destroyed)
-      return;
-    const t = {
-      measurement: e.measurement ?? this.consent.measurement,
-      personalisation: e.personalisation ?? this.consent.personalisation,
-      storage: e.storage ?? this.consent.storage
-    };
-    this.consent = t, this.storage.setConsent(t), this.evaluate("consent");
-  }
-  reset(e = null) {
-    if (this.destroyed)
-      return;
-    const t = e?.state ?? !0, s = e?.progression ?? !0, i = e?.tracking ?? !0;
-    t && (this.state.values = /* @__PURE__ */ Object.create(null), this.state.eventCounts = /* @__PURE__ */ Object.create(null), this.state.lastEvents = /* @__PURE__ */ Object.create(null)), s && (this.state.maxEnteredOrder = 0, this.activePhase = null, this.state.views = /* @__PURE__ */ Object.create(null)), i && (this.state.enteredPhaseIds = []), (s || i) && (this.storage.clear(), this.createdAt = null), this.evaluate("reset");
-  }
-  getLastDecision() {
-    return this.lastDecision;
-  }
-  runEvaluation(e) {
-    if (this.destroyed)
-      return this.lastDecision ?? this.emptyDecision(e);
     const t = this.now(), s = this.selector.select({
       config: this.options,
-      context: this.conditionContext(),
+      state: this.state,
       maxEnteredOrder: this.state.maxEnteredOrder,
       activePhase: this.activePhase
     });
     if (s.selectedPhase === null)
-      throw new b("No eligible phase and no usable fallback phase.");
+      throw new C("No eligible phase and no usable fallback phase.");
     const i = {
       selectedPhase: s.selectedPhase,
-      previousPhase: this.activePhase,
-      changed: s.selectedPhase.id !== this.activePhase?.id,
       reason: e,
       evaluatedAt: t,
-      nextEvaluationAt: null,
-      candidates: s.candidates,
       usedFallback: s.usedFallback
     };
-    if (this.lastDecision = i, this.options.debug && this.log.debug(e, i.selectedPhase?.id ?? "none", i.usedFallback ? "fallback" : ""), e === "viewable") {
+    if (this.options.debug && this.log.debug(e, i.selectedPhase?.id ?? "none", i.usedFallback ? "fallback" : ""), e === "viewable") {
       const r = i.selectedPhase ?? this.activePhase;
-      return r !== null && this.announce(r, this.changeContext(i)), i;
+      r !== null && this.announce(r, e);
+      return;
     }
-    return i.changed && i.selectedPhase !== null ? this.display(i) : i.selectedPhase !== null && this.events.unchanged(i.selectedPhase, this.changeContext(i)), this.scheduleNext(i.nextEvaluationAt), i;
+    s.selectedPhase.id !== this.activePhase?.id && this.display(i);
   }
   display(e) {
     const t = e.selectedPhase;
     if (t === null)
       return;
-    const s = ++this.transitionSequence, i = this.changeContext(e);
-    if (!this.events.willChange(t, i)) {
-      this.log.warn(`Phase transition to "${t.id}" was cancelled.`);
-      return;
-    }
-    this.announce(t, i), this.commitDisplay(t, e, s);
+    const s = ++this.transitionSequence;
+    this.announce(t, e.reason), this.commitDisplay(t, e, s);
   }
   commitDisplay(e, t, s) {
-    if (this.destroyed || s !== this.transitionSequence)
-      return;
-    const i = this.changeContext(t);
-    this.activePhase = e, e.order > this.state.maxEnteredOrder && (this.state.maxEnteredOrder = e.order), !this.state.enteredPhaseIds.includes(e.id) && this.state.enteredPhaseIds.length < c.maxViews && this.state.enteredPhaseIds.push(e.id), this.tracking.enter(e.id), this.deferViews() ? this.persist() : this.recordView(e, t.evaluatedAt), this.events.change(e, i), this.beginViewability();
+    this.destroyed || s !== this.transitionSequence || (this.activePhase = e, e.order > this.state.maxEnteredOrder && (this.state.maxEnteredOrder = e.order), !this.state.enteredPhaseIds.includes(e.id) && this.state.enteredPhaseIds.length < u.maxViews && this.state.enteredPhaseIds.push(e.id), this.tracking.enter(e.id), this.deferViews() ? this.persist() : this.recordView(e, t.evaluatedAt), this.beginViewability());
   }
   announce(e, t) {
-    if (t.reason === "viewable") {
-      this.options.debug && this.log.debug("viewable", e.id, this.getState()), this.stop();
+    if (t === "viewable") {
+      this.options.debug && this.log.debug("viewable", e.id, this.state.views), this.stop();
       return;
     }
     this.present(e);
@@ -1355,10 +1072,10 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
   present(e) {
     const t = e.target.pageName, s = this.host().find(t);
     if (!s)
-      throw new b(`Celtra screen "${t}" was not found.`);
+      throw new C(`Celtra screen "${t}" was not found.`);
     const i = this.host();
     if (!i.goToScreenAction || !this.context.ctx)
-      throw new b("Celtra screen navigation is not available.");
+      throw new C("Celtra screen navigation is not available.");
     i.goToScreenAction(this.context.ctx, { screen: s }, () => {
     });
   }
@@ -1387,7 +1104,7 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
     this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
   }
   watch(e) {
-    this.viewability?.stop(), this.viewability = new ce(
+    this.viewability?.stop(), this.viewability = new _(
       e,
       this.options.viewability.minPercent / 100,
       this.options.viewability.minDurationMs,
@@ -1412,7 +1129,7 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
       return !1;
     if (s !== void 0)
       s.count += 1, s.lastAt = t;
-    else if (Object.keys(this.state.views).length < c.maxViews)
+    else if (Object.keys(this.state.views).length < u.maxViews)
       this.state.views[e.id] = { count: 1, lastAt: t };
     else
       return !1;
@@ -1428,7 +1145,7 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
     this.createdAt === null && (this.createdAt = this.now());
     const e = {
       maxEnteredOrder: this.state.maxEnteredOrder,
-      enteredPhaseIds: this.state.enteredPhaseIds.slice(0, c.maxViews),
+      enteredPhaseIds: this.state.enteredPhaseIds.slice(0, u.maxViews),
       previousPhaseId: this.activePhase?.id ?? null,
       views: this.state.views,
       createdAt: this.createdAt
@@ -1439,126 +1156,28 @@ const R = /* @__PURE__ */ new Set(["__proto__", "prototype", "constructor"]), c 
     const e = this.storage.load();
     e !== null && (this.state.maxEnteredOrder = e.maxEnteredOrder, this.state.enteredPhaseIds = e.enteredPhaseIds.slice(), this.state.views = { ...e.views }, this.createdAt = e.createdAt);
   }
-  scheduleNext(e) {
-    this.destroyed || !this.started || this.scheduler.scheduleAt(e, () => this.evaluate("schedule"));
-  }
-  conditionContext() {
-    return {
-      state: this.state,
-      getQueryValue: (e) => this.queryValue(e),
-      getStoredValue: (e) => this.storage.getItem(e),
-      getExternalValue: (e) => this.externalValue(e),
-      debug: this.options.debug
-    };
-  }
-  queryValue(e) {
-    if (this.query === null) {
-      const t = typeof location > "u" ? "" : location.search;
-      this.query = new URLSearchParams(t);
-    }
-    return this.query.get(e) ?? void 0;
-  }
-  externalValue(e) {
-    const t = this.state.values.external;
-    if (typeof t == "object" && t !== null && !Array.isArray(t) && Object.prototype.hasOwnProperty.call(t, e))
-      return t[e];
-  }
-  changeContext(e) {
-    return {
-      creativeId: this.creativeId,
-      previousPhase: e.previousPhase,
-      reason: e.reason,
-      timestamp: e.evaluatedAt
-    };
-  }
-  attachListeners() {
-    this.listenersAttached || (document.addEventListener("visibilitychange", this.onVisibility), window.addEventListener("focus", this.onFocus), this.listenersAttached = !0);
-  }
-  detachListeners() {
-    this.listenersAttached && (document.removeEventListener("visibilitychange", this.onVisibility), window.removeEventListener("focus", this.onFocus), this.listenersAttached = !1);
-  }
   host() {
     return this.context.unit;
   }
   freshState() {
     return {
-      values: /* @__PURE__ */ Object.create(null),
-      eventCounts: /* @__PURE__ */ Object.create(null),
-      lastEvents: /* @__PURE__ */ Object.create(null),
       maxEnteredOrder: 0,
       enteredPhaseIds: [],
       views: /* @__PURE__ */ Object.create(null)
     };
   }
-  emptyDecision(e) {
-    return {
-      selectedPhase: null,
-      previousPhase: null,
-      changed: !1,
-      reason: e,
-      evaluatedAt: this.now(),
-      nextEvaluationAt: null,
-      candidates: [],
-      usedFallback: !1
-    };
-  }
-  mergeValues(e, t) {
-    for (const [s, i] of Object.entries(t)) {
-      if (R.has(s) || Object.keys(e).length >= c.maxStateKeys && !(s in e))
-        continue;
-      if (typeof i == "object" && i !== null && !Array.isArray(i)) {
-        const n = e[s], u = typeof n == "object" && n !== null && !Array.isArray(n) ? n : /* @__PURE__ */ Object.create(null);
-        let x = 0;
-        for (const [p, m] of Object.entries(i)) {
-          if (R.has(p))
-            continue;
-          if (x += 1, x > c.maxStateKeys)
-            break;
-          const v = this.scalar(m);
-          v !== void 0 && (u[p] = v);
-        }
-        e[s] = u;
-        continue;
-      }
-      const r = this.scalar(i);
-      r !== void 0 && (e[s] = r);
-    }
-  }
-  boundPayload(e) {
-    const t = {};
-    let s = 0;
-    for (const [i, r] of Object.entries(e)) {
-      if (R.has(i))
-        continue;
-      if (s += 1, s > c.maxPayloadFields)
-        break;
-      const n = this.scalar(r);
-      n !== void 0 && (t[i] = n);
-    }
-    return t;
-  }
-  scalar(e) {
-    if (e === null)
-      return null;
-    if (typeof e == "string")
-      return e.length > c.maxStringLength ? e.slice(0, c.maxStringLength) : e;
-    if (typeof e == "number")
-      return Number.isFinite(e) ? e : void 0;
-    if (typeof e == "boolean")
-      return e;
-  }
 };
-c.maxEventNames = 32, c.maxPayloadFields = 8, c.maxStateKeys = 64, c.maxViews = 10, c.maxStringLength = 256;
-let q = c;
-class ue extends N {
+u.maxViews = 10;
+let V = u;
+class ee extends A {
   constructor() {
-    super(...arguments), this.name = "PhaseOrchestrator", this.defaultConfig = W;
+    super(...arguments), this.name = "PhaseOrchestrator", this.defaultConfig = M;
   }
   create(e, t) {
-    return new q(e, t, this.name);
+    return new V(e, t, this.name);
   }
 }
-const de = (o) => new ue().init(o);
+const te = (n) => new ee().init(n);
 export {
-  de as setup
+  te as setup
 };
