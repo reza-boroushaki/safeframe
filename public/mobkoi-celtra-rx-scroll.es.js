@@ -630,7 +630,7 @@ const p = class p {
     this.contextResolver = L;
   }
   init(e) {
-    const t = b.enter(this.name), n = this.contextResolver.resolve(e), s = n.screen, i = p.registry.get(s);
+    const t = b.enter(this.name), n = this.contextResolver.resolve(e), s = n.unit ?? n.screen, i = p.registry.get(s);
     if (i)
       return t.debug("already initialized"), i;
     const r = f.deepMerge(this.defaultConfig, e), c = this.create(n, r);
