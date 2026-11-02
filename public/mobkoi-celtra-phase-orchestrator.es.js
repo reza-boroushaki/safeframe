@@ -1,30 +1,19 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const E = {
-  viewableOnce: !1
-}, B = {
+const T = {
   conditions: {
     mode: "all",
     items: [{ type: "viewed", phase: "phase-1", operator: "gte", value: 1 }]
   }
-}, F = {
+}, U = {
   conditions: {
     mode: "all",
     items: [{ type: "viewed", phase: "phase-2", operator: "gte", value: 1 }]
   }
-}, M = {
-  debug: !0,
-  tagservice: null,
-  progression: "forward-only",
+}, B = {
   fallbackPhaseId: "phase-1",
   storage: {
     mode: "local",
-    allowed: !0,
     ttlDays: 45
-  },
-  consent: {
-    measurement: !0,
-    personalisation: !1,
-    storage: !0
   },
   viewability: {
     enabled: !0,
@@ -37,22 +26,19 @@ const E = {
       id: "phase-1",
       order: 1,
       target: { pageName: "p1" },
-      activation: null,
-      behaviour: E
+      activation: null
     },
     {
       id: "phase-2",
       order: 2,
       target: { pageName: "p2" },
-      activation: B,
-      behaviour: E
+      activation: T
     },
     {
       id: "phase-3",
       order: 3,
       target: { pageName: "p3" },
-      activation: F,
-      behaviour: E
+      activation: U
     }
   ]
 };
@@ -83,10 +69,10 @@ class x {
     return e.parent = this, e;
   }
 }
-const D = new x("MOBKOI");
-class k extends Error {
+const M = new x("MOBKOI");
+class E extends Error {
   constructor(e, t = void 0) {
-    super(e), this.name = new.target.name, this.cause = typeof t == "string" ? new k(t, void 0) : t;
+    super(e), this.name = new.target.name, this.cause = typeof t == "string" ? new E(t, void 0) : t;
   }
   toString() {
     return super.toString() + (this.cause ? `
@@ -94,65 +80,65 @@ class k extends Error {
 ` + this.cause.toString() : "");
   }
 }
-const j = D.enter("Celtra");
-class m extends k {
+const R = M.enter("Celtra");
+class p extends E {
 }
-function P(n) {
+function k(n) {
   return !!(n && typeof n.find == "function");
 }
-function g(n) {
+function f(n) {
   return globalThis[n];
 }
-class K {
+class F {
   resolve(e = {}) {
     const t = this.resolveCreative(e.creative);
     if (!t)
-      throw new m('Celtra context: "creative" not found');
-    const s = this.resolveScreen(t, e.screen);
-    if (!s)
-      throw new m('Celtra context: "screen" is missing or not a Celtra screen');
-    const i = this.resolveUnit(t, e.unit, s);
+      throw new p('Celtra context: "creative" not found');
+    const i = this.resolveScreen(t, e.screen);
     if (!i)
-      throw new m('Celtra context: "unit" not found');
-    const r = this.resolveCtx(e.ctx, s);
-    return { creative: t, unit: i, screen: s, ctx: r };
+      throw new p('Celtra context: "screen" is missing or not a Celtra screen');
+    const s = this.resolveUnit(t, e.unit, i);
+    if (!s)
+      throw new p('Celtra context: "unit" not found');
+    const r = this.resolveCtx(e.ctx, i);
+    return { creative: t, unit: s, screen: i, ctx: r };
   }
   resolveCreative(e) {
-    return e ?? g("creative");
+    return e ?? f("creative");
   }
   resolveScreen(e, t) {
-    if (P(t))
+    if (k(t))
       return t;
     if (typeof e?.getScreen == "function") {
-      const i = e.getScreen();
-      if (P(i))
-        return i;
+      const s = e.getScreen();
+      if (k(s))
+        return s;
     }
-    const s = g("screen");
-    return P(s) ? s : void 0;
+    const i = f("screen");
+    return k(i) ? i : void 0;
   }
-  resolveUnit(e, t, s) {
-    return t ?? e?.getUnit?.() ?? s?.getUnit?.() ?? g("unit");
+  resolveUnit(e, t, i) {
+    return t ?? e?.getUnit?.() ?? i?.getUnit?.() ?? f("unit");
   }
   resolveCtx(e, t) {
-    const s = e ?? g("ctx") ?? g("mbkCtx");
-    return s || !t || typeof ActionContext > "u" ? s : new ActionContext(t, {
+    const i = e ?? f("ctx") ?? f("mbkCtx");
+    return i || !t || typeof ActionContext > "u" ? i : new ActionContext(t, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
   }
 }
-const q = new K(), h = class h {
+const D = new F(), h = class h {
   static deepMerge(e, t) {
-    const s = { ...e };
-    for (const i of Object.keys(t)) {
-      const r = t[i], d = e[i];
-      r !== void 0 && (h.isPlainObject(d) && h.isPlainObject(r) ? s[i] = h.deepMerge(
+    const i = { ...e };
+    for (const s of Object.keys(t)) {
+      const r = t[s], d = e[s];
+      r !== void 0 && (h.isPlainObject(d) && h.isPlainObject(r) ? i[s] = h.deepMerge(
         d,
         r
-      ) : s[i] = r);
+      ) : i[s] = r);
     }
-    return s;
+    return i;
   }
   /**
    * Split a dot path into own-property segments.
@@ -162,20 +148,20 @@ const q = new K(), h = class h {
     if (typeof e != "string" || e.length === 0 || e.length > 200)
       return null;
     const t = e.split(".");
-    for (const s of t)
-      if (s.length === 0 || h.forbiddenPathSegment(s) || !/^[A-Za-z0-9_$-]+$/.test(s))
+    for (const i of t)
+      if (i.length === 0 || h.forbiddenPathSegment(i) || !/^[A-Za-z0-9_$-]+$/.test(i))
         return null;
     return t;
   }
   /** Read an own property chain. Returns {@link ObjectUtil.missing} when any segment is absent. */
   static readPath(e, t) {
-    let s = e;
-    for (const i of t) {
-      if (h.forbiddenPathSegment(i) || s === null || typeof s != "object" && typeof s != "function" || !Object.prototype.hasOwnProperty.call(s, i))
+    let i = e;
+    for (const s of t) {
+      if (h.forbiddenPathSegment(s) || i === null || typeof i != "object" && typeof i != "function" || !Object.prototype.hasOwnProperty.call(i, s))
         return h.missing;
-      s = s[i];
+      i = i[s];
     }
-    return s;
+    return i;
   }
   static isPlainObject(e) {
     return typeof e == "object" && e !== null && !Array.isArray(e) && Object.getPrototypeOf(e) === Object.prototype;
@@ -185,60 +171,59 @@ const q = new K(), h = class h {
   }
 };
 h.missing = /* @__PURE__ */ Symbol("missing");
-let I = h;
-const p = class p {
+let A = h;
+const g = class g {
   constructor() {
-    this.contextResolver = q;
+    this.contextResolver = D;
   }
   init(e) {
-    const t = j.enter(this.name), s = this.contextResolver.resolve(e), i = s.unit ?? s.screen, r = p.registry.get(i);
+    const t = R.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, r = g.registry.get(s);
     if (r)
       return t.debug("already initialized"), r;
-    const d = I.deepMerge(this.defaultConfig, e), f = this.create(s, d);
-    return p.registry.set(i, f), f.start(), f;
+    const d = A.deepMerge(this.defaultConfig, e), u = this.create(i, d);
+    return g.registry.set(s, u), u.start(), u;
   }
 };
-p.registry = /* @__PURE__ */ new WeakMap();
-let A = p;
-class Q {
+g.registry = /* @__PURE__ */ new WeakMap();
+let I = g;
+class K {
   evaluateGroup(e, t) {
-    return e.items.every((s) => this.passed(s, t));
+    return e.items.every((i) => this.passed(i, t));
   }
   passed(e, t) {
     return (t.views[e.phase]?.count ?? 0) >= e.value;
   }
 }
-class C extends m {
+class C extends p {
 }
-class z {
+class q {
   constructor(e) {
     this.conditions = e;
   }
   select(e) {
     const t = [];
-    for (const s of e.config.phases)
+    for (const s of e.phases)
       this.isEligible(s, e) && t.push(s);
     if (t.length > 0)
-      return { selectedPhase: t.slice().sort((i, r) => this.compare(i, r, e.config.phases))[0] ?? null, usedFallback: !1 };
-    if (e.config.fallbackPhaseId !== null) {
-      const s = e.config.phases.find((r) => r.id === e.config.fallbackPhaseId), i = s !== void 0 && e.config.progression === "forward-only" && s.order < e.maxEnteredOrder;
-      if (s !== void 0 && !i)
-        return { selectedPhase: s, usedFallback: !0 };
-    }
-    return { selectedPhase: e.activePhase, usedFallback: !1 };
+      return t.slice().sort((r, d) => this.compare(r, d, e.phases))[0] ?? null;
+    const i = this.fallback(e);
+    return i !== null && i.order >= e.maxEnteredOrder ? i : e.activePhase;
   }
   isEligible(e, t) {
-    const s = e.activation?.conditions ?? null, i = s === null || this.conditions.evaluateGroup(s, t.state), r = t.config.progression === "forward-only" && e.order < t.maxEnteredOrder && t.activePhase?.id !== e.id;
-    return i && !r;
+    const i = e.activation?.conditions ?? null, s = i === null || this.conditions.evaluateGroup(i, t.state), r = e.order < t.maxEnteredOrder && t.activePhase?.id !== e.id;
+    return s && !r;
   }
-  compare(e, t, s) {
-    return e.order !== t.order ? t.order - e.order : s.indexOf(e) - s.indexOf(t);
+  fallback(e) {
+    return e.phases.find((t) => t.id === e.fallbackPhaseId) ?? null;
+  }
+  compare(e, t, i) {
+    return e.order !== t.order ? t.order - e.order : i.indexOf(e) - i.indexOf(t);
   }
 }
-const R = 10;
-class G {
-  constructor(e, t, s, i) {
-    this.options = e, this.now = t, this.log = s, this.key = i, this.memory = null, this.reportedUnavailable = !1, this.knownPhaseIds = new Set(e.phases.map((r) => r.id));
+const Q = 10;
+class z {
+  constructor(e, t, i, s) {
+    this.options = e, this.now = t, this.log = i, this.key = s, this.memory = null, this.reportedUnavailable = !1, this.knownPhaseIds = new Set(e.phases.map((r) => r.id));
   }
   load() {
     const e = this.backend();
@@ -248,8 +233,8 @@ class G {
       const t = e.getItem(this.key);
       if (t === null)
         return this.memory;
-      const s = JSON.parse(t), i = this.readRecord(s);
-      return i === null ? this.memory : this.isExpired(i) ? (this.clear(), null) : i;
+      const i = JSON.parse(t), s = this.readRecord(i);
+      return s === null ? this.memory : this.isExpired(s) ? (this.clear(), null) : s;
     } catch (t) {
       return this.log.debug("stored progression could not be read", t), this.memory;
     }
@@ -260,8 +245,8 @@ class G {
     if (t !== null)
       try {
         t.setItem(this.key, JSON.stringify(e));
-      } catch (s) {
-        this.log.warn(s);
+      } catch (i) {
+        this.log.warn(i);
       }
   }
   clear() {
@@ -279,7 +264,7 @@ class G {
     return t === null ? !1 : this.now() - e.createdAt > t * 24 * 60 * 60 * 1e3;
   }
   permitted() {
-    return this.options.storage.mode !== "memory" && this.options.storage.allowed && this.options.consent.storage;
+    return this.options.storage.mode !== "memory";
   }
   backend() {
     if (!this.permitted())
@@ -295,35 +280,33 @@ class G {
     const t = e === "local" ? globalThis.localStorage : globalThis.sessionStorage;
     if (!t)
       return null;
-    const s = "__mobkoi_probe__";
-    return t.setItem(s, "1"), t.removeItem(s), t;
+    const i = "__mobkoi_probe__";
+    return t.setItem(i, "1"), t.removeItem(i), t;
   }
   readRecord(e) {
     if (!Object.prototype.hasOwnProperty.call(e ?? {}, "maxEnteredOrder") || typeof e != "object" || e === null)
       return null;
     const t = e;
-    if (typeof t.maxEnteredOrder != "number" || !Number.isFinite(t.maxEnteredOrder) || !Array.isArray(t.enteredPhaseIds) || !t.enteredPhaseIds.every((r) => typeof r == "string") || t.previousPhaseId !== null && typeof t.previousPhaseId != "string")
+    if (typeof t.maxEnteredOrder != "number" || !Number.isFinite(t.maxEnteredOrder))
       return null;
-    const s = t.views;
-    if (s !== void 0 && (typeof s != "object" || s === null || Array.isArray(s)))
+    const i = t.views;
+    if (i !== void 0 && (typeof i != "object" || i === null || Array.isArray(i)))
       return null;
-    const i = t.createdAt;
-    return i !== void 0 && (typeof i != "number" || !Number.isFinite(i)) ? null : {
+    const s = t.createdAt;
+    return s !== void 0 && (typeof s != "number" || !Number.isFinite(s)) ? null : {
       maxEnteredOrder: t.maxEnteredOrder,
-      enteredPhaseIds: t.enteredPhaseIds.slice(0, R),
-      previousPhaseId: t.previousPhaseId,
-      views: this.sanitiseViews(s ?? {}),
-      createdAt: typeof i == "number" ? i : this.now()
+      views: this.sanitiseViews(i ?? {}),
+      createdAt: typeof s == "number" ? s : this.now()
     };
   }
   sanitiseViews(e) {
     const t = {};
-    let s = 0;
-    for (const [i, r] of Object.entries(e))
-      s >= R || !this.knownPhaseIds.has(i) || !this.isViewRecord(r) || (t[i] = {
+    let i = 0;
+    for (const [s, r] of Object.entries(e))
+      i >= Q || !this.knownPhaseIds.has(s) || !this.isViewRecord(r) || (t[s] = {
         count: Math.min(Math.floor(r.count), Number.MAX_SAFE_INTEGER),
         lastAt: r.lastAt
-      }, s += 1);
+      }, i += 1);
     return t;
   }
   isViewRecord(e) {
@@ -333,39 +316,39 @@ class G {
     return typeof t.count == "number" && Number.isFinite(t.count) && t.count >= 0 && typeof t.lastAt == "number" && Number.isFinite(t.lastAt);
   }
 }
-class N {
+class S {
   constructor(e) {
     this.scope = e.scope, this.userInitiated = e.userInitiated;
   }
 }
-class T extends N {
+class j extends S {
   constructor(e, t) {
     super(e), this.actionContext = t;
   }
 }
-class S {
+class P {
   constructor(e) {
     this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
   }
   static actionContextOf(e) {
-    return e instanceof T ? e.actionContext : void 0;
+    return e instanceof j ? e.actionContext : void 0;
   }
   emit(e, t) {
     if (!e.legacyEvent)
       return !1;
-    const s = typeof Creative < "u" ? Creative : void 0;
-    if (typeof s?.trackCustomEventAction != "function")
+    const i = typeof Creative < "u" ? Creative : void 0;
+    if (typeof i?.trackCustomEventAction != "function")
       return this.log.debug("Creative API unavailable, no Celtra event for", e.legacyEvent), !1;
-    const i = S.actionContextOf(t);
-    if (!i)
+    const s = P.actionContextOf(t);
+    if (!s)
       return this.log.warn("No ActionContext on the cause of", e.legacyEvent), !1;
     const r = e.legacyEvent;
-    return s.trackCustomEventAction(i, { name: r }, () => this.log.debug("Celtra event accepted:", r)), !0;
+    return i.trackCustomEventAction(s, { name: r }, () => this.log.debug("Celtra event accepted:", r)), !0;
   }
 }
-class H {
-  constructor(e, t, s) {
-    this.key = e, this.initiator = s, this.log = t.enter(`MbkCeltraContexts(${e})`);
+class G {
+  constructor(e, t, i) {
+    this.key = e, this.initiator = i, this.log = t.enter(`MbkCeltraContexts(${e})`);
   }
   /** Completes what the contexts are built from, when the script registers again. */
   useInitiator(e) {
@@ -381,19 +364,19 @@ class H {
     const t = this.passive;
     if (t)
       return t;
-    const s = this.create(!1);
-    return s && (this.passive = s), s;
+    const i = this.create(!1);
+    return i && (this.passive = i), i;
   }
   create(e) {
-    const t = globalThis, s = this.initiator ?? t.screen ?? t.unit;
-    if (typeof t.ActionContext == "function" && s)
+    const t = globalThis, i = this.initiator ?? t.screen ?? t.unit;
+    if (typeof t.ActionContext == "function" && i)
       try {
-        return new t.ActionContext(s, {
+        return new t.ActionContext(i, {
           certainlyNotCausedByUserBehavior: !e,
           consideredUserInitiatedByBrowser: e
         });
-      } catch (i) {
-        this.log.warn("Could not create an ActionContext, falling back to the ambient one", i);
+      } catch (s) {
+        this.log.warn("Could not create an ActionContext, falling back to the ambient one", s);
       }
     return t.mbkCtx ?? t.ctx;
   }
@@ -425,7 +408,7 @@ class c {
       e.completed,
       e.mode,
       e.legacyEvent
-    ].map((s) => s === void 0 ? "" : String(s)).join("|");
+    ].map((i) => i === void 0 ? "" : String(i)).join("|");
   }
   /**
    * What the signal is about: the role, which instance, and where. Everything but what happened to
@@ -444,9 +427,9 @@ class c {
   /** Containment as one string, outermost first: `"panel:2>section:3"`. */
   static path(e) {
     const t = [];
-    for (let s = e; s; s = s.scope) {
-      const i = c.instance(s);
-      t.unshift(i ? `${s.role}:${i}` : s.role);
+    for (let i = e; i; i = i.scope) {
+      const s = c.instance(i);
+      t.unshift(s ? `${i.role}:${s}` : i.role);
     }
     return t.join(">");
   }
@@ -454,8 +437,8 @@ class c {
 class a {
   /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
   static of(e, t) {
-    const s = { k: e.verb, vs1: e.role };
-    return a.set(s, "vs2", e.legacyEvent), a.set(s, "vs3", e.name), a.set(s, "vs4", c.path(e.scope) || void 0), a.set(s, "vs5", e.mode), a.set(s, "vi1", e.index), a.set(s, "vi2", e.ms), a.set(s, "vi3", e.from), a.set(s, "vi4", e.to), a.set(s, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), a.set(s, "vf1", e.percent), a.set(s, "vf2", e.modeMs), a.set(s, "iid", t), s;
+    const i = { k: e.verb, vs1: e.role };
+    return a.set(i, "vs2", e.legacyEvent), a.set(i, "vs3", e.name), a.set(i, "vs4", c.path(e.scope) || void 0), a.set(i, "vs5", e.mode), a.set(i, "vi1", e.index), a.set(i, "vi2", e.ms), a.set(i, "vi3", e.from), a.set(i, "vi4", e.to), a.set(i, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), a.set(i, "vf1", e.percent), a.set(i, "vf2", e.modeMs), a.set(i, "iid", t), i;
   }
   static toQueryString(e) {
     return Object.keys(e).map((t) => `${encodeURIComponent(t)}=${encodeURIComponent(String(e[t]))}`).join("&");
@@ -466,12 +449,12 @@ class a {
    * A `{{event}}` placeholder is substituted with the resolved Celtra event name, on the model of
    * the existing `externalVideoTrackerURI`, so an endpoint already shaped that way keeps working.
    */
-  static url(e, t, s) {
-    const i = e.includes("{{event}}") ? e.replace("{{event}}", encodeURIComponent(t.legacyEvent ?? t.verb)) : e, r = i.includes("?") ? "&" : "?";
-    return `${i}${r}${a.toQueryString(a.of(t, s))}`;
+  static url(e, t, i) {
+    const s = e.includes("{{event}}") ? e.replace("{{event}}", encodeURIComponent(t.legacyEvent ?? t.verb)) : e, r = s.includes("?") ? "&" : "?";
+    return `${s}${r}${a.toQueryString(a.of(t, i))}`;
   }
-  static set(e, t, s) {
-    s != null && s !== "" && (e[t] = s);
+  static set(e, t, i) {
+    i != null && i !== "" && (e[t] = i);
   }
 }
 const l = class l {
@@ -495,15 +478,15 @@ const l = class l {
   }
   /** Completes the configuration in place. Later values win, undefined ones leave the current one. */
   update(e) {
-    const t = Object.keys(e).reduce((s, i) => {
-      const r = e[i];
-      return r !== void 0 && (s[i] = r), s;
+    const t = Object.keys(e).reduce((i, s) => {
+      const r = e[s];
+      return r !== void 0 && (i[s] = r), i;
     }, {});
     this.options = { ...this.options, ...t };
   }
   runtimeParam(e) {
-    const s = (typeof creative < "u" ? creative : void 0)?.runtimeParams?.[e];
-    return typeof s == "string" && s ? s : void 0;
+    const i = (typeof creative < "u" ? creative : void 0)?.runtimeParams?.[e];
+    return typeof i == "string" && i ? i : void 0;
   }
 };
 l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
@@ -511,20 +494,20 @@ l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalCl
   pixelFallback: !0,
   log: () => new x("mbk")
 };
-let v = l;
-class W {
+let m = l;
+class H {
   constructor(e, t) {
     this.config = e, this.name = "beacon", this.log = t.enter("MbkBeaconChannel");
   }
   emit(e) {
     const t = this.config.endpoint;
     if (!t)
-      return this.log.debug(`No ${v.endpointParam}, raw signal not sent`), !1;
-    const s = globalThis.navigator?.sendBeacon;
-    if (typeof s != "function")
+      return this.log.debug(`No ${m.endpointParam}, raw signal not sent`), !1;
+    const i = globalThis.navigator?.sendBeacon;
+    if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
-    const i = a.url(t, e, this.config.impressionId), r = s.call(globalThis.navigator, i);
-    return this.log.debug(r ? "queued" : "refused", i), r;
+    const s = a.url(t, e, this.config.impressionId), r = i.call(globalThis.navigator, s);
+    return this.log.debug(r ? "queued" : "refused", s), r;
   }
 }
 const $ = class $ {
@@ -534,9 +517,9 @@ $.mapping = [
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
 let O = $;
-class L {
-  constructor(e, t, s) {
-    this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(s);
+class N {
+  constructor(e, t, i) {
+    this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(i);
   }
   /** Adds or replaces resolvers. Later declaration wins for the same kind. */
   declare(e) {
@@ -560,19 +543,19 @@ class L {
     const t = this.resolvers.get(c.of(e));
     if (t)
       try {
-        const { legacyEvent: s, ...i } = e, r = t(i);
+        const { legacyEvent: i, ...s } = e, r = t(s);
         if (typeof r != "string" || !r) {
           this.log.warn(`Resolver for ${c.of(e)} produced no name`, r);
           return;
         }
         return r;
-      } catch (s) {
-        this.log.warn(`Resolver for ${c.of(e)} failed, no Celtra event emitted`, s);
+      } catch (i) {
+        this.log.warn(`Resolver for ${c.of(e)} failed, no Celtra event emitted`, i);
         return;
       }
   }
 }
-class J {
+class W {
   constructor(e, t) {
     this.config = e, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = t.enter("MbkPixelChannel");
   }
@@ -582,45 +565,45 @@ class J {
       return !1;
     if (typeof Image != "function")
       return this.log.debug("Image unavailable"), !1;
-    const s = a.url(t, e, this.config.impressionId), i = new Image();
-    this.pending.add(i);
-    const r = () => this.pending.delete(i);
-    return i.onload = r, i.onerror = r, i.src = s, this.log.debug("sent", s), !0;
+    const i = a.url(t, e, this.config.impressionId), s = new Image();
+    this.pending.add(s);
+    const r = () => this.pending.delete(s);
+    return s.onload = r, s.onerror = r, s.src = i, this.log.debug("sent", i), !0;
   }
 }
-class X {
+class J {
   constructor(e, t) {
     this.config = e, this.log = t.enter("MbkTrackErrorReporter");
   }
-  report(e, t, s) {
-    this.log.warn(`Channel "${e}" failed for ${c.of(t)}`, s);
-    const i = this.config.errorEndpoint;
-    if (i)
+  report(e, t, i) {
+    this.log.warn(`Channel "${e}" failed for ${c.of(t)}`, i);
+    const s = this.config.errorEndpoint;
+    if (s)
       try {
         const r = [
           `error=${encodeURIComponent(`mbkTrack:${e}`)}`,
-          `reason=${encodeURIComponent(String(s?.message ?? s))}`,
+          `reason=${encodeURIComponent(String(i?.message ?? i))}`,
           `k=${encodeURIComponent(t.verb)}`
         ], d = this.config.impressionId;
         d && r.push(`iid=${encodeURIComponent(d)}`);
-        const f = `${i}${i.includes("?") ? "&" : "?"}${r.join("&")}`;
-        globalThis.navigator?.sendBeacon?.(f);
+        const u = `${s}${s.includes("?") ? "&" : "?"}${r.join("&")}`;
+        globalThis.navigator?.sendBeacon?.(u);
       } catch (r) {
         this.log.debug("Could not report the channel failure", r);
       }
   }
 }
-class U extends k {
+class L extends E {
 }
-class Z {
-  constructor(e, t, s) {
+class X {
+  constructor(e, t, i) {
     this.impression = e, this.document = t, this.flushables = /* @__PURE__ */ new Set(), this.flushed = /* @__PURE__ */ new Set(), this.hidden = !1, this.started = !1, this.onVisibilityChange = () => {
       this.document.visibilityState === "hidden" ? this.hide("visibilitychange") : this.show("visibilitychange");
     }, this.onPageHide = () => {
       this.hide("pagehide");
-    }, this.onPageShow = (i) => {
-      i.persisted && this.document.visibilityState === "visible" && this.show("pageshow");
-    }, this.log = s.enter("MbkVisibilityLifecycle");
+    }, this.onPageShow = (s) => {
+      s.persisted && this.document.visibilityState === "visible" && this.show("pageshow");
+    }, this.log = i.enter("MbkVisibilityLifecycle");
   }
   /**
    * Flushes that segment on every transition to hidden from now on, and resumes it on every return.
@@ -653,43 +636,43 @@ class Z {
   hide(e) {
     this.hidden = !0;
     const t = this.impression.elapsedMs();
-    for (const s of [...this.flushables])
-      this.flush(s, t, e);
+    for (const i of [...this.flushables])
+      this.flush(i, t, e);
   }
   /** The return to visible resumes every segment a flush closed, all at one instant. */
   show(e) {
     this.hidden = !1;
     const t = this.impression.elapsedMs();
-    for (const s of [...this.flushed])
-      this.flushed.delete(s), this.log.debug(`${e}: resuming a segment at ${t}ms`), this.invoke(s, "resume", t);
+    for (const i of [...this.flushed])
+      this.flushed.delete(i), this.log.debug(`${e}: resuming a segment at ${t}ms`), this.invoke(i, "resume", t);
   }
-  flush(e, t, s) {
+  flush(e, t, i) {
     if (this.flushed.has(e)) {
-      this.log.debug(`${s}: segment already flushed, skipping`);
+      this.log.debug(`${i}: segment already flushed, skipping`);
       return;
     }
-    this.flushed.add(e), this.log.debug(`${s}: flushing a segment at ${t}ms`), this.invoke(e, "flush", t);
+    this.flushed.add(e), this.log.debug(`${i}: flushing a segment at ${t}ms`), this.invoke(e, "flush", t);
   }
   /** One script's hook, isolated: it can fail without keeping the others from closing theirs. */
-  invoke(e, t, s) {
+  invoke(e, t, i) {
     try {
-      e[t](s);
-    } catch (i) {
-      this.log.error(new U(`Segment ${t} hook failed at ${s}ms`, i));
+      e[t](i);
+    } catch (s) {
+      this.log.error(new L(`Segment ${t} hook failed at ${i}ms`, s));
     }
   }
 }
 const o = class o {
   constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new v(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = o.now(), this.beacon = new W(this.config, this.log), this.pixel = new J(this.config, this.log), this.reporter = new X(this.config, this.log), this.coreLegacyEvents = new L(this.log, "core", O.mapping), this.visibility = new Z(this, globalThis.document, this.log);
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new m(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = o.now(), this.beacon = new H(this.config, this.log), this.pixel = new W(this.config, this.log), this.reporter = new J(this.config, this.log), this.coreLegacyEvents = new N(this.log, "core", O.mapping), this.visibility = new X(this, globalThis.document, this.log);
   }
   /** The one impression of this creative, created on first use. */
   static shared(e) {
-    const t = o.storage(), s = t[o.storageKey];
-    if (s)
-      return s.configure(e), s;
-    const i = new o(e);
-    return t[o.storageKey] = i, i;
+    const t = o.storage(), i = t[o.storageKey];
+    if (i)
+      return i.configure(e), i;
+    const s = new o(e);
+    return t[o.storageKey] = s, s;
   }
   /** Releases and drops it. For tests, and for a creative that reloads its scripts. */
   static reset() {
@@ -733,14 +716,14 @@ const o = class o {
    * @throws when the same key was already taken by a track of another kind, which would mean two
    *   instances of one script disagreeing on which specialisation they run under.
    */
-  track(e, t, s) {
-    const i = this.tracks.get(e);
-    if (i) {
-      if (!(i instanceof s))
-        throw new U(
-          `"${e}" is already tracked as a ${i.constructor.name}, not a ${s.name}. Every instance of one script must pick the same specialisation.`
+  track(e, t, i) {
+    const s = this.tracks.get(e);
+    if (s) {
+      if (!(s instanceof i))
+        throw new L(
+          `"${e}" is already tracked as a ${s.constructor.name}, not a ${i.name}. Every instance of one script must pick the same specialisation.`
         );
-      return i;
+      return s;
     }
     const r = t();
     return this.tracks.set(e, r), r;
@@ -764,11 +747,11 @@ const o = class o {
    * play/pause states after Celtra swaps the <video> on in-creative page navigation.
    */
   forgetMedia(e) {
-    const t = `:media|${e}|`, s = `media|${e}`;
-    for (const i of [...this.emitted])
-      i.includes(t) && this.emitted.delete(i);
-    for (const i of [...this.states.keys()])
-      i.startsWith(s) && this.states.delete(i);
+    const t = `:media|${e}|`, i = `media|${e}`;
+    for (const s of [...this.emitted])
+      s.includes(t) && this.emitted.delete(s);
+    for (const s of [...this.states.keys()])
+      s.startsWith(i) && this.states.delete(s);
   }
   /**
    * Whether this signal goes out under that emission, recording what it needs to for the next one.
@@ -777,15 +760,15 @@ const o = class o {
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
   admits(e, t) {
-    const s = c.signature(e);
+    const i = c.signature(e);
     switch (t) {
       case "repeated":
         return !0;
       case "once":
-        return this.emitted.has(s) ? (this.log.debug("Already emitted, skipping", s), !1) : (this.emitted.add(s), !0);
+        return this.emitted.has(i) ? (this.log.debug("Already emitted, skipping", i), !1) : (this.emitted.add(i), !0);
       case "state": {
-        const i = c.subject(e);
-        return this.states.get(i) === s ? (this.log.debug("Unchanged, skipping", s), !1) : (this.states.set(i, s), !0);
+        const s = c.subject(e);
+        return this.states.get(s) === i ? (this.log.debug("Unchanged, skipping", i), !1) : (this.states.set(s, i), !0);
       }
     }
   }
@@ -794,19 +777,19 @@ const o = class o {
     !this.send(this.beacon, e, t) && this.config.pixelFallback && this.send(this.pixel, e, t);
   }
   /** One channel, isolated: it can fail without touching the others. */
-  send(e, t, s) {
+  send(e, t, i) {
     try {
-      return e.emit(t, s);
-    } catch (i) {
-      return this.reporter.report(e.name, t, i), !1;
+      return e.emit(t, i);
+    } catch (s) {
+      return this.reporter.report(e.name, t, s), !1;
     }
   }
 };
 o.storageKey = "mbkImpression", o.windowStorageKey = "__mbkTrackStorage";
-let b = o;
-class y {
+let v = o;
+class b {
   constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new L(this.log, t, []);
+    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new N(this.log, t, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -815,8 +798,8 @@ class y {
    * object.
    */
   static shared(e, t) {
-    const s = b.shared(t);
-    return s.track(e.trackingKey, () => new y(s, e.trackingKey), y).declare(e.legacyEventsMapping);
+    const i = v.shared(t);
+    return i.track(e.trackingKey, () => new b(i, e.trackingKey), b).declare(e.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
   declare(e) {
@@ -839,7 +822,7 @@ class y {
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
   context(e) {
-    return new N(e);
+    return new S(e);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
   once(e, t) {
@@ -861,9 +844,9 @@ class y {
     this.emit(e, t, "state");
   }
   /** Resolves the signal, stamps it, and hands it to the channels if the emission admits it. */
-  emit(e, t, s) {
-    const i = { ...e, ms: this.impression.elapsedMs() };
-    !i.scope && t.scope && (i.scope = t.scope), this.impression.admits(i, s) && (i.legacyEvent = e.legacyEvent ?? this.resolveLegacyEvent(i), this.log.debug("emit", i), this.emitChannels(i, t));
+  emit(e, t, i) {
+    const s = { ...e, ms: this.impression.elapsedMs() };
+    !s.scope && t.scope && (s.scope = t.scope), this.impression.admits(s, i) && (s.legacyEvent = e.legacyEvent ?? this.resolveLegacyEvent(s), this.log.debug("emit", s), this.emitChannels(s, t));
   }
   /**
    * The raw channels of the impression.
@@ -890,21 +873,21 @@ class y {
     return t || this.log.debug(`No resolver for ${c.of(e)}, raw signal only`), t;
   }
 }
-class w extends y {
+class w extends b {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
   static shared(e, t) {
-    const s = b.shared(t), i = s.track(
+    const i = v.shared(t), s = i.track(
       e.trackingKey,
-      () => new w(s, e.trackingKey, t.initiator),
+      () => new w(i, e.trackingKey, t.initiator),
       w
     );
-    return i.contexts.useInitiator(t.initiator), i.declare(e.legacyEventsMapping);
+    return s.contexts.useInitiator(t.initiator), s.declare(e.legacyEventsMapping);
   }
-  constructor(e, t, s) {
-    super(e, t), this.contexts = new H(t, this.log, s), this.celtra = new S(this.log);
+  constructor(e, t, i) {
+    super(e, t), this.contexts = new G(t, this.log, i), this.celtra = new P(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
@@ -913,14 +896,14 @@ class w extends y {
    */
   context(e) {
     const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new T(e, t);
+    return new j(e, t);
   }
   /** The legacy event first, unchanged, then the raw channels. */
   emitChannels(e, t) {
     this.impression.send(this.celtra, e, t), super.emitChannels(e, t);
   }
 }
-class Y {
+class Z {
   constructor(e, t) {
     this.trackingKey = "phase", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.track = w.shared(this, {}), this.log = t.enter("PhaseTracking"), this.impression = this.track.context({
       scope: void 0,
@@ -941,9 +924,9 @@ class Y {
     return e.replace(/[^a-zA-Z0-9]+/g, "_");
   }
 }
-class _ {
-  constructor(e, t, s, i, r) {
-    this.root = e, this.minRatio = t, this.minDurationMs = s, this.onQualified = i, this.documentRef = r, this.observer = null, this.timer = null, this.lastRatio = 0, this.onVisibility = () => this.syncVisibility();
+class Y {
+  constructor(e, t, i, s, r) {
+    this.root = e, this.minRatio = t, this.minDurationMs = i, this.onQualified = s, this.documentRef = r, this.observer = null, this.timer = null, this.lastRatio = 0, this.onVisibility = () => this.syncVisibility();
   }
   start() {
     return this.observer !== null ? !0 : typeof IntersectionObserver != "function" ? !1 : (this.observer = new IntersectionObserver((e) => {
@@ -978,14 +961,14 @@ class _ {
     this.timer !== null && (clearTimeout(this.timer), this.timer = null);
   }
 }
-const u = class u {
-  constructor(e, t, s) {
-    this.context = e, this.options = t, this.scriptName = s, this.log = j.enter(this.scriptName), this.now = () => Date.now(), this.selector = new z(new Q()), this.storage = new G(
+const y = class y {
+  constructor(e, t, i) {
+    this.context = e, this.options = t, this.scriptName = i, this.log = R.enter(this.scriptName), this.now = () => Date.now(), this.selector = new q(new K()), this.storage = new z(
       this.options,
       this.now,
       this.log,
       `mobkoi-phase:${this.creativeId}`
-    ), this.tracking = new Y(this.context.ctx, this.log), this.state = this.freshState(), this.activePhase = null, this.createdAt = null, this.started = !1, this.destroyed = !1, this.countOnDisplay = !1, this.reportedViewability = !1, this.transitionSequence = 0, this.viewability = null, this.restore();
+    ), this.tracking = new Z(this.context.ctx, this.log), this.state = this.freshState(), this.activePhase = null, this.createdAt = null, this.started = !1, this.destroyed = !1, this.countOnDisplay = !1, this.reportedViewability = !1, this.viewability = null, this.restore();
   }
   start() {
     if (this.destroyed || this.started)
@@ -1014,7 +997,7 @@ const u = class u {
     this.destroyed || this.started && this.begin();
   }
   begin() {
-    this.options.debug && this.log.debug("tagservice", this.tagservice), this.evaluate("start");
+    this.evaluate("start");
   }
   stop() {
     this.started && (this.started = !1, this.viewability?.stop());
@@ -1025,86 +1008,65 @@ const u = class u {
   get creativeId() {
     return this.context.creative.id || "mobkoi-creative";
   }
-  get tagservice() {
-    return typeof this.options.tagservice == "boolean" ? this.options.tagservice : this.context.creative.runtimeParams?.isTagservice === !0;
+  get waitForViewable() {
+    return this.options.viewability.enabled && this.options.viewability.requireViewable && !this.countOnDisplay;
   }
   evaluate(e) {
     if (this.destroyed)
       return;
-    const t = this.now(), s = this.selector.select({
-      config: this.options,
+    if (e === "viewable") {
+      this.activePhase !== null && this.log.debug("viewable", this.activePhase.id, this.state.views), this.stop();
+      return;
+    }
+    const t = this.selector.select({
+      phases: this.options.phases,
       state: this.state,
       maxEnteredOrder: this.state.maxEnteredOrder,
-      activePhase: this.activePhase
+      activePhase: this.activePhase,
+      fallbackPhaseId: this.options.fallbackPhaseId
     });
-    if (s.selectedPhase === null)
+    if (t === null)
       throw new C("No eligible phase and no usable fallback phase.");
-    const i = {
-      selectedPhase: s.selectedPhase,
-      reason: e,
-      evaluatedAt: t,
-      usedFallback: s.usedFallback
-    };
-    if (this.options.debug && this.log.debug(e, i.selectedPhase?.id ?? "none", i.usedFallback ? "fallback" : ""), e === "viewable") {
-      const r = i.selectedPhase ?? this.activePhase;
-      r !== null && this.announce(r, e);
-      return;
-    }
-    s.selectedPhase.id !== this.activePhase?.id && this.display(i);
+    this.log.debug(e, t.id), t.id !== this.activePhase?.id && this.display(t);
   }
   display(e) {
-    const t = e.selectedPhase;
-    if (t === null)
-      return;
-    const s = ++this.transitionSequence;
-    this.announce(t, e.reason), this.commitDisplay(t, e, s);
-  }
-  commitDisplay(e, t, s) {
-    this.destroyed || s !== this.transitionSequence || (this.activePhase = e, e.order > this.state.maxEnteredOrder && (this.state.maxEnteredOrder = e.order), !this.state.enteredPhaseIds.includes(e.id) && this.state.enteredPhaseIds.length < u.maxViews && this.state.enteredPhaseIds.push(e.id), this.tracking.enter(e.id), this.deferViews() ? this.persist() : this.recordView(e, t.evaluatedAt), this.beginViewability());
-  }
-  announce(e, t) {
-    if (t === "viewable") {
-      this.options.debug && this.log.debug("viewable", e.id, this.state.views), this.stop();
-      return;
-    }
-    this.present(e);
+    this.present(e), !this.destroyed && (this.activePhase = e, e.order > this.state.maxEnteredOrder && (this.state.maxEnteredOrder = e.order), this.tracking.enter(e.id), this.waitForViewable ? this.persist() : this.recordView(e, this.now()), this.beginViewability());
   }
   present(e) {
-    const t = e.target.pageName, s = this.host().find(t);
+    const t = e.target.pageName, i = this.context.unit, s = i.find(t);
     if (!s)
       throw new C(`Celtra screen "${t}" was not found.`);
-    const i = this.host();
     if (!i.goToScreenAction || !this.context.ctx)
       throw new C("Celtra screen navigation is not available.");
     i.goToScreenAction(this.context.ctx, { screen: s }, () => {
     });
   }
   beginViewability() {
-    if (!this.deferViews())
-      return;
-    const e = this.currentRoot();
-    if (e !== null) {
-      this.watch(e);
-      return;
+    if (this.waitForViewable) {
+      const e = this.currentRoot();
+      if (e !== null) {
+        this.watch(e);
+        return;
+      }
+      const t = this.context.unit.getNode;
+      if (typeof t == "function") {
+        t.call(this.context.unit, () => {
+          if (this.started && !this.destroyed && this.waitForViewable) {
+            const i = this.currentRoot();
+            if (i !== null) {
+              this.watch(i);
+              return;
+            }
+            this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
+          }
+        });
+        return;
+      }
+      this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
     }
-    const t = this.context.unit.getNode;
-    if (typeof t == "function") {
-      t.call(this.context.unit, () => {
-        if (!this.started || this.destroyed || this.countOnDisplay)
-          return;
-        const s = this.currentRoot();
-        if (s !== null) {
-          this.watch(s);
-          return;
-        }
-        this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
-      });
-      return;
-    }
-    this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
   }
   watch(e) {
-    this.viewability?.stop(), this.viewability = new _(
+    this.viewability?.stop(), this.viewability = new Y(
       e,
       this.options.viewability.minPercent / 100,
       this.options.viewability.minDurationMs,
@@ -1124,19 +1086,14 @@ const u = class u {
     e === null || this.destroyed || (this.viewability?.stop(), this.recordView(e, this.now()) && this.evaluate("viewable"));
   }
   recordView(e, t) {
-    const s = this.state.views[e.id];
-    if (e.behaviour.viewableOnce && (s?.count ?? 0) >= 1)
-      return !1;
-    if (s !== void 0)
-      s.count += 1, s.lastAt = t;
-    else if (Object.keys(this.state.views).length < u.maxViews)
+    const i = this.state.views[e.id];
+    if (i !== void 0)
+      i.count += 1, i.lastAt = t;
+    else if (Object.keys(this.state.views).length < y.maxViews)
       this.state.views[e.id] = { count: 1, lastAt: t };
     else
       return !1;
     return this.persist(), this.tracking.viewed(e.id), !0;
-  }
-  deferViews() {
-    return this.options.viewability.enabled && this.options.viewability.requireViewable && !this.countOnDisplay;
   }
   currentRoot() {
     return this.context.unit.node ?? null;
@@ -1145,8 +1102,6 @@ const u = class u {
     this.createdAt === null && (this.createdAt = this.now());
     const e = {
       maxEnteredOrder: this.state.maxEnteredOrder,
-      enteredPhaseIds: this.state.enteredPhaseIds.slice(0, u.maxViews),
-      previousPhaseId: this.activePhase?.id ?? null,
       views: this.state.views,
       createdAt: this.createdAt
     };
@@ -1154,30 +1109,26 @@ const u = class u {
   }
   restore() {
     const e = this.storage.load();
-    e !== null && (this.state.maxEnteredOrder = e.maxEnteredOrder, this.state.enteredPhaseIds = e.enteredPhaseIds.slice(), this.state.views = { ...e.views }, this.createdAt = e.createdAt);
-  }
-  host() {
-    return this.context.unit;
+    e !== null && (this.state.maxEnteredOrder = e.maxEnteredOrder, this.state.views = { ...e.views }, this.createdAt = e.createdAt);
   }
   freshState() {
     return {
       maxEnteredOrder: 0,
-      enteredPhaseIds: [],
       views: /* @__PURE__ */ Object.create(null)
     };
   }
 };
-u.maxViews = 10;
-let V = u;
-class ee extends A {
+y.maxViews = 10;
+let V = y;
+class _ extends I {
   constructor() {
-    super(...arguments), this.name = "PhaseOrchestrator", this.defaultConfig = M;
+    super(...arguments), this.name = "PhaseOrchestrator", this.defaultConfig = B;
   }
   create(e, t) {
     return new V(e, t, this.name);
   }
 }
-const te = (n) => new ee().init(n);
+const ee = (n) => new _().init(n);
 export {
-  te as setup
+  ee as setup
 };
