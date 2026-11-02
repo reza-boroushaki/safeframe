@@ -1,15 +1,15 @@
 /*! Copyright Mobkoi 2026 (v5.5.1) */
-const T = {
+const M = {
   conditions: {
     mode: "all",
     items: [{ type: "viewed", phase: "phase-1", operator: "gte", value: 1 }]
   }
-}, U = {
+}, B = {
   conditions: {
     mode: "all",
     items: [{ type: "viewed", phase: "phase-2", operator: "gte", value: 1 }]
   }
-}, B = {
+}, D = {
   fallbackPhaseId: "phase-1",
   storage: {
     mode: "local",
@@ -32,47 +32,86 @@ const T = {
       id: "phase-2",
       order: 2,
       target: { pageName: "p2" },
-      activation: T
+      activation: M
     },
     {
       id: "phase-3",
       order: 3,
       target: { pageName: "p3" },
-      activation: U
+      activation: B
     }
   ]
 };
-class x {
-  constructor(e) {
-    this.name = e;
+class q {
+  constructor(t) {
+    this.log = t.enter("SafeFrameUtil");
   }
-  get prefix() {
-    const e = this.name ? `[${this.name}]` : "";
-    return this.parent ? this.parent.prefix + e : e;
+  check() {
+    const t = {}, e = typeof window < "u" && window.location && typeof window.location.href == "string" ? window.location.href : "", i = typeof creative < "u" && creative?.adapter && creative.adapter.safeFrameDetected || !1, s = /googlesyndication/i.test(e) || /safeframe/i.test(e);
+    if (t.detected = !!(i || s), typeof window < "u")
+      try {
+        t.apiObject = typeof window.$sf < "u" ? window.$sf : window.parent.$sf;
+      } catch (r) {
+        this.log.debug("SafeFrameUtil", "cannot access window.parent.$sf", r), t.apiObject = typeof window.$sf < "u" ? window.$sf : void 0;
+      }
+    else
+      t.apiObject = void 0;
+    return t.usable = t.apiObject && t.apiObject.ext && (typeof t.apiObject.ext.inViewPercentage == "function" || typeof t.apiObject.ext.geom == "function"), t.passed = t.detected && t.apiObject && t.usable, t;
   }
-  log(...e) {
-    console.debug(this.prefix, ...e);
+  /**
+   * Returns the SafeFrame API object if available, otherwise null
+   * @returns {Object|null} SafeFrame API object if available, otherwise null
+   */
+  get() {
+    return this.check().apiObject || null;
   }
-  debug(...e) {
-    return this.log(...e);
+  apiExists() {
+    try {
+      return !!window.$sf || typeof window.parent.$sf == "object";
+    } catch (t) {
+      return this.log.debug("SafeFrameUtil", "no apiExists", t), !1;
+    }
   }
-  warn(...e) {
-    console.warn(this.prefix, ...e);
-  }
-  error(...e) {
-    console.error(this.prefix, ...e);
-  }
-  enter(e) {
-    return this.add(new x(e));
-  }
-  add(e) {
-    return e.parent = this, e;
+  configExists() {
+    try {
+      const t = window.sf_ || window.parent.sf_;
+      return typeof t == "object" && t.cfg && typeof t.cfg.reportCreativeGeometry < "u" ? "true-geom:" + t.cfg.reportCreativeGeometry : typeof t == "object";
+    } catch (t) {
+      return this.log.debug("SafeFrameUtil", "no configExists", t), !1;
+    }
   }
 }
-const M = new x("MOBKOI");
-class E extends Error {
-  constructor(e, t = void 0) {
-    super(e), this.name = new.target.name, this.cause = typeof t == "string" ? new E(t, void 0) : t;
+class E {
+  constructor(t) {
+    this.name = t;
+  }
+  get prefix() {
+    const t = this.name ? `[${this.name}]` : "";
+    return this.parent ? this.parent.prefix + t : t;
+  }
+  log(...t) {
+    console.debug(this.prefix, ...t);
+  }
+  debug(...t) {
+    return this.log(...t);
+  }
+  warn(...t) {
+    console.warn(this.prefix, ...t);
+  }
+  error(...t) {
+    console.error(this.prefix, ...t);
+  }
+  enter(t) {
+    return this.add(new E(t));
+  }
+  add(t) {
+    return t.parent = this, t;
+  }
+}
+const K = new E("MOBKOI");
+class k extends Error {
+  constructor(t, e = void 0) {
+    super(t), this.name = new.target.name, this.cause = typeof e == "string" ? new k(e, void 0) : e;
   }
   toString() {
     return super.toString() + (this.cause ? `
@@ -80,61 +119,61 @@ class E extends Error {
 ` + this.cause.toString() : "");
   }
 }
-const R = M.enter("Celtra");
-class p extends E {
+const F = K.enter("Celtra");
+class g extends k {
 }
-function k(n) {
+function C(n) {
   return !!(n && typeof n.find == "function");
 }
 function f(n) {
   return globalThis[n];
 }
-class F {
-  resolve(e = {}) {
-    const t = this.resolveCreative(e.creative);
-    if (!t)
-      throw new p('Celtra context: "creative" not found');
-    const i = this.resolveScreen(t, e.screen);
+class z {
+  resolve(t = {}) {
+    const e = this.resolveCreative(t.creative);
+    if (!e)
+      throw new g('Celtra context: "creative" not found');
+    const i = this.resolveScreen(e, t.screen);
     if (!i)
-      throw new p('Celtra context: "screen" is missing or not a Celtra screen');
-    const s = this.resolveUnit(t, e.unit, i);
+      throw new g('Celtra context: "screen" is missing or not a Celtra screen');
+    const s = this.resolveUnit(e, t.unit, i);
     if (!s)
-      throw new p('Celtra context: "unit" not found');
-    const r = this.resolveCtx(e.ctx, i);
-    return { creative: t, unit: s, screen: i, ctx: r };
+      throw new g('Celtra context: "unit" not found');
+    const r = this.resolveCtx(t.ctx, i);
+    return { creative: e, unit: s, screen: i, ctx: r };
   }
-  resolveCreative(e) {
-    return e ?? f("creative");
+  resolveCreative(t) {
+    return t ?? f("creative");
   }
-  resolveScreen(e, t) {
-    if (k(t))
-      return t;
-    if (typeof e?.getScreen == "function") {
-      const s = e.getScreen();
-      if (k(s))
+  resolveScreen(t, e) {
+    if (C(e))
+      return e;
+    if (typeof t?.getScreen == "function") {
+      const s = t.getScreen();
+      if (C(s))
         return s;
     }
     const i = f("screen");
-    return k(i) ? i : void 0;
+    return C(i) ? i : void 0;
   }
-  resolveUnit(e, t, i) {
-    return t ?? e?.getUnit?.() ?? i?.getUnit?.() ?? f("unit");
+  resolveUnit(t, e, i) {
+    return e ?? t?.getUnit?.() ?? i?.getUnit?.() ?? f("unit");
   }
-  resolveCtx(e, t) {
-    const i = e ?? f("ctx") ?? f("mbkCtx");
-    return i || !t || typeof ActionContext > "u" ? i : new ActionContext(t, {
+  resolveCtx(t, e) {
+    const i = t ?? f("ctx") ?? f("mbkCtx");
+    return i || !e || typeof ActionContext > "u" ? i : new ActionContext(e, {
       certainlyNotCausedByUserBehavior: !1,
       consideredUserInitiatedByBrowser: !1
     });
   }
 }
-const D = new F(), h = class h {
-  static deepMerge(e, t) {
-    const i = { ...e };
-    for (const s of Object.keys(t)) {
-      const r = t[s], d = e[s];
-      r !== void 0 && (h.isPlainObject(d) && h.isPlainObject(r) ? i[s] = h.deepMerge(
-        d,
+const G = new z(), l = class l {
+  static deepMerge(t, e) {
+    const i = { ...t };
+    for (const s of Object.keys(e)) {
+      const r = e[s], c = t[s];
+      r !== void 0 && (l.isPlainObject(c) && l.isPlainObject(r) ? i[s] = l.deepMerge(
+        c,
         r
       ) : i[s] = r);
     }
@@ -144,124 +183,124 @@ const D = new F(), h = class h {
    * Split a dot path into own-property segments.
    * Returns null when the path is empty, too long, or could reach the prototype chain.
    */
-  static parsePath(e) {
-    if (typeof e != "string" || e.length === 0 || e.length > 200)
+  static parsePath(t) {
+    if (typeof t != "string" || t.length === 0 || t.length > 200)
       return null;
-    const t = e.split(".");
-    for (const i of t)
-      if (i.length === 0 || h.forbiddenPathSegment(i) || !/^[A-Za-z0-9_$-]+$/.test(i))
+    const e = t.split(".");
+    for (const i of e)
+      if (i.length === 0 || l.forbiddenPathSegment(i) || !/^[A-Za-z0-9_$-]+$/.test(i))
         return null;
-    return t;
+    return e;
   }
   /** Read an own property chain. Returns {@link ObjectUtil.missing} when any segment is absent. */
-  static readPath(e, t) {
-    let i = e;
-    for (const s of t) {
-      if (h.forbiddenPathSegment(s) || i === null || typeof i != "object" && typeof i != "function" || !Object.prototype.hasOwnProperty.call(i, s))
-        return h.missing;
+  static readPath(t, e) {
+    let i = t;
+    for (const s of e) {
+      if (l.forbiddenPathSegment(s) || i === null || typeof i != "object" && typeof i != "function" || !Object.prototype.hasOwnProperty.call(i, s))
+        return l.missing;
       i = i[s];
     }
     return i;
   }
-  static isPlainObject(e) {
-    return typeof e == "object" && e !== null && !Array.isArray(e) && Object.getPrototypeOf(e) === Object.prototype;
+  static isPlainObject(t) {
+    return typeof t == "object" && t !== null && !Array.isArray(t) && Object.getPrototypeOf(t) === Object.prototype;
   }
-  static forbiddenPathSegment(e) {
-    return e === "__proto__" || e === "prototype" || e === "constructor";
+  static forbiddenPathSegment(t) {
+    return t === "__proto__" || t === "prototype" || t === "constructor";
   }
 };
-h.missing = /* @__PURE__ */ Symbol("missing");
-let A = h;
-const g = class g {
+l.missing = /* @__PURE__ */ Symbol("missing");
+let m = l;
+const p = class p {
   constructor() {
-    this.contextResolver = D;
+    this.contextResolver = G;
   }
-  init(e) {
-    const t = R.enter(this.name), i = this.contextResolver.resolve(e), s = i.unit ?? i.screen, r = g.registry.get(s);
+  init(t) {
+    const e = F.enter(this.name), i = this.contextResolver.resolve(t), s = i.unit ?? i.screen, r = p.registry.get(s);
     if (r)
-      return t.debug("already initialized"), r;
-    const d = A.deepMerge(this.defaultConfig, e), u = this.create(i, d);
-    return g.registry.set(s, u), u.start(), u;
+      return e.debug("already initialized"), r;
+    const c = m.deepMerge(this.defaultConfig, t), u = this.create(i, c);
+    return p.registry.set(s, u), u.start(), u;
   }
 };
-g.registry = /* @__PURE__ */ new WeakMap();
-let I = g;
-class K {
-  evaluateGroup(e, t) {
-    return e.items.every((i) => this.passed(i, t));
+p.registry = /* @__PURE__ */ new WeakMap();
+let S = p;
+class H {
+  evaluateGroup(t, e) {
+    return t.items.every((i) => this.passed(i, e));
   }
-  passed(e, t) {
-    return (t.views[e.phase]?.count ?? 0) >= e.value;
+  passed(t, e) {
+    return (e.views[t.phase]?.count ?? 0) >= t.value;
   }
 }
-class C extends p {
+class V extends g {
 }
-class q {
-  constructor(e) {
-    this.conditions = e;
+class Q {
+  constructor(t) {
+    this.conditions = t;
   }
-  select(e) {
-    const t = [];
-    for (const s of e.phases)
-      this.isEligible(s, e) && t.push(s);
-    if (t.length > 0)
-      return t.slice().sort((r, d) => this.compare(r, d, e.phases))[0] ?? null;
-    const i = this.fallback(e);
-    return i !== null && i.order >= e.maxEnteredOrder ? i : e.activePhase;
+  select(t) {
+    const e = [];
+    for (const s of t.phases)
+      this.isEligible(s, t) && e.push(s);
+    if (e.length > 0)
+      return e.slice().sort((r, c) => this.compare(r, c, t.phases))[0] ?? null;
+    const i = this.fallback(t);
+    return i !== null && i.order >= t.maxEnteredOrder ? i : t.activePhase;
   }
-  isEligible(e, t) {
-    const i = e.activation?.conditions ?? null, s = i === null || this.conditions.evaluateGroup(i, t.state), r = e.order < t.maxEnteredOrder && t.activePhase?.id !== e.id;
+  isEligible(t, e) {
+    const i = t.activation?.conditions ?? null, s = i === null || this.conditions.evaluateGroup(i, e.state), r = t.order < e.maxEnteredOrder && e.activePhase?.id !== t.id;
     return s && !r;
   }
-  fallback(e) {
-    return e.phases.find((t) => t.id === e.fallbackPhaseId) ?? null;
+  fallback(t) {
+    return t.phases.find((e) => e.id === t.fallbackPhaseId) ?? null;
   }
-  compare(e, t, i) {
-    return e.order !== t.order ? t.order - e.order : i.indexOf(e) - i.indexOf(t);
+  compare(t, e, i) {
+    return t.order !== e.order ? e.order - t.order : i.indexOf(t) - i.indexOf(e);
   }
 }
-const Q = 10;
-class z {
-  constructor(e, t, i, s) {
-    this.options = e, this.now = t, this.log = i, this.key = s, this.memory = null, this.reportedUnavailable = !1, this.knownPhaseIds = new Set(e.phases.map((r) => r.id));
+const W = 10;
+class J {
+  constructor(t, e, i, s) {
+    this.options = t, this.now = e, this.log = i, this.key = s, this.memory = null, this.reportedUnavailable = !1, this.knownPhaseIds = new Set(t.phases.map((r) => r.id));
   }
   load() {
-    const e = this.backend();
-    if (e === null)
+    const t = this.backend();
+    if (t === null)
       return this.memory;
     try {
-      const t = e.getItem(this.key);
-      if (t === null)
+      const e = t.getItem(this.key);
+      if (e === null)
         return this.memory;
-      const i = JSON.parse(t), s = this.readRecord(i);
+      const i = JSON.parse(e), s = this.readRecord(i);
       return s === null ? this.memory : this.isExpired(s) ? (this.clear(), null) : s;
-    } catch (t) {
-      return this.log.debug("stored progression could not be read", t), this.memory;
+    } catch (e) {
+      return this.log.debug("stored progression could not be read", e), this.memory;
     }
   }
-  save(e) {
-    this.memory = e;
-    const t = this.backend();
-    if (t !== null)
+  save(t) {
+    this.memory = t;
+    const e = this.backend();
+    if (e !== null)
       try {
-        t.setItem(this.key, JSON.stringify(e));
+        e.setItem(this.key, JSON.stringify(t));
       } catch (i) {
         this.log.warn(i);
       }
   }
   clear() {
     this.memory = null;
-    const e = this.backend();
-    if (e !== null)
+    const t = this.backend();
+    if (t !== null)
       try {
-        e.removeItem(this.key);
-      } catch (t) {
-        this.log.debug("stored progression could not be cleared", t);
+        t.removeItem(this.key);
+      } catch (e) {
+        this.log.debug("stored progression could not be cleared", e);
       }
   }
-  isExpired(e) {
-    const t = this.options.storage.ttlDays;
-    return t === null ? !1 : this.now() - e.createdAt > t * 24 * 60 * 60 * 1e3;
+  isExpired(t) {
+    const e = this.options.storage.ttlDays;
+    return e === null ? !1 : this.now() - t.createdAt > e * 24 * 60 * 60 * 1e3;
   }
   permitted() {
     return this.options.storage.mode !== "memory";
@@ -270,121 +309,121 @@ class z {
     if (!this.permitted())
       return null;
     try {
-      const e = this.probe(this.options.storage.mode);
-      return e === null && !this.reportedUnavailable && (this.reportedUnavailable = !0, this.log.warn("Storage is not available; view history will not persist.")), e;
-    } catch (e) {
-      return this.reportedUnavailable || (this.reportedUnavailable = !0, this.log.warn("Storage is not available; view history will not persist.", e)), null;
+      const t = this.probe(this.options.storage.mode);
+      return t === null && !this.reportedUnavailable && (this.reportedUnavailable = !0, this.log.warn("Storage is not available; view history will not persist.")), t;
+    } catch (t) {
+      return this.reportedUnavailable || (this.reportedUnavailable = !0, this.log.warn("Storage is not available; view history will not persist.", t)), null;
     }
   }
-  probe(e) {
-    const t = e === "local" ? globalThis.localStorage : globalThis.sessionStorage;
-    if (!t)
+  probe(t) {
+    const e = t === "local" ? globalThis.localStorage : globalThis.sessionStorage;
+    if (!e)
       return null;
     const i = "__mobkoi_probe__";
-    return t.setItem(i, "1"), t.removeItem(i), t;
+    return e.setItem(i, "1"), e.removeItem(i), e;
   }
-  readRecord(e) {
-    if (!Object.prototype.hasOwnProperty.call(e ?? {}, "maxEnteredOrder") || typeof e != "object" || e === null)
+  readRecord(t) {
+    if (!Object.prototype.hasOwnProperty.call(t ?? {}, "maxEnteredOrder") || typeof t != "object" || t === null)
       return null;
-    const t = e;
-    if (typeof t.maxEnteredOrder != "number" || !Number.isFinite(t.maxEnteredOrder))
+    const e = t;
+    if (typeof e.maxEnteredOrder != "number" || !Number.isFinite(e.maxEnteredOrder))
       return null;
-    const i = t.views;
+    const i = e.views;
     if (i !== void 0 && (typeof i != "object" || i === null || Array.isArray(i)))
       return null;
-    const s = t.createdAt;
+    const s = e.createdAt;
     return s !== void 0 && (typeof s != "number" || !Number.isFinite(s)) ? null : {
-      maxEnteredOrder: t.maxEnteredOrder,
+      maxEnteredOrder: e.maxEnteredOrder,
       views: this.sanitiseViews(i ?? {}),
       createdAt: typeof s == "number" ? s : this.now()
     };
   }
-  sanitiseViews(e) {
-    const t = {};
+  sanitiseViews(t) {
+    const e = {};
     let i = 0;
-    for (const [s, r] of Object.entries(e))
-      i >= Q || !this.knownPhaseIds.has(s) || !this.isViewRecord(r) || (t[s] = {
+    for (const [s, r] of Object.entries(t))
+      i >= W || !this.knownPhaseIds.has(s) || !this.isViewRecord(r) || (e[s] = {
         count: Math.min(Math.floor(r.count), Number.MAX_SAFE_INTEGER),
         lastAt: r.lastAt
       }, i += 1);
-    return t;
+    return e;
   }
-  isViewRecord(e) {
-    if (typeof e != "object" || e === null)
+  isViewRecord(t) {
+    if (typeof t != "object" || t === null)
       return !1;
-    const t = e;
-    return typeof t.count == "number" && Number.isFinite(t.count) && t.count >= 0 && typeof t.lastAt == "number" && Number.isFinite(t.lastAt);
+    const e = t;
+    return typeof e.count == "number" && Number.isFinite(e.count) && e.count >= 0 && typeof e.lastAt == "number" && Number.isFinite(e.lastAt);
   }
 }
-class S {
-  constructor(e) {
-    this.scope = e.scope, this.userInitiated = e.userInitiated;
+class N {
+  constructor(t) {
+    this.scope = t.scope, this.userInitiated = t.userInitiated;
   }
 }
-class j extends S {
-  constructor(e, t) {
-    super(e), this.actionContext = t;
+class T extends N {
+  constructor(t, e) {
+    super(t), this.actionContext = e;
   }
 }
-class P {
-  constructor(e) {
-    this.name = "celtra", this.log = e.enter("MbkCeltraChannel");
+class A {
+  constructor(t) {
+    this.name = "celtra", this.log = t.enter("MbkCeltraChannel");
   }
-  static actionContextOf(e) {
-    return e instanceof j ? e.actionContext : void 0;
+  static actionContextOf(t) {
+    return t instanceof T ? t.actionContext : void 0;
   }
-  emit(e, t) {
-    if (!e.legacyEvent)
+  emit(t, e) {
+    if (!t.legacyEvent)
       return !1;
     const i = typeof Creative < "u" ? Creative : void 0;
     if (typeof i?.trackCustomEventAction != "function")
-      return this.log.debug("Creative API unavailable, no Celtra event for", e.legacyEvent), !1;
-    const s = P.actionContextOf(t);
+      return this.log.debug("Creative API unavailable, no Celtra event for", t.legacyEvent), !1;
+    const s = A.actionContextOf(e);
     if (!s)
-      return this.log.warn("No ActionContext on the cause of", e.legacyEvent), !1;
-    const r = e.legacyEvent;
+      return this.log.warn("No ActionContext on the cause of", t.legacyEvent), !1;
+    const r = t.legacyEvent;
     return i.trackCustomEventAction(s, { name: r }, () => this.log.debug("Celtra event accepted:", r)), !0;
   }
 }
-class G {
-  constructor(e, t, i) {
-    this.key = e, this.initiator = i, this.log = t.enter(`MbkCeltraContexts(${e})`);
+class X {
+  constructor(t, e, i) {
+    this.key = t, this.initiator = i, this.log = e.enter(`MbkCeltraContexts(${t})`);
   }
   /** Completes what the contexts are built from, when the script registers again. */
-  useInitiator(e) {
-    e && (this.initiator = e);
+  useInitiator(t) {
+    t && (this.initiator = t);
   }
   /**
    * The context for a cause of that nature: a fresh one when the cause is a user gesture, the
    * memoised passive one otherwise. See the class documentation for why they differ.
    */
-  forCause(e) {
-    if (e)
-      return this.create(!0);
-    const t = this.passive;
+  forCause(t) {
     if (t)
-      return t;
+      return this.create(!0);
+    const e = this.passive;
+    if (e)
+      return e;
     const i = this.create(!1);
     return i && (this.passive = i), i;
   }
-  create(e) {
-    const t = globalThis, i = this.initiator ?? t.screen ?? t.unit;
-    if (typeof t.ActionContext == "function" && i)
+  create(t) {
+    const e = globalThis, i = this.initiator ?? e.screen ?? e.unit;
+    if (typeof e.ActionContext == "function" && i)
       try {
-        return new t.ActionContext(i, {
-          certainlyNotCausedByUserBehavior: !e,
-          consideredUserInitiatedByBrowser: e
+        return new e.ActionContext(i, {
+          certainlyNotCausedByUserBehavior: !t,
+          consideredUserInitiatedByBrowser: t
         });
       } catch (s) {
         this.log.warn("Could not create an ActionContext, falling back to the ambient one", s);
       }
-    return t.mbkCtx ?? t.ctx;
+    return e.mbkCtx ?? e.ctx;
   }
 }
-class c {
+class h {
   /** Dictionary key of a kind, by value: `"view:panel"`. */
-  static of(e) {
-    return `${e.verb}:${e.role}`;
+  static of(t) {
+    return `${t.verb}:${t.role}`;
   }
   /**
    * Deduplication key of one occurrence: everything that identifies it, minus what the library
@@ -397,17 +436,17 @@ class c {
    * The emitting script is deliberately not part of it, because deduplication is global to the
    * creative rather than per script.
    */
-  static signature(e) {
+  static signature(t) {
     return [
-      c.of(e),
-      c.instance(e),
-      c.path(e.scope),
-      e.percent,
-      e.from,
-      e.to,
-      e.completed,
-      e.mode,
-      e.legacyEvent
+      h.of(t),
+      h.instance(t),
+      h.path(t.scope),
+      t.percent,
+      t.from,
+      t.to,
+      t.completed,
+      t.mode,
+      t.legacyEvent
     ].map((i) => i === void 0 ? "" : String(i)).join("|");
   }
   /**
@@ -417,31 +456,31 @@ class c {
    * This is what a state is keyed on: two players hold two independent states, and a `play` followed
    * by a `pause` is one subject changing rather than two things happening.
    */
-  static subject(e) {
-    return [e.role, c.instance(e), c.path(e.scope)].join("|");
+  static subject(t) {
+    return [t.role, h.instance(t), h.path(t.scope)].join("|");
   }
   /** `"2"`, `"vidPlayer1"`, or `""` for a singleton such as the unit. */
-  static instance(e) {
-    return e.index !== void 0 ? String(e.index) : e.name ?? "";
+  static instance(t) {
+    return t.index !== void 0 ? String(t.index) : t.name ?? "";
   }
   /** Containment as one string, outermost first: `"panel:2>section:3"`. */
-  static path(e) {
-    const t = [];
-    for (let i = e; i; i = i.scope) {
-      const s = c.instance(i);
-      t.unshift(s ? `${i.role}:${s}` : i.role);
+  static path(t) {
+    const e = [];
+    for (let i = t; i; i = i.scope) {
+      const s = h.instance(i);
+      e.unshift(s ? `${i.role}:${s}` : i.role);
     }
-    return t.join(">");
+    return e.join(">");
   }
 }
 class a {
   /** Query parameters for one signal. Undefined values are omitted rather than sent empty. */
-  static of(e, t) {
-    const i = { k: e.verb, vs1: e.role };
-    return a.set(i, "vs2", e.legacyEvent), a.set(i, "vs3", e.name), a.set(i, "vs4", c.path(e.scope) || void 0), a.set(i, "vs5", e.mode), a.set(i, "vi1", e.index), a.set(i, "vi2", e.ms), a.set(i, "vi3", e.from), a.set(i, "vi4", e.to), a.set(i, "vi5", e.completed === void 0 ? void 0 : Number(e.completed)), a.set(i, "vf1", e.percent), a.set(i, "vf2", e.modeMs), a.set(i, "iid", t), i;
+  static of(t, e) {
+    const i = { k: t.verb, vs1: t.role };
+    return a.set(i, "vs2", t.legacyEvent), a.set(i, "vs3", t.name), a.set(i, "vs4", h.path(t.scope) || void 0), a.set(i, "vs5", t.mode), a.set(i, "vi1", t.index), a.set(i, "vi2", t.ms), a.set(i, "vi3", t.from), a.set(i, "vi4", t.to), a.set(i, "vi5", t.completed === void 0 ? void 0 : Number(t.completed)), a.set(i, "vf1", t.percent), a.set(i, "vf2", t.modeMs), a.set(i, "iid", e), i;
   }
-  static toQueryString(e) {
-    return Object.keys(e).map((t) => `${encodeURIComponent(t)}=${encodeURIComponent(String(e[t]))}`).join("&");
+  static toQueryString(t) {
+    return Object.keys(t).map((e) => `${encodeURIComponent(e)}=${encodeURIComponent(String(t[e]))}`).join("&");
   }
   /**
    * The URL both the beacon and the pixel send to.
@@ -449,64 +488,64 @@ class a {
    * A `{{event}}` placeholder is substituted with the resolved Celtra event name, on the model of
    * the existing `externalVideoTrackerURI`, so an endpoint already shaped that way keeps working.
    */
-  static url(e, t, i) {
-    const s = e.includes("{{event}}") ? e.replace("{{event}}", encodeURIComponent(t.legacyEvent ?? t.verb)) : e, r = s.includes("?") ? "&" : "?";
-    return `${s}${r}${a.toQueryString(a.of(t, i))}`;
+  static url(t, e, i) {
+    const s = t.includes("{{event}}") ? t.replace("{{event}}", encodeURIComponent(e.legacyEvent ?? e.verb)) : t, r = s.includes("?") ? "&" : "?";
+    return `${s}${r}${a.toQueryString(a.of(e, i))}`;
   }
-  static set(e, t, i) {
-    i != null && i !== "" && (e[t] = i);
+  static set(t, e, i) {
+    i != null && i !== "" && (t[e] = i);
   }
 }
-const l = class l {
-  constructor(e) {
-    this.options = e;
+const d = class d {
+  constructor(t) {
+    this.options = t;
   }
   get endpoint() {
-    return this.options.endpoint ?? this.runtimeParam(l.endpointParam) ?? l.defaults.endpoint;
+    return this.options.endpoint ?? this.runtimeParam(d.endpointParam) ?? d.defaults.endpoint;
   }
   get errorEndpoint() {
-    return this.options.errorEndpoint ?? this.runtimeParam(l.errorEndpointParam);
+    return this.options.errorEndpoint ?? this.runtimeParam(d.errorEndpointParam);
   }
   get impressionId() {
     return this.options.impressionId ? this.options.impressionId : (typeof creative < "u" ? creative : void 0)?.sessionId;
   }
   get pixelFallback() {
-    return this.options.pixelFallback ?? l.defaults.pixelFallback;
+    return this.options.pixelFallback ?? d.defaults.pixelFallback;
   }
   get log() {
-    return this.options.log ?? l.defaults.log();
+    return this.options.log ?? d.defaults.log();
   }
   /** Completes the configuration in place. Later values win, undefined ones leave the current one. */
-  update(e) {
-    const t = Object.keys(e).reduce((i, s) => {
-      const r = e[s];
+  update(t) {
+    const e = Object.keys(t).reduce((i, s) => {
+      const r = t[s];
       return r !== void 0 && (i[s] = r), i;
     }, {});
-    this.options = { ...this.options, ...t };
+    this.options = { ...this.options, ...e };
   }
-  runtimeParam(e) {
-    const i = (typeof creative < "u" ? creative : void 0)?.runtimeParams?.[e];
+  runtimeParam(t) {
+    const i = (typeof creative < "u" ? creative : void 0)?.runtimeParams?.[t];
     return typeof i == "string" && i ? i : void 0;
   }
 };
-l.endpointParam = "externalSignalTrackerURI", l.errorEndpointParam = "externalClientErrorURI", l.defaults = {
+d.endpointParam = "externalSignalTrackerURI", d.errorEndpointParam = "externalClientErrorURI", d.defaults = {
   endpoint: "https://events.mobkoi.com/engagement",
   pixelFallback: !0,
-  log: () => new x("mbk")
+  log: () => new E("mbk")
 };
-let m = l;
-class H {
-  constructor(e, t) {
-    this.config = e, this.name = "beacon", this.log = t.enter("MbkBeaconChannel");
+let v = d;
+class Z {
+  constructor(t, e) {
+    this.config = t, this.name = "beacon", this.log = e.enter("MbkBeaconChannel");
   }
-  emit(e) {
-    const t = this.config.endpoint;
-    if (!t)
-      return this.log.debug(`No ${m.endpointParam}, raw signal not sent`), !1;
+  emit(t) {
+    const e = this.config.endpoint;
+    if (!e)
+      return this.log.debug(`No ${v.endpointParam}, raw signal not sent`), !1;
     const i = globalThis.navigator?.sendBeacon;
     if (typeof i != "function")
       return this.log.debug("sendBeacon unavailable"), !1;
-    const s = a.url(t, e, this.config.impressionId), r = i.call(globalThis.navigator, s);
+    const s = a.url(e, t, this.config.impressionId), r = i.call(globalThis.navigator, s);
     return this.log.debug(r ? "queued" : "refused", s), r;
   }
 }
@@ -516,76 +555,76 @@ $.mapping = [
   { kind: { verb: "click", role: "cta" }, legacyEvent: () => "clickSite" },
   { kind: { verb: "click", role: "unit" }, legacyEvent: () => "clickSite" }
 ];
-let O = $;
-class N {
-  constructor(e, t, i) {
-    this.key = t, this.resolvers = /* @__PURE__ */ new Map(), this.log = e.enter(`MbkLegacyEvents(${t})`), this.declare(i);
+let I = $;
+class U {
+  constructor(t, e, i) {
+    this.key = e, this.resolvers = /* @__PURE__ */ new Map(), this.log = t.enter(`MbkLegacyEvents(${e})`), this.declare(i);
   }
   /** Adds or replaces resolvers. Later declaration wins for the same kind. */
-  declare(e) {
-    for (const t of e) {
-      if (!t?.kind || typeof t.legacyEvent != "function") {
-        this.log.warn("Ignoring malformed legacy mapping", t);
+  declare(t) {
+    for (const e of t) {
+      if (!e?.kind || typeof e.legacyEvent != "function") {
+        this.log.warn("Ignoring malformed legacy mapping", e);
         continue;
       }
-      this.resolvers.set(c.of(t.kind), t.legacyEvent);
+      this.resolvers.set(h.of(e.kind), e.legacyEvent);
     }
     return this;
   }
-  has(e) {
-    return this.resolvers.has(c.of(e));
+  has(t) {
+    return this.resolvers.has(h.of(t));
   }
   /**
    * @returns the Celtra event name for this signal, or `undefined` when no resolver is registered
    *   for its kind or when the registered one threw.
    */
-  resolve(e) {
-    const t = this.resolvers.get(c.of(e));
-    if (t)
+  resolve(t) {
+    const e = this.resolvers.get(h.of(t));
+    if (e)
       try {
-        const { legacyEvent: i, ...s } = e, r = t(s);
+        const { legacyEvent: i, ...s } = t, r = e(s);
         if (typeof r != "string" || !r) {
-          this.log.warn(`Resolver for ${c.of(e)} produced no name`, r);
+          this.log.warn(`Resolver for ${h.of(t)} produced no name`, r);
           return;
         }
         return r;
       } catch (i) {
-        this.log.warn(`Resolver for ${c.of(e)} failed, no Celtra event emitted`, i);
+        this.log.warn(`Resolver for ${h.of(t)} failed, no Celtra event emitted`, i);
         return;
       }
   }
 }
-class W {
-  constructor(e, t) {
-    this.config = e, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = t.enter("MbkPixelChannel");
+class Y {
+  constructor(t, e) {
+    this.config = t, this.name = "pixel", this.pending = /* @__PURE__ */ new Set(), this.log = e.enter("MbkPixelChannel");
   }
-  emit(e) {
-    const t = this.config.endpoint;
-    if (!t)
+  emit(t) {
+    const e = this.config.endpoint;
+    if (!e)
       return !1;
     if (typeof Image != "function")
       return this.log.debug("Image unavailable"), !1;
-    const i = a.url(t, e, this.config.impressionId), s = new Image();
+    const i = a.url(e, t, this.config.impressionId), s = new Image();
     this.pending.add(s);
     const r = () => this.pending.delete(s);
     return s.onload = r, s.onerror = r, s.src = i, this.log.debug("sent", i), !0;
   }
 }
-class J {
-  constructor(e, t) {
-    this.config = e, this.log = t.enter("MbkTrackErrorReporter");
+class _ {
+  constructor(t, e) {
+    this.config = t, this.log = e.enter("MbkTrackErrorReporter");
   }
-  report(e, t, i) {
-    this.log.warn(`Channel "${e}" failed for ${c.of(t)}`, i);
+  report(t, e, i) {
+    this.log.warn(`Channel "${t}" failed for ${h.of(e)}`, i);
     const s = this.config.errorEndpoint;
     if (s)
       try {
         const r = [
-          `error=${encodeURIComponent(`mbkTrack:${e}`)}`,
+          `error=${encodeURIComponent(`mbkTrack:${t}`)}`,
           `reason=${encodeURIComponent(String(i?.message ?? i))}`,
-          `k=${encodeURIComponent(t.verb)}`
-        ], d = this.config.impressionId;
-        d && r.push(`iid=${encodeURIComponent(d)}`);
+          `k=${encodeURIComponent(e.verb)}`
+        ], c = this.config.impressionId;
+        c && r.push(`iid=${encodeURIComponent(c)}`);
         const u = `${s}${s.includes("?") ? "&" : "?"}${r.join("&")}`;
         globalThis.navigator?.sendBeacon?.(u);
       } catch (r) {
@@ -593,11 +632,11 @@ class J {
       }
   }
 }
-class L extends E {
+class L extends k {
 }
-class X {
-  constructor(e, t, i) {
-    this.impression = e, this.document = t, this.flushables = /* @__PURE__ */ new Set(), this.flushed = /* @__PURE__ */ new Set(), this.hidden = !1, this.started = !1, this.onVisibilityChange = () => {
+class tt {
+  constructor(t, e, i) {
+    this.impression = t, this.document = e, this.flushables = /* @__PURE__ */ new Set(), this.flushed = /* @__PURE__ */ new Set(), this.hidden = !1, this.started = !1, this.onVisibilityChange = () => {
       this.document.visibilityState === "hidden" ? this.hide("visibilitychange") : this.show("visibilitychange");
     }, this.onPageHide = () => {
       this.hide("pagehide");
@@ -613,16 +652,16 @@ class X {
    * count hidden time until the next return to visible. Registering the same segment again does
    * nothing.
    */
-  register(e) {
-    if (this.start(), this.flushables.has(e)) {
+  register(t) {
+    if (this.start(), this.flushables.has(t)) {
       this.log.debug("Segment already registered");
       return;
     }
-    this.flushables.add(e), this.hidden && this.flush(e, this.impression.elapsedMs(), "register");
+    this.flushables.add(t), this.hidden && this.flush(t, this.impression.elapsedMs(), "register");
   }
   /** Stops flushing and resuming that segment. Its current state is the script's to close. */
-  unregister(e) {
-    this.flushables.delete(e), this.flushed.delete(e);
+  unregister(t) {
+    this.flushables.delete(t), this.flushed.delete(t);
   }
   /** Listens to the page lifecycle. Does nothing when already listening. */
   start() {
@@ -633,75 +672,75 @@ class X {
     this.started && (this.document.removeEventListener("visibilitychange", this.onVisibilityChange), this.document.defaultView?.removeEventListener("pagehide", this.onPageHide), this.document.defaultView?.removeEventListener("pageshow", this.onPageShow), this.started = !1, this.log.debug("Stopped listening to the page lifecycle"));
   }
   /** The first transition to hidden flushes every open segment, all at one instant. */
-  hide(e) {
+  hide(t) {
     this.hidden = !0;
-    const t = this.impression.elapsedMs();
+    const e = this.impression.elapsedMs();
     for (const i of [...this.flushables])
-      this.flush(i, t, e);
+      this.flush(i, e, t);
   }
   /** The return to visible resumes every segment a flush closed, all at one instant. */
-  show(e) {
+  show(t) {
     this.hidden = !1;
-    const t = this.impression.elapsedMs();
+    const e = this.impression.elapsedMs();
     for (const i of [...this.flushed])
-      this.flushed.delete(i), this.log.debug(`${e}: resuming a segment at ${t}ms`), this.invoke(i, "resume", t);
+      this.flushed.delete(i), this.log.debug(`${t}: resuming a segment at ${e}ms`), this.invoke(i, "resume", e);
   }
-  flush(e, t, i) {
-    if (this.flushed.has(e)) {
+  flush(t, e, i) {
+    if (this.flushed.has(t)) {
       this.log.debug(`${i}: segment already flushed, skipping`);
       return;
     }
-    this.flushed.add(e), this.log.debug(`${i}: flushing a segment at ${t}ms`), this.invoke(e, "flush", t);
+    this.flushed.add(t), this.log.debug(`${i}: flushing a segment at ${e}ms`), this.invoke(t, "flush", e);
   }
   /** One script's hook, isolated: it can fail without keeping the others from closing theirs. */
-  invoke(e, t, i) {
+  invoke(t, e, i) {
     try {
-      e[t](i);
+      t[e](i);
     } catch (s) {
-      this.log.error(new L(`Segment ${t} hook failed at ${i}ms`, s));
+      this.log.error(new L(`Segment ${e} hook failed at ${i}ms`, s));
     }
   }
 }
 const o = class o {
-  constructor(e) {
-    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new m(e), this.log = this.config.log.enter("MbkImpression"), this.startedAt = o.now(), this.beacon = new H(this.config, this.log), this.pixel = new W(this.config, this.log), this.reporter = new J(this.config, this.log), this.coreLegacyEvents = new N(this.log, "core", O.mapping), this.visibility = new X(this, globalThis.document, this.log);
+  constructor(t) {
+    this.tracks = /* @__PURE__ */ new Map(), this.emitted = /* @__PURE__ */ new Set(), this.states = /* @__PURE__ */ new Map(), this.config = new v(t), this.log = this.config.log.enter("MbkImpression"), this.startedAt = o.now(), this.beacon = new Z(this.config, this.log), this.pixel = new Y(this.config, this.log), this.reporter = new _(this.config, this.log), this.coreLegacyEvents = new U(this.log, "core", I.mapping), this.visibility = new tt(this, globalThis.document, this.log);
   }
   /** The one impression of this creative, created on first use. */
-  static shared(e) {
-    const t = o.storage(), i = t[o.storageKey];
+  static shared(t) {
+    const e = o.storage(), i = e[o.storageKey];
     if (i)
-      return i.configure(e), i;
-    const s = new o(e);
-    return t[o.storageKey] = s, s;
+      return i.configure(t), i;
+    const s = new o(t);
+    return e[o.storageKey] = s, s;
   }
   /** Releases and drops it. For tests, and for a creative that reloads its scripts. */
   static reset() {
-    const e = o.storage();
-    e[o.storageKey]?.release(), delete e[o.storageKey];
+    const t = o.storage();
+    t[o.storageKey]?.release(), delete t[o.storageKey];
   }
   /**
    * Stash on `unit` when available, else on the window, following the precedent set by
    * `CreativeScript` / `setup()` is the precedent for a per-creative singleton.
    */
   static storage() {
-    const e = globalThis;
-    return e.unit ? e.unit : (e[o.windowStorageKey] || (e[o.windowStorageKey] = {}), e[o.windowStorageKey]);
+    const t = globalThis;
+    return t.unit ? t.unit : (t[o.windowStorageKey] || (t[o.windowStorageKey] = {}), t[o.windowStorageKey]);
   }
   static now() {
-    const e = globalThis.performance;
-    return typeof e?.now == "function" ? e.now() : Date.now();
+    const t = globalThis.performance;
+    return typeof t?.now == "function" ? t.now() : Date.now();
   }
   /** Completes the configuration. Later values win. */
-  configure(e) {
-    this.config.update(e);
+  configure(t) {
+    this.config.update(t);
   }
   /** Flushes that open segment whenever the creative stops being observed, and resumes it after. */
-  register(e) {
-    this.visibility.register(e);
+  register(t) {
+    this.visibility.register(t);
   }
   /** Stops flushing and resuming that segment. */
-  unregister(e) {
-    this.visibility.unregister(e);
+  unregister(t) {
+    this.visibility.unregister(t);
   }
   /** Stops listening to the page lifecycle, so a dropped impression leaves nothing behind. */
   release() {
@@ -716,17 +755,17 @@ const o = class o {
    * @throws when the same key was already taken by a track of another kind, which would mean two
    *   instances of one script disagreeing on which specialisation they run under.
    */
-  track(e, t, i) {
-    const s = this.tracks.get(e);
+  track(t, e, i) {
+    const s = this.tracks.get(t);
     if (s) {
       if (!(s instanceof i))
         throw new L(
-          `"${e}" is already tracked as a ${s.constructor.name}, not a ${i.name}. Every instance of one script must pick the same specialisation.`
+          `"${t}" is already tracked as a ${s.constructor.name}, not a ${i.name}. Every instance of one script must pick the same specialisation.`
         );
       return s;
     }
-    const r = t();
-    return this.tracks.set(e, r), r;
+    const r = e();
+    return this.tracks.set(t, r), r;
   }
   /**
    * Marks the start of the impression, which every timestamp is relative to.
@@ -746,10 +785,10 @@ const o = class o {
    * Clears deduplication for one media player so a new DOM instance can re-emit quartiles and
    * play/pause states after Celtra swaps the <video> on in-creative page navigation.
    */
-  forgetMedia(e) {
-    const t = `:media|${e}|`, i = `media|${e}`;
+  forgetMedia(t) {
+    const e = `:media|${t}|`, i = `media|${t}`;
     for (const s of [...this.emitted])
-      s.includes(t) && this.emitted.delete(s);
+      s.includes(e) && this.emitted.delete(s);
     for (const s of [...this.states.keys()])
       s.startsWith(i) && this.states.delete(s);
   }
@@ -759,37 +798,37 @@ const o = class o {
    * Everything is recorded **synchronously**, before any channel: this is the CustomWipeable defect,
    * where the flag was pushed inside the asynchronous tracking callback so two calls could both pass.
    */
-  admits(e, t) {
-    const i = c.signature(e);
-    switch (t) {
+  admits(t, e) {
+    const i = h.signature(t);
+    switch (e) {
       case "repeated":
         return !0;
       case "once":
         return this.emitted.has(i) ? (this.log.debug("Already emitted, skipping", i), !1) : (this.emitted.add(i), !0);
       case "state": {
-        const s = c.subject(e);
+        const s = h.subject(t);
         return this.states.get(s) === i ? (this.log.debug("Unchanged, skipping", i), !1) : (this.states.set(s, i), !0);
       }
     }
   }
   /** The raw channels: the beacon, then the image pixel when the beacon did not take it. */
-  emitRaw(e, t) {
-    !this.send(this.beacon, e, t) && this.config.pixelFallback && this.send(this.pixel, e, t);
+  emitRaw(t, e) {
+    !this.send(this.beacon, t, e) && this.config.pixelFallback && this.send(this.pixel, t, e);
   }
   /** One channel, isolated: it can fail without touching the others. */
-  send(e, t, i) {
+  send(t, e, i) {
     try {
-      return e.emit(t, i);
+      return t.emit(e, i);
     } catch (s) {
-      return this.reporter.report(e.name, t, s), !1;
+      return this.reporter.report(t.name, e, s), !1;
     }
   }
 };
 o.storageKey = "mbkImpression", o.windowStorageKey = "__mbkTrackStorage";
-let v = o;
-class b {
-  constructor(e, t) {
-    this.impression = e, this.key = t, this.log = e.log.enter(`${this.constructor.name}(${t})`), this.legacyEvents = new N(this.log, t, []);
+let b = o;
+class w {
+  constructor(t, e) {
+    this.impression = t, this.key = e, this.log = t.log.enter(`${this.constructor.name}(${e})`), this.legacyEvents = new U(this.log, e, []);
   }
   /**
    * The track of that script, created on first use, completed with its dictionary.
@@ -797,13 +836,13 @@ class b {
    * The instance is read and dropped: nothing here keeps a reference to a partially constructed
    * object.
    */
-  static shared(e, t) {
-    const i = v.shared(t);
-    return i.track(e.trackingKey, () => new b(i, e.trackingKey), b).declare(e.legacyEventsMapping);
+  static shared(t, e) {
+    const i = b.shared(e);
+    return i.track(t.trackingKey, () => new w(i, t.trackingKey), w).declare(t.legacyEventsMapping);
   }
   /** Adds this script's Celtra event names. A later declaration wins for the same kind. */
-  declare(e) {
-    return this.legacyEvents.declare(e), this;
+  declare(t) {
+    return this.legacyEvents.declare(t), this;
   }
   /**
    * Closes that open segment whenever the creative stops being observed, and reopens it after.
@@ -813,24 +852,24 @@ class b {
    * instant of its clock. The segment emits its own closing, through this track, from
    * {@link MbkFlushable.flush}.
    */
-  register(e) {
-    this.impression.register(e);
+  register(t) {
+    this.impression.register(t);
   }
   /** Stops closing and reopening that segment, when the script ends it for good. */
-  unregister(e) {
-    this.impression.unregister(e);
+  unregister(t) {
+    this.impression.unregister(t);
   }
   /** A context of the kind this specialisation builds: what caused the signals, and where. */
-  context(e) {
-    return new S(e);
+  context(t) {
+    return new N(t);
   }
   /** An occurrence: at most one per distinct value, for the whole impression. */
-  once(e, t) {
-    this.emit(e, t, "once");
+  once(t, e) {
+    this.emit(t, e, "once");
   }
   /** An occurrence where every one counts. */
-  repeated(e, t) {
-    this.emit(e, t, "repeated");
+  repeated(t, e) {
+    this.emit(t, e, "repeated");
   }
   /**
    * Reports the subject's state, which goes out only when it differs from the last one reported.
@@ -840,13 +879,13 @@ class b {
    * already at 50% that reports 50% again has not crossed anything. `A, B, A` goes out three times,
    * because the subject genuinely changed three times.
    */
-  state(e, t) {
-    this.emit(e, t, "state");
+  state(t, e) {
+    this.emit(t, e, "state");
   }
   /** Resolves the signal, stamps it, and hands it to the channels if the emission admits it. */
-  emit(e, t, i) {
-    const s = { ...e, ms: this.impression.elapsedMs() };
-    !s.scope && t.scope && (s.scope = t.scope), this.impression.admits(s, i) && (s.legacyEvent = e.legacyEvent ?? this.resolveLegacyEvent(s), this.log.debug("emit", s), this.emitChannels(s, t));
+  emit(t, e, i) {
+    const s = { ...t, ms: this.impression.elapsedMs() };
+    !s.scope && e.scope && (s.scope = e.scope), this.impression.admits(s, i) && (s.legacyEvent = t.legacyEvent ?? this.resolveLegacyEvent(s), this.log.debug("emit", s), this.emitChannels(s, e));
   }
   /**
    * The raw channels of the impression.
@@ -854,8 +893,8 @@ class b {
    * A specialisation adds its own by overriding this and calling `super`, which is how
    * {@link MbkCeltraTrack} fires the legacy Celtra event first.
    */
-  emitChannels(e, t) {
-    this.impression.emitRaw(e, t);
+  emitChannels(t, e) {
+    this.impression.emitRaw(t, e);
   }
   /**
    * This script's dictionary first, then the small core set common to every creative.
@@ -864,78 +903,310 @@ class b {
    *   never invent a name: a spurious legacy event would appear in reporting that nobody configured
    *   at placement level.
    */
-  resolveLegacyEvent(e) {
-    if (e.verb === "legacy") {
-      this.log.warn("A legacy signal must carry its legacyEvent", e);
+  resolveLegacyEvent(t) {
+    if (t.verb === "legacy") {
+      this.log.warn("A legacy signal must carry its legacyEvent", t);
       return;
     }
-    const t = this.legacyEvents.resolve(e) ?? this.impression.coreLegacyEvents.resolve(e);
-    return t || this.log.debug(`No resolver for ${c.of(e)}, raw signal only`), t;
+    const e = this.legacyEvents.resolve(t) ?? this.impression.coreLegacyEvents.resolve(t);
+    return e || this.log.debug(`No resolver for ${h.of(t)}, raw signal only`), e;
   }
 }
-class w extends b {
+class y extends w {
   /**
    * @throws when the same script is already tracked as a plain {@link MbkTrack}. See
    *   {@link MbkImpression.track}.
    */
-  static shared(e, t) {
-    const i = v.shared(t), s = i.track(
-      e.trackingKey,
-      () => new w(i, e.trackingKey, t.initiator),
-      w
+  static shared(t, e) {
+    const i = b.shared(e), s = i.track(
+      t.trackingKey,
+      () => new y(i, t.trackingKey, e.initiator),
+      y
     );
-    return s.contexts.useInitiator(t.initiator), s.declare(e.legacyEventsMapping);
+    return s.contexts.useInitiator(e.initiator), s.declare(t.legacyEventsMapping);
   }
-  constructor(e, t, i) {
-    super(e, t), this.contexts = new G(t, this.log, i), this.celtra = new P(this.log);
+  constructor(t, e, i) {
+    super(t, e), this.contexts = new X(e, this.log, i), this.celtra = new A(this.log);
   }
   /**
    * A Celtra context, carrying the `ActionContext` this cause's legacy events are fired with: the
    * one the call site forwarded from its handler, else a fresh user-initiated one when the cause is
    * a gesture, else this script's common passive one.
    */
-  context(e) {
-    const t = e.actionContext ?? this.contexts.forCause(e.userInitiated);
-    return new j(e, t);
+  context(t) {
+    const e = t.actionContext ?? this.contexts.forCause(t.userInitiated);
+    return new T(t, e);
   }
   /** The legacy event first, unchanged, then the raw channels. */
-  emitChannels(e, t) {
-    this.impression.send(this.celtra, e, t), super.emitChannels(e, t);
+  emitChannels(t, e) {
+    this.impression.send(this.celtra, t, e), super.emitChannels(t, e);
   }
 }
-class Z {
-  constructor(e, t) {
-    this.trackingKey = "phase", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.track = w.shared(this, {}), this.log = t.enter("PhaseTracking"), this.impression = this.track.context({
+class et {
+  constructor(t, e) {
+    this.trackingKey = "phase", this.unitLegacy = { verb: "legacy", role: "unit" }, this.legacyEventsMapping = [], this.track = y.shared(this, {}), this.log = e.enter("PhaseTracking"), this.impression = this.track.context({
       scope: void 0,
       userInitiated: !1,
-      actionContext: e
+      actionContext: t
     });
   }
-  enter(e) {
-    this.emit(`int_${this.token(e)}`);
+  enter(t) {
+    this.emit(`int_${this.token(t)}`);
   }
-  viewed(e) {
-    this.emit(`view_${this.token(e)}`);
+  viewed(t) {
+    this.emit(`view_${this.token(t)}`);
   }
-  emit(e) {
-    this.log.debug(e), this.track.once({ ...this.unitLegacy, legacyEvent: e }, this.impression);
+  emit(t) {
+    this.log.debug(t), this.track.once({ ...this.unitLegacy, legacyEvent: t }, this.impression);
   }
-  token(e) {
-    return e.replace(/[^a-zA-Z0-9]+/g, "_");
+  token(t) {
+    return t.replace(/[^a-zA-Z0-9]+/g, "_");
   }
 }
-class Y {
-  constructor(e, t, i, s, r) {
-    this.root = e, this.minRatio = t, this.minDurationMs = i, this.onQualified = s, this.documentRef = r, this.observer = null, this.timer = null, this.lastRatio = 0, this.onVisibility = () => this.syncVisibility();
+class it {
+  static lerp(t, e, i) {
+    return t + (e - t) * i;
+  }
+  static map(t, e, i, s, r) {
+    return i + (s - i) * ((r - t) / (e - t));
+  }
+  static clamp(t, e, i) {
+    return Math.min(Math.max(i, t), e);
+  }
+}
+const j = {
+  fps: 10,
+  threshold: { standard: 0.5, large: 0.3 }
+};
+class st {
+  constructor(t, e, i) {
+    this.mode = null, this.threshold = null, this.state = null, this.previousState = !1, this.active = !1, this.config = j, this.hasInit = !1;
+    const s = i === void 0, r = s ? {} : t, c = s ? t : e, u = s ? e : i;
+    this.log = u.enter("MbkIsViewable"), this.safeFrameUtil = new q(this.log), this.config = m.deepMerge(j, r), this.callbacks = Array.isArray(c) ? c : [c], this.calculateThreshold = this.calculateThreshold.bind(this), this.init = this.init.bind(this), this.read = this.read.bind(this), this.threshold = this.calculateThreshold();
+    const P = this.resolveUnit(), R = P?.currentVariant ?? P;
+    R?.on && R.on("resize", () => {
+      this.threshold = this.calculateThreshold();
+    });
+  }
+  /**
+   * Resolves the CreativeUnit for viewability detection.
+   * Prefers config.unit (passed from Cpx.setup) over globalThis.unit
+   */
+  resolveUnit() {
+    return this.config.unit ?? globalThis.unit;
+  }
+  setupWebInView(t) {
+    return t?.inView?.active ? (this.mode = "webInView", this.start = () => {
+      this.active || t.inView.on("areaInViewRatioChanged", this.calcState.bind(this)), this.calcState(t.inView.areaInViewRatio), this.active = !0;
+    }, this.stop = () => {
+      t.inView.off("areaInViewRatioChanged", this.calcState.bind(this)), this.active = !1;
+    }, !0) : !1;
+  }
+  setupMraid(t) {
+    if (!t || typeof t != "object" || typeof t.getVersion != "function")
+      return !1;
+    const e = Number.parseInt(t.getVersion(), 10);
+    return this.mode = e >= 3 ? "mraidExposureChange" : "mraidIsViewable", this.start = () => {
+      !this.active && (this.mode === "mraidExposureChange" || this.mode === "mraidIsViewable") && (this.mode === "mraidExposureChange" ? t.addEventListener("exposureChange", this.calcState.bind(this)) : t.addEventListener("viewableChange", this.calcState.bind(this))), this.active || (this.intervalCount = 0, this.interval = setInterval(() => {
+        this.calcState(t.isViewable()), ++this.intervalCount >= 60 && clearInterval(this.interval);
+      }, 500)), this.calcState(t.isViewable()), this.active = !0;
+    }, this.stop = () => {
+      this.mode === "mraidExposureChange" ? t.removeEventListener("exposureChange", this.calcState.bind(this)) : t.removeEventListener("viewableChange", this.calcState.bind(this)), this.interval && clearInterval(this.interval), this.active = !1;
+    }, !0;
+  }
+  setupSafeFrame() {
+    return this.safeFrameUtil.check().passed ? (this.mode = "safeFrame", this.start = () => {
+      const e = this.safeFrameUtil.check().apiObject;
+      if (!this.active) {
+        if (typeof e.ext.inViewPercentage == "function")
+          this.interval = setInterval(
+            () => this.calcState(e.ext.inViewPercentage()),
+            1e3 / this.config.fps
+          ), this.calcState(e.ext.inViewPercentage());
+        else if (typeof e.ext.geom == "function") {
+          const i = () => {
+            const s = e.ext.geom().self;
+            return s.iv || s.h * s.yiv * (s.w * s.xiv) / (s.h * s.w);
+          };
+          this.interval = setInterval(() => this.calcState(i()), 1e3 / this.config.fps), this.calcState(i());
+        }
+        this.active = !0;
+      }
+    }, this.stop = () => {
+      clearInterval(this.interval), this.active = !1;
+    }, !0) : !1;
+  }
+  setupDetectionFailed() {
+    if (console.log("No valid viewability detector found!"), this.config.onLegacyEvent)
+      try {
+        this.config.onLegacyEvent("cpx-detectionFailed");
+      } catch (t) {
+        this.log.debug("Failed to track detection failure event", t);
+      }
+    this.mode = "detectionFailed", this.start = () => {
+      this.active || (this.state = !0, this.previousState = !1, this.callbacks.forEach((t) => {
+        t && typeof t == "function" && t(!0);
+      }), this.active = !0);
+    }, this.stop = () => {
+      this.active = !1;
+    }, this.config.onFailure && typeof this.config.onFailure == "function" && this.config.onFailure();
+  }
+  /**
+   * Initializes the viewability detector.
+   *
+   * Auto-detects the best available API and configures start/stop methods
+   * accordingly. Detection priority:
+   * 1. Celtra webInView
+   * 2. MRAID (mobile app)
+   * 3. SafeFrame (publisher)
+   * 4. None available → detectionFailed
+   *
+   * Only runs once - subsequent calls are ignored.
+   *
+   * @returns this (for method chaining)
+   *
+   * @example
+   * detector.init().start() // Chain initialization and start
+   */
+  init() {
+    if (this.hasInit)
+      return this;
+    const t = this.resolveUnit(), e = globalThis.mraid;
+    return this.setupWebInView(t) || this.setupMraid(e) || this.setupSafeFrame() || this.setupDetectionFailed(), this.hasInit = !0, this;
+  }
+  /**
+   * Reads the current state of the viewability detector.
+   *
+   * @returns Object containing all detector state:
+   *   - active: Whether detector is currently running
+   *   - config: Current configuration
+   *   - hasInit: Whether init() has been called
+   *   - mode: Detection mode being used
+   *   - state: Current viewability state (true/false)
+   *   - previousState: Previous viewability state
+   *   - threshold: Currently applied threshold value
+   */
+  read() {
+    return {
+      active: this.active,
+      config: this.config,
+      hasInit: this.hasInit,
+      mode: this.mode,
+      state: this.state,
+      previousState: this.previousState,
+      threshold: this.threshold
+    };
+  }
+  /**
+   * Starts viewability monitoring.
+   *
+   * This method is replaced during init() with mode-specific implementation.
+   * Do not call before init().
+   */
+  start() {
+  }
+  /**
+   * Stops viewability monitoring.
+   *
+   * This method is replaced during init() with mode-specific implementation.
+   * Clears any active intervals/listeners.
+   */
+  stop() {
+  }
+  /**
+   * Updates the viewability state and fires callbacks if changed.
+   *
+   * @param val - New viewability state (true/false/undefined)
+   * @returns null if val is undefined
+   * @private
+   */
+  updateState(t) {
+    if (t === void 0)
+      return null;
+    this.previousState = this.state || !1, this.state = t, this.previousState !== this.state && this.callbacks.forEach((e) => {
+      e && typeof e == "function" && e(this.state);
+    });
+  }
+  /**
+   * Calculates the appropriate viewability threshold based on ad size.
+   *
+   * IAB standards use different thresholds for large vs. standard ads:
+   * - Standard ads (≤242,500px²): 50% visible required
+   * - Large ads (>242,500px²): 30% visible required
+   *
+   * @returns The threshold value (0.3 for large, 0.5 for standard)
+   * @private
+   *
+   * @example
+   * // 300x250 = 75,000px² → standard threshold (0.5)
+   * // 970x250 = 242,500px² → standard threshold (0.5)
+   * // 300x600 = 180,000px² → standard threshold (0.5)
+   * // 970x250 = 242,500px² → standard threshold (0.5)
+   * // But 971x250 = 242,750px² → large threshold (0.3)
+   */
+  calculateThreshold() {
+    const t = this.resolveUnit(), e = t?.size?.width, i = t?.size?.height;
+    return typeof e == "number" && typeof i == "number" ? e * i > 242500 ? this.config.threshold.large : this.config.threshold.standard : this.config.threshold.standard;
+  }
+  /**
+   * Calculates viewability state from a raw value.
+   *
+   * Handles different value formats based on detection mode:
+   * - webInView/safeFrame/mraidExposureChange: Numeric ratio (0-1 or 0-100)
+   * - mraidIsViewable: Boolean value
+   *
+   * Normalizes values to 0-1 range and compares against threshold.
+   *
+   * @param val - Raw viewability value from API
+   * @private
+   */
+  calcState(t) {
+    switch (this.mode) {
+      case "webInView":
+      case "safeFrame":
+      case "mraidExposureChange": {
+        const e = t > 1 ? t / 100 : t;
+        this.updateState(it.clamp(0, 1, e) >= (this.threshold || 0));
+        break;
+      }
+      case "mraidIsViewable":
+        this.updateState(!!t);
+        break;
+      default:
+        this.updateState(!1);
+    }
+  }
+}
+class rt {
+  constructor(t, e, i, s, r, c) {
+    this.unit = t, this.minRatio = e, this.minDurationMs = i, this.onQualified = s, this.documentRef = r, this.log = c, this.detector = null, this.observer = null, this.timer = null, this.lastRatio = 0, this.hostViewable = !1, this.qualified = !1, this.onVisibility = () => this.syncVisibility();
   }
   start() {
-    return this.observer !== null ? !0 : typeof IntersectionObserver != "function" ? !1 : (this.observer = new IntersectionObserver((e) => {
-      const t = e[e.length - 1];
-      this.lastRatio = t?.intersectionRatio ?? 0, this.syncSample();
-    }, { threshold: [0, this.minRatio, 1] }), this.observer.observe(this.root), this.documentRef.addEventListener("visibilitychange", this.onVisibility), !0);
+    return this.detector !== null || this.observer !== null ? !0 : this.startHost() ? (this.documentRef.addEventListener("visibilitychange", this.onVisibility), !0) : this.startObserver();
   }
   stop() {
-    this.disarm(), this.observer?.disconnect(), this.observer = null, this.documentRef.removeEventListener("visibilitychange", this.onVisibility);
+    this.disarm(), this.qualified = !1, this.lastRatio = 0, this.hostViewable = !1, this.detector?.stop(), this.detector = null, this.observer?.disconnect(), this.observer = null, this.documentRef.removeEventListener("visibilitychange", this.onVisibility);
+  }
+  startHost() {
+    const t = new st(
+      {
+        unit: this.unit,
+        threshold: { standard: this.minRatio, large: this.minRatio }
+      },
+      (e) => this.onHostViewable(e),
+      this.log
+    );
+    return t.init(), t.mode === "detectionFailed" ? !1 : (this.detector = t, this.detector.start(), !0);
+  }
+  startObserver() {
+    const t = this.unit.node;
+    return !(t instanceof Element) || typeof IntersectionObserver != "function" ? !1 : (this.observer = new IntersectionObserver((e) => {
+      const i = e[e.length - 1];
+      this.lastRatio = i?.intersectionRatio ?? 0, this.syncSample();
+    }, { threshold: [0, this.minRatio, 1] }), this.observer.observe(t), this.documentRef.addEventListener("visibilitychange", this.onVisibility), !0);
+  }
+  onHostViewable(t) {
+    this.hostViewable = t, this.syncSample();
   }
   syncVisibility() {
     if (this.documentRef.visibilityState === "hidden") {
@@ -944,51 +1215,54 @@ class Y {
     }
     this.syncSample();
   }
+  get meetsThreshold() {
+    return this.observer !== null ? this.lastRatio >= this.minRatio : this.hostViewable;
+  }
   syncSample() {
-    const e = this.documentRef.visibilityState !== "hidden";
-    if (this.lastRatio >= this.minRatio && e) {
+    const t = this.documentRef.visibilityState !== "hidden";
+    if (this.meetsThreshold && t) {
       this.arm();
       return;
     }
     this.disarm();
   }
   arm() {
-    this.timer === null && (this.timer = setTimeout(() => {
-      this.timer = null, this.lastRatio >= this.minRatio && this.documentRef.visibilityState !== "hidden" && this.onQualified();
+    this.qualified || this.timer !== null || (this.timer = setTimeout(() => {
+      this.timer = null, this.meetsThreshold && this.documentRef.visibilityState !== "hidden" && (this.qualified = !0, this.onQualified());
     }, this.minDurationMs));
   }
   disarm() {
     this.timer !== null && (clearTimeout(this.timer), this.timer = null);
   }
 }
-const y = class y {
-  constructor(e, t, i) {
-    this.context = e, this.options = t, this.scriptName = i, this.log = R.enter(this.scriptName), this.now = () => Date.now(), this.selector = new q(new K()), this.storage = new z(
+const x = class x {
+  constructor(t, e, i) {
+    this.context = t, this.options = e, this.scriptName = i, this.log = F.enter(this.scriptName), this.now = () => Date.now(), this.selector = new Q(new H()), this.storage = new J(
       this.options,
       this.now,
       this.log,
       `mobkoi-phase:${this.creativeId}`
-    ), this.tracking = new Z(this.context.ctx, this.log), this.state = this.freshState(), this.activePhase = null, this.createdAt = null, this.started = !1, this.destroyed = !1, this.countOnDisplay = !1, this.reportedViewability = !1, this.viewability = null, this.restore();
+    ), this.tracking = new et(this.context.ctx, this.log), this.state = this.freshState(), this.activePhase = null, this.createdAt = null, this.started = !1, this.destroyed = !1, this.countOnDisplay = !1, this.reportedViewability = !1, this.viewability = null, this.restore();
   }
   start() {
     if (this.destroyed || this.started)
       return;
     this.started = !0;
-    const { unit: e, screen: t } = this.context;
-    if (e.hasAppearedAtLeastOnce) {
-      this.begin();
-      return;
-    }
-    if (typeof e.once == "function") {
-      e.once("appeared", () => this.onAppeared());
-      return;
-    }
+    const { unit: t, screen: e } = this.context;
     if (t.hasAppearedAtLeastOnce) {
       this.begin();
       return;
     }
     if (typeof t.once == "function") {
       t.once("appeared", () => this.onAppeared());
+      return;
+    }
+    if (e.hasAppearedAtLeastOnce) {
+      this.begin();
+      return;
+    }
+    if (typeof e.once == "function") {
+      e.once("appeared", () => this.onAppeared());
       return;
     }
     this.begin();
@@ -1011,105 +1285,101 @@ const y = class y {
   get waitForViewable() {
     return this.options.viewability.enabled && this.options.viewability.requireViewable && !this.countOnDisplay;
   }
-  evaluate(e) {
+  evaluate(t) {
     if (this.destroyed)
       return;
-    if (e === "viewable") {
+    if (t === "viewable") {
       this.activePhase !== null && this.log.debug("viewable", this.activePhase.id, this.state.views), this.stop();
       return;
     }
-    const t = this.selector.select({
+    const e = this.selector.select({
       phases: this.options.phases,
       state: this.state,
       maxEnteredOrder: this.state.maxEnteredOrder,
       activePhase: this.activePhase,
       fallbackPhaseId: this.options.fallbackPhaseId
     });
-    if (t === null)
-      throw new C("No eligible phase and no usable fallback phase.");
-    this.log.debug(e, t.id), t.id !== this.activePhase?.id && this.display(t);
+    if (e === null)
+      throw new V("No eligible phase and no usable fallback phase.");
+    this.log.debug(t, e.id), e.id !== this.activePhase?.id && this.display(e);
   }
-  display(e) {
-    this.present(e), !this.destroyed && (this.activePhase = e, e.order > this.state.maxEnteredOrder && (this.state.maxEnteredOrder = e.order), this.tracking.enter(e.id), this.waitForViewable ? this.persist() : this.recordView(e, this.now()), this.beginViewability());
+  display(t) {
+    this.present(t), !this.destroyed && (this.activePhase = t, t.order > this.state.maxEnteredOrder && (this.state.maxEnteredOrder = t.order), this.tracking.enter(t.id), this.waitForViewable ? this.persist() : this.recordView(t, this.now()), this.beginViewability());
   }
-  present(e) {
-    const t = e.target.pageName, i = this.context.unit, s = i.find(t);
+  present(t) {
+    const e = t.target.pageName, i = this.context.unit, s = i.find(e);
     if (!s)
-      throw new C(`Celtra screen "${t}" was not found.`);
+      throw new V(`Celtra screen "${e}" was not found.`);
     if (!i.goToScreenAction || !this.context.ctx)
-      throw new C("Celtra screen navigation is not available.");
+      throw new V("Celtra screen navigation is not available.");
     i.goToScreenAction(this.context.ctx, { screen: s }, () => {
     });
   }
   beginViewability() {
     if (this.waitForViewable) {
-      const e = this.currentRoot();
-      if (e !== null) {
-        this.watch(e);
+      if (this.watch())
         return;
-      }
-      const t = this.context.unit.getNode;
-      if (typeof t == "function") {
-        t.call(this.context.unit, () => {
-          if (this.started && !this.destroyed && this.waitForViewable) {
-            const i = this.currentRoot();
-            if (i !== null) {
-              this.watch(i);
-              return;
-            }
-            this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
-          }
-        });
-        return;
-      }
-      this.failOpen("unit.node did not resolve to an element. Views are counted when a phase is displayed.");
+      this.requestNode();
     }
   }
-  watch(e) {
-    this.viewability?.stop(), this.viewability = new Y(
-      e,
+  requestNode() {
+    const t = this.context.unit.getNode;
+    if (typeof t != "function") {
+      this.failOpen("No host viewability API and unit.node did not resolve. Views are counted when a phase is displayed.");
+      return;
+    }
+    let e = !1;
+    const i = (r) => {
+      e = !0, this.assignNode(r), this.started && !this.destroyed && this.waitForViewable && (this.watch() || this.failOpen("No host viewability API and unit.node did not resolve. Views are counted when a phase is displayed."));
+    }, s = t.call(this.context.unit, i);
+    e || (this.assignNode(s), this.watch());
+  }
+  assignNode(t) {
+    this.context.unit.node instanceof Element || t instanceof HTMLElement && (this.context.unit.node = t);
+  }
+  watch() {
+    return this.viewability?.stop(), this.viewability = new rt(
+      this.context.unit,
       this.options.viewability.minPercent / 100,
       this.options.viewability.minDurationMs,
       () => this.onViewQualified(),
-      document
-    ), this.viewability.start() || this.failOpen("IntersectionObserver is not available. Views are counted when a phase is displayed.");
+      document,
+      this.log
+    ), this.viewability.start() ? !0 : (this.viewability = null, !1);
   }
-  failOpen(e) {
+  failOpen(t) {
     if (this.reportedViewability)
       return;
-    this.reportedViewability = !0, this.countOnDisplay = !0, this.log.warn(e);
-    const t = this.activePhase;
-    t !== null && this.recordView(t, this.now()) && this.evaluate("viewable");
+    this.reportedViewability = !0, this.countOnDisplay = !0, this.log.warn(t);
+    const e = this.activePhase;
+    e !== null && this.recordView(e, this.now()) && this.evaluate("viewable");
   }
   onViewQualified() {
-    const e = this.activePhase;
-    e === null || this.destroyed || (this.viewability?.stop(), this.recordView(e, this.now()) && this.evaluate("viewable"));
+    const t = this.activePhase;
+    t === null || this.destroyed || (this.viewability?.stop(), this.recordView(t, this.now()) && this.evaluate("viewable"));
   }
-  recordView(e, t) {
-    const i = this.state.views[e.id];
+  recordView(t, e) {
+    const i = this.state.views[t.id];
     if (i !== void 0)
-      i.count += 1, i.lastAt = t;
-    else if (Object.keys(this.state.views).length < y.maxViews)
-      this.state.views[e.id] = { count: 1, lastAt: t };
+      i.count += 1, i.lastAt = e;
+    else if (Object.keys(this.state.views).length < x.maxViews)
+      this.state.views[t.id] = { count: 1, lastAt: e };
     else
       return !1;
-    return this.persist(), this.tracking.viewed(e.id), !0;
-  }
-  currentRoot() {
-    return this.context.unit.node ?? null;
+    return this.persist(), this.tracking.viewed(t.id), !0;
   }
   persist() {
     this.createdAt === null && (this.createdAt = this.now());
-    const e = {
+    const t = {
       maxEnteredOrder: this.state.maxEnteredOrder,
       views: this.state.views,
       createdAt: this.createdAt
     };
-    this.storage.save(e);
+    this.storage.save(t);
   }
   restore() {
-    const e = this.storage.load();
-    e !== null && (this.state.maxEnteredOrder = e.maxEnteredOrder, this.state.views = { ...e.views }, this.createdAt = e.createdAt);
+    const t = this.storage.load();
+    t !== null && (this.state.maxEnteredOrder = t.maxEnteredOrder, this.state.views = { ...t.views }, this.createdAt = t.createdAt);
   }
   freshState() {
     return {
@@ -1118,17 +1388,17 @@ const y = class y {
     };
   }
 };
-y.maxViews = 10;
-let V = y;
-class _ extends I {
+x.maxViews = 10;
+let O = x;
+class nt extends S {
   constructor() {
-    super(...arguments), this.name = "PhaseOrchestrator", this.defaultConfig = B;
+    super(...arguments), this.name = "PhaseOrchestrator", this.defaultConfig = D;
   }
-  create(e, t) {
-    return new V(e, t, this.name);
+  create(t, e) {
+    return new O(t, e, this.name);
   }
 }
-const ee = (n) => new _().init(n);
+const ot = (n) => new nt().init(n);
 export {
-  ee as setup
+  ot as setup
 };
